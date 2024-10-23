@@ -7,7 +7,7 @@
 - [ ] Söka profil.
 - [ ] Visa någons Profil.
 - [ ] Följa/sluta följa.
-- [ ]Retweet. 
+- [ ] Retweet. 
 - [ ] Söka Tweet.
-- [ ]skicka privata meddelanden. 
-- [ ] snygg interface. 
+- [ ] Skicka privata meddelanden. 
+- [ ] Snygg interface. 
