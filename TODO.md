@@ -1,7 +1,7 @@
 # TODO 
-- [ ] Registrera sig som användare.
-- [ ] Posta Tweet. 
-- [ ] Visa Feed. 
+- [X] Registrera sig som användare.
+- [X] Posta Tweet. 
+- [X] Visa Feed. 
 - [ ] Ta bort tweet. 
 - [ ] Visa egen Profil.
 - [ ] Söka profil.
