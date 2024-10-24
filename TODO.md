@@ -2,13 +2,13 @@
 - [X] Registrera sig som användare.
 - [X] Posta Tweet. 
 - [X] Visa Feed. 
-- [ ] Ta bort tweet. 
+- [x] sortera lista med tweets
 - [ ] Visa egen Profil.
+- [ ] Ta bort tweet. 
 - [ ] Söka profil.
 - [ ] Visa någons Profil.
 - [ ] Följa/sluta följa.
 - [ ] Retweet. 
 - [ ] Söka Tweet.
-- [ ] sortera lista med tweets
 - [ ] Skicka privata meddelanden. 
 - [ ] Snygg interface. 

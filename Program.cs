@@ -5,6 +5,7 @@ using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using Microsoft.VisualBasic;
+using System.Text;
 
 class Program
 {
@@ -37,6 +38,7 @@ class Program
 
         while (validUser)
         {
+            TweetHandler.SortTweets();
             Console.WriteLine("----Shitter----");
             Console.WriteLine("1. Tweet 2. Profil 3. Sök");
             
@@ -44,7 +46,7 @@ class Program
             {
                 Console.WriteLine(t.Author);
                 Console.WriteLine(t.Content);
-                Console.WriteLine(t.Date);
+                Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
             }
             
             int choice = int.Parse(Console.ReadLine());
@@ -61,7 +63,6 @@ class Program
                 break;
             }
             
-            validUser = false;
         }
 
         
@@ -161,9 +162,24 @@ static class TweetHandler
         
         User loggedInUser = UserHandler.users.FirstOrDefault(u => u.Username == UserHandler.loggedInUser);
         loggedInUser.OwnTweets.Add(tweet);
-                
+        
         var options = new JsonSerializerOptions{WriteIndented = true}; 
         File.WriteAllText("Users.json", JsonSerializer.Serialize(UserHandler.users, options));
         File.WriteAllText("Tweets.json",JsonSerializer.Serialize(tweets, options)); 
+    }
+    public static void SortTweets()
+    {
+        for (int i = 0; i < tweets.Count; i++)
+        {
+            for (int j = 0; j < tweets.Count -1; j++)
+            {
+                if (tweets[j].Date < tweets[j + 1].Date) 
+                {
+                    var temp = tweets[j];
+                    tweets[j] = tweets[j + 1];
+                    tweets[j + 1] = temp;
+                }
+            }
+        }
     }
 }
