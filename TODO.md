@@ -9,5 +9,6 @@
 - [ ] Följa/sluta följa.
 - [ ] Retweet. 
 - [ ] Söka Tweet.
+- [ ] sortera lista med tweets
 - [ ] Skicka privata meddelanden. 
 - [ ] Snygg interface. 
