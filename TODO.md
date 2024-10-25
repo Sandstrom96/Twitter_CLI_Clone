@@ -4,11 +4,15 @@
 - [X] Visa Feed. 
 - [x] sortera lista med tweets
 - [ ] Visa egen Profil.
+- [ ] Följa
 - [ ] Ta bort tweet. 
 - [ ] Söka profil.
 - [ ] Visa någons Profil.
-- [ ] Följa/sluta följa.
+- [ ] sluta följa.
 - [ ] Retweet. 
 - [ ] Söka Tweet.
+- [ ] Gilla och kommentera tweets
 - [ ] Skicka privata meddelanden. 
+- [ ] läst/olästa meddelanden 
 - [ ] Snygg interface. 
+- [ ] Lägga in max antal tecken i en tweet

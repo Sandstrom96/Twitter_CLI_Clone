@@ -40,14 +40,10 @@ class Program
         {
             TweetHandler.SortTweets();
             Console.WriteLine("----Shitter----");
-            Console.WriteLine("1. Tweet 2. Profil 3. Sök");
             
-            foreach(Tweet t in TweetHandler.tweets)
-            {
-                Console.WriteLine(t.Author);
-                Console.WriteLine(t.Content);
-                Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
-            }
+            TweetHandler.ShowTweets(TweetHandler.tweets);
+            
+            Console.WriteLine("1. Tweet 2. Profil 3. Sök");
             
             int choice = int.Parse(Console.ReadLine());
             switch (choice)
@@ -57,6 +53,7 @@ class Program
                 break; 
 
                 case 2:
+                UserHandler.ShowUserProfile();
                 break; 
 
                 case 3:
@@ -131,6 +128,17 @@ static class UserHandler
         }
         return false;
     }
+    public static void ShowUserProfile()
+    {   
+        Console.Clear();
+        User loggedInUser = users.FirstOrDefault(u => u.Username == UserHandler.loggedInUser);
+        Console.WriteLine(loggedInUser.Name);
+        Console.WriteLine($"@{loggedInUser.Username}");
+        Console.WriteLine($"Följare {loggedInUser.Followers.Count}\tFöljer {loggedInUser.Following.Count}");
+        Console.WriteLine("----------------------");
+        TweetHandler.ShowTweets(loggedInUser.OwnTweets);
+        
+    }
 }
 class Tweet 
 {
@@ -181,5 +189,14 @@ static class TweetHandler
                 }
             }
         }
+    }
+    public static void ShowTweets(List<Tweet> tweet)
+    {
+            foreach(Tweet t in tweet)
+            {
+                Console.WriteLine(t.Author);
+                Console.WriteLine(t.Content);
+                Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
+            }
     }
 }
