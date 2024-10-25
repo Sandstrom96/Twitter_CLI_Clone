@@ -41,9 +41,9 @@ class Program
             TweetHandler.SortTweets();
             Console.WriteLine("----Shitter----");
             
-            TweetHandler.ShowTweets(TweetHandler.tweets);
+            TweetHandler.ShowTweets(TweetHandler.tweets, 0);
             
-            Console.WriteLine("1. Tweet 2. Profil 3. Sök");
+            Console.WriteLine("1. Tweet 2. Profil 3. Sök 4. Välj tweet");
             
             int choice = int.Parse(Console.ReadLine());
             switch (choice)
@@ -58,6 +58,10 @@ class Program
 
                 case 3:
                 break;
+
+                case 4: 
+                TweetHandler.ShowTweets(TweetHandler.tweets, choice); 
+                break; 
             }
             
         }
@@ -136,8 +140,27 @@ static class UserHandler
         Console.WriteLine($"@{loggedInUser.Username}");
         Console.WriteLine($"Följare {loggedInUser.Followers.Count}\tFöljer {loggedInUser.Following.Count}");
         Console.WriteLine("----------------------");
-        TweetHandler.ShowTweets(loggedInUser.OwnTweets);
-        
+        TweetHandler.ShowTweets(loggedInUser.OwnTweets, 0);
+        Console.WriteLine("1. Följer  2. Följare  3. Meddelanden 4. Radera tweet");
+        int choice = int.Parse(Console.ReadLine());
+        switch (choice)
+        {
+            case 1: 
+            break; 
+
+            case 2: 
+            break; 
+            
+            case 3: 
+            break;
+            
+            case 4:
+            TweetHandler.ShowTweets(loggedInUser.OwnTweets, 4);
+            Console.WriteLine("Välj vilken du vill radera");
+            choice = int.Parse(Console.ReadLine()) -1;
+            TweetHandler.RemoveTweet(choice); 
+            break;
+        }
     }
 }
 class Tweet 
@@ -190,13 +213,87 @@ static class TweetHandler
             }
         }
     }
-    public static void ShowTweets(List<Tweet> tweet)
+    public static void ShowTweets(List<Tweet> tweet, int choice)
     {
+        if (choice == 4)
+        {
+            foreach(Tweet t in tweet)
+            {
+                var i = tweet.IndexOf(t);
+                Console.Write($"{i + 1}. ");
+                Console.WriteLine(t.Author);
+                Console.WriteLine(t.Content);
+                Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
+                //Console.WriteLine($"💬({kommentarer.count} 🤍({gillar.count}))"); metod för gilla? röd om du gillar/vit om inte
+            }
+
+
+        }
+        else 
+        {
             foreach(Tweet t in tweet)
             {
                 Console.WriteLine(t.Author);
                 Console.WriteLine(t.Content);
                 Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
+                //Console.WriteLine($"💬({kommentarer.count} 🤍({gillar.count}))"); metod för gilla? röd om du gillar/vit om inte
             }
+        }
+    }
+
+    public static void RemoveTweet(int index)
+    {
+        User loggedInUser = UserHandler.users.FirstOrDefault(u => u.Username == UserHandler.loggedInUser);
+        
+        var temp = loggedInUser.OwnTweets[index];
+        var tempTweet = tweets.FirstOrDefault(t => t.Content == temp.Content && t.Author == temp.Author);
+        var indexOfTweet = tweets.IndexOf(tempTweet);
+        
+        if (index > loggedInUser.OwnTweets.Count)
+        {
+            Console.WriteLine($"Ogiltigt val, ange tweet 1 - {loggedInUser.OwnTweets.Count}");
+        }
+        else 
+        {
+            loggedInUser.OwnTweets.RemoveAt(index);
+            tweets.RemoveAt(indexOfTweet);
+            Console.WriteLine($"Tweeten togs bort");
+            
+        }
+        Console.WriteLine("1. Ångra 2. Fortsätt");
+        int choice = int.Parse(Console.ReadLine()); 
+        if (choice == 1)
+        {
+            loggedInUser.OwnTweets.Add(temp);
+            tweets.Add(temp);
+        }
+        
+        var options = new JsonSerializerOptions{WriteIndented = true}; 
+        File.WriteAllText("Users.json", JsonSerializer.Serialize(UserHandler.users, options));
+        File.WriteAllText("Tweets.json",JsonSerializer.Serialize(tweets, options)); 
     }
 }
+
+/*1. tweet 2. profil 3. sök 4. välj tweet
+o
+hejhopp
+10-24 16:30
+💬(0) 🤍(0)
+
+1. o
+hejhopp
+10-24 16.30
+💬(0) 🤍(0)
+
+o hejhopp
+10-24 16:30
+1.💬(1) 2.❤️(10)
+
+o hejhopp 
+10-24 16:30
+💬(1) ❤️(10) 
+-----------------
+Oskar : hej på dig 
+A : grymt inlägg 
+skriv en kommentar: ....
+(klicka q för att avsluta)*/

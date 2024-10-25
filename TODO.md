@@ -3,11 +3,11 @@
 - [X] Posta Tweet. 
 - [X] Visa Feed. 
 - [x] sortera lista med tweets
-- [ ] Visa egen Profil.
-- [ ] Följa
-- [ ] Ta bort tweet. 
+- [x] Visa egen Profil.
+- [x] Ta bort tweet. 
 - [ ] Söka profil.
 - [ ] Visa någons Profil.
+- [ ] Följa
 - [ ] sluta följa.
 - [ ] Retweet. 
 - [ ] Söka Tweet.
