@@ -14,8 +14,10 @@ class Program
         UserHandler.users = JsonSerializer.Deserialize<List<User>>(File.ReadAllText("Users.json"));
         TweetHandler.tweets = JsonSerializer.Deserialize<List<Tweet>>(File.ReadAllText("Tweets.json"));
         var options = new JsonSerializerOptions{WriteIndented = true}; 
+        
         bool validUser = false;
-          
+
+        //Meny där användaren får antingen registrera sig eller logga in 
         while (!validUser)
         {
             Console.WriteLine("Välkommen till Shitter");
@@ -36,12 +38,13 @@ class Program
             }
         }
 
+        //Kollar om den användaren loggat in och sedan visar huvudmenyn
         while (validUser)
         {
             TweetHandler.SortTweets();
             Console.WriteLine("----Shitter----");
             
-            TweetHandler.ShowTweets(TweetHandler.tweets, 0);
+            TweetHandler.ShowTweets(TweetHandler.tweets, 0); //Visar alla tweets i flödet
             
             Console.WriteLine("1. Tweet 2. Profil 3. Sök 4. Välj tweet");
             
@@ -53,10 +56,13 @@ class Program
                 break; 
 
                 case 2:
-                UserHandler.ShowUserProfile();
+                UserHandler.ShowUserProfile(UserHandler.loggedInUser); 
                 break; 
 
                 case 3:
+                Console.Write("Sök: ");
+                string search = Console.ReadLine();
+                UserHandler.ShowUserProfile(UserHandler.SearchProfile(search));
                 break;
 
                 case 4: 
@@ -92,6 +98,7 @@ static class UserHandler
     static string password;
     public static string loggedInUser;
     public static List<User> users = new List<User>();
+    
     static public void Register()
     {
         Console.Write("Ange användarnamn: ");
@@ -102,6 +109,7 @@ static class UserHandler
         string name = Console.ReadLine();
         users.Add(new User(userName, password, name));
     }
+
     static public bool Login()
     {
         bool validUser = false;
@@ -114,7 +122,7 @@ static class UserHandler
             password = Console.ReadLine();
             for (int i = 0; i < users.Count; i++)
             {
-                if (!userName.Equals(users[i].Username))
+                if (!userName.Equals(users[i].Username)) 
                 {
                     Console.WriteLine("Kan inte hitta ett konto med det användarnamn.");
                 }
@@ -132,35 +140,50 @@ static class UserHandler
         }
         return false;
     }
-    public static void ShowUserProfile()
+    
+    //Visar profilen enligt indatan tex. den inloggade eller sökta profilen
+    public static void ShowUserProfile(string user)
     {   
         Console.Clear();
-        User loggedInUser = users.FirstOrDefault(u => u.Username == UserHandler.loggedInUser);
-        Console.WriteLine(loggedInUser.Name);
-        Console.WriteLine($"@{loggedInUser.Username}");
-        Console.WriteLine($"Följare {loggedInUser.Followers.Count}\tFöljer {loggedInUser.Following.Count}");
+        User chosenUser = users.FirstOrDefault(u => u.Username == user);
+        Console.WriteLine(chosenUser.Name);
+        Console.WriteLine($"@{chosenUser.Username}");
+        Console.WriteLine($"Följare {chosenUser.Followers.Count}\tFöljer {chosenUser.Following.Count}");
         Console.WriteLine("----------------------");
-        TweetHandler.ShowTweets(loggedInUser.OwnTweets, 0);
-        Console.WriteLine("1. Följer  2. Följare  3. Meddelanden 4. Radera tweet");
-        int choice = int.Parse(Console.ReadLine());
-        switch (choice)
-        {
-            case 1: 
-            break; 
+        TweetHandler.ShowTweets(chosenUser.OwnTweets, 0);
 
-            case 2: 
-            break; 
-            
-            case 3: 
-            break;
-            
-            case 4:
-            TweetHandler.ShowTweets(loggedInUser.OwnTweets, 4);
-            Console.WriteLine("Välj vilken du vill radera");
-            choice = int.Parse(Console.ReadLine()) -1;
-            TweetHandler.RemoveTweet(choice); 
-            break;
+        if(chosenUser.Username == UserHandler.loggedInUser)
+        {
+            Console.WriteLine("1. Följer  2. Följare  3. Meddelanden 4. Radera tweet 5. Gå tillbaka");
+            int choice = int.Parse(Console.ReadLine());
+            switch (choice)
+            {
+                case 1: 
+                break; 
+
+                case 2: 
+                break; 
+                
+                case 3: 
+                break;
+                
+                case 4:
+                TweetHandler.ShowTweets(chosenUser.OwnTweets, 4);
+                Console.WriteLine("Välj vilken du vill radera");
+                choice = int.Parse(Console.ReadLine()) -1;
+                TweetHandler.RemoveTweet(choice); 
+                break;
+            }
         }
+    }
+    public static string SearchProfile(string user)
+    {
+        var userName = users.FirstOrDefault(u => u.Username == user);
+        if (userName.Username != user)
+        {
+            Console.WriteLine("Kan inte hitta användaren.");
+        }
+        return userName.Username;
     }
 }
 class Tweet 
@@ -273,27 +296,3 @@ static class TweetHandler
         File.WriteAllText("Tweets.json",JsonSerializer.Serialize(tweets, options)); 
     }
 }
-
-/*1. tweet 2. profil 3. sök 4. välj tweet
-o
-hejhopp
-10-24 16:30
-💬(0) 🤍(0)
-
-1. o
-hejhopp
-10-24 16.30
-💬(0) 🤍(0)
-
-o hejhopp
-10-24 16:30
-1.💬(1) 2.❤️(10)
-
-o hejhopp 
-10-24 16:30
-💬(1) ❤️(10) 
------------------
-Oskar : hej på dig 
-A : grymt inlägg 
-skriv en kommentar: ....
-(klicka q för att avsluta)*/

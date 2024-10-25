@@ -1,11 +1,11 @@
 # TODO 
-- [X] Registrera sig som användare.
-- [X] Posta Tweet. 
-- [X] Visa Feed. 
+- [x] Registrera sig som användare.
+- [x] Posta Tweet. 
+- [x] Visa Feed. 
 - [x] sortera lista med tweets
 - [x] Visa egen Profil.
 - [x] Ta bort tweet. 
-- [ ] Söka profil.
+- [x] Söka profil.
 - [ ] Visa någons Profil.
 - [ ] Följa
 - [ ] sluta följa.
