@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.Design;
+using System.ComponentModel.Design;
 using System.Dynamic;
 using System.Reflection.Metadata;
 using System.Runtime.Intrinsics.Arm;
@@ -12,7 +12,7 @@ class Program
     public static void Main(string[] args)
     {   
         UserHandler.users = JsonSerializer.Deserialize<List<User>>(File.ReadAllText("Users.json"));
-        TweetHandler.tweets = JsonSerializer.Deserialize<List<Tweet>>(File.ReadAllText("Tweets.json"));
+        //TweetHandler.tweets = JsonSerializer.Deserialize<List<Tweet>>(File.ReadAllText("Tweets.json"));
         var options = new JsonSerializerOptions{WriteIndented = true}; 
         
         bool validUser = false;
@@ -113,28 +113,42 @@ static class UserHandler
     static public bool Login()
     {
         bool validUser = false;
-                    
+        bool userFound = false;
         while (!validUser)
-        {
-            Console.Write("Ange användarnamn: ");
-            userName = Console.ReadLine();
+        {            
+            if(!userFound)
+            {
+                Console.Write("Ange användarnamn: ");
+                userName = Console.ReadLine();
+            }
+            else
+            {
+                Console.WriteLine($"Ange Användarnamn: {userName}");
+            }
             Console.Write("Ange lössenord: ");
             password = Console.ReadLine();
+
             for (int i = 0; i < users.Count; i++)
             {
-                if (!userName.Equals(users[i].Username)) 
+                if (userName.Equals(users[i].Username)) 
                 {
-                    Console.WriteLine("Kan inte hitta ett konto med det användarnamn.");
+                    userFound = true;
+                    if (password.Equals(users[i].Password))
+                    {
+                        loggedInUser = userName;
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Du har angett fel lössenord!");
+                        break;
+                    }
                 }
-                else if (!password.Equals(users[i].Password))
-                {
-                    Console.WriteLine("Du har anget fel lössenord!");
-                }
-                else if (userName.Equals(users[i].Username) && password.Equals(users[i].Password))
-                {
-                    loggedInUser = userName;
-                    return true;
-                }
+            }
+
+            if(!userFound)
+            {
+                Console.WriteLine("Kan inte hitta ett konto med det användarnamn");
             }
         
         }
