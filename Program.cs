@@ -6,6 +6,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using Microsoft.VisualBasic;
 using System.Text;
+using System.Security.Cryptography;
+using System.Text.Json.Serialization;
 
 class Program
 {
@@ -46,7 +48,7 @@ class Program
             
             TweetHandler.ShowTweets(TweetHandler.tweets, 0); //Visar alla tweets i flödet
             
-            Console.WriteLine("1. Tweet 2. Profil 3. Sök 4. Välj tweet");
+            Console.WriteLine("1. Tweet 2. Profil 3. Sök 4. Välj tweet 5. Avsluta");
             
             int choice = int.Parse(Console.ReadLine());
             switch (choice)
@@ -56,12 +58,13 @@ class Program
                 break; 
 
                 case 2:
-                UserHandler.ShowUserProfile(UserHandler.loggedInUser); 
+                UserHandler.ShowUserProfile(UserHandler.loggedInUser.Username); 
                 break; 
 
                 case 3:
                 Console.Write("Sök: ");
                 string search = Console.ReadLine();
+                User searchedUser = UserHandler.users.FirstOrDefault(u => u.Username == search);
                 UserHandler.ShowUserProfile(UserHandler.SearchProfile(search));
                 break;
 
@@ -96,7 +99,7 @@ static class UserHandler
 {
     static string userName;
     static string password;
-    public static string loggedInUser;
+    public static User loggedInUser;
     public static List<User> users = new List<User>();
     
     static public void Register()
@@ -114,6 +117,7 @@ static class UserHandler
     {
         bool validUser = false;
         bool userFound = false;
+
         while (!validUser)
         {            
             if(!userFound)
@@ -135,7 +139,7 @@ static class UserHandler
                     userFound = true;
                     if (password.Equals(users[i].Password))
                     {
-                        loggedInUser = userName;
+                        loggedInUser = users[i];
                         return true;
                     }
                     else
@@ -156,19 +160,19 @@ static class UserHandler
     }
     
     //Visar profilen enligt indatan tex. den inloggade eller sökta profilen
-    public static void ShowUserProfile(string user)
+    public static void ShowUserProfile(string username)
     {   
         Console.Clear();
-        User chosenUser = users.FirstOrDefault(u => u.Username == user);
+        User chosenUser = users.FirstOrDefault(u => u.Username == username);
         Console.WriteLine(chosenUser.Name);
         Console.WriteLine($"@{chosenUser.Username}");
         Console.WriteLine($"Följare {chosenUser.Followers.Count}\tFöljer {chosenUser.Following.Count}");
         Console.WriteLine("----------------------");
         TweetHandler.ShowTweets(chosenUser.OwnTweets, 0);
 
-        if(chosenUser.Username == UserHandler.loggedInUser)
+        if(chosenUser.Username == UserHandler.loggedInUser.Username)
         {
-            Console.WriteLine("1. Följer  2. Följare  3. Meddelanden 4. Radera tweet 5. Gå tillbaka");
+            Console.WriteLine("1. Följer  2. Följare  3. Meddelanden 4. Gillade 5. Radera tweet 6. Gå tillbaka");
             int choice = int.Parse(Console.ReadLine());
             switch (choice)
             {
@@ -180,12 +184,50 @@ static class UserHandler
                 
                 case 3: 
                 break;
-                
+
                 case 4:
+                break;
+                
+                case 5:
                 TweetHandler.ShowTweets(chosenUser.OwnTweets, 4);
                 Console.WriteLine("Välj vilken du vill radera");
                 choice = int.Parse(Console.ReadLine()) -1;
                 TweetHandler.RemoveTweet(choice); 
+                break;
+
+                case 6:
+                return;
+
+                default:
+                break;
+            }
+        }
+        else
+        {
+            Console.WriteLine("1. Följ 2. Skicka meddelande 3. Följer  4. Följare 5. Gillade 6. Gå tillbaka"); // metod för dynamisk följ/avfölj
+            int choice = int.Parse(Console.ReadLine());
+            switch (choice)
+            {
+                case 1:
+                    Follow(username);
+                break; 
+
+                case 2: 
+                break; 
+                
+                case 3: 
+                break;
+                
+                case 4:
+                break;
+
+                case 5:
+                break;
+
+                case 6:
+                return;
+
+                default:
                 break;
             }
         }
@@ -198,6 +240,28 @@ static class UserHandler
             Console.WriteLine("Kan inte hitta användaren.");
         }
         return userName.Username;
+    }
+
+    public static void Follow(string username)
+    {
+        User chosenUser = users.FirstOrDefault(u => u.Username == username);
+        if (!chosenUser.Followers.Any(u => u.Username == loggedInUser.Username))
+        {
+            chosenUser.Followers.Add(loggedInUser);
+            loggedInUser.Following.Add(chosenUser);
+        }
+        else
+        {
+            chosenUser.Followers.Remove(loggedInUser);
+            loggedInUser.Following.Remove(chosenUser);
+        }
+        
+        var options = new JsonSerializerOptions
+        { 
+            WriteIndented = true, 
+            ReferenceHandler = ReferenceHandler.IgnoreCycles
+        };
+        File.WriteAllText("Users.json", JsonSerializer.Serialize(UserHandler.users, options));
     }
 }
 class Tweet 
@@ -224,11 +288,11 @@ static class TweetHandler
         Console.Write("Skriv din tweet: ");
         string tweetContent = Console.ReadLine();
         
-        var tweet = new Tweet(tweetContent, UserHandler.loggedInUser, DateTime.Now);
+        var tweet = new Tweet(tweetContent, UserHandler.loggedInUser.Username, DateTime.Now);
         
         tweets.Add(tweet);
         
-        User loggedInUser = UserHandler.users.FirstOrDefault(u => u.Username == UserHandler.loggedInUser);
+        User loggedInUser = UserHandler.users.FirstOrDefault(u => u.Username == UserHandler.loggedInUser.Username);
         loggedInUser.OwnTweets.Add(tweet);
         
         var options = new JsonSerializerOptions{WriteIndented = true}; 
@@ -280,7 +344,7 @@ static class TweetHandler
 
     public static void RemoveTweet(int index)
     {
-        User loggedInUser = UserHandler.users.FirstOrDefault(u => u.Username == UserHandler.loggedInUser);
+        User loggedInUser = UserHandler.users.FirstOrDefault(u => u.Username == UserHandler.loggedInUser.Username);
         
         var temp = loggedInUser.OwnTweets[index];
         var tempTweet = tweets.FirstOrDefault(t => t.Content == temp.Content && t.Author == temp.Author);

@@ -6,9 +6,10 @@
 - [x] Visa egen Profil.
 - [x] Ta bort tweet. 
 - [x] Söka profil.
-- [ ] Visa någons Profil.
-- [ ] Följa
-- [ ] sluta följa.
+- [x] Visa någons Profil.
+- [x] Följa
+- [x] sluta följa.
+- [ ] Dynamiska "Knappar"
 - [ ] Retweet. 
 - [ ] Söka Tweet.
 - [ ] Gilla och kommentera tweets
