@@ -5,7 +5,20 @@
     "Name": "Andreas Sandstr\u00F6m",
     "Followers": [],
     "Following": [],
-    "OwnTweets": []
+    "OwnTweets": [
+      {
+        "Content": "Heja IFK",
+        "Author": "Sandstrom",
+        "Date": "2024-10-29T10:42:43.8503439+01:00",
+        "Likes": []
+      },
+      {
+        "Content": "Grattis IFK",
+        "Author": "Sandstrom",
+        "Date": "2024-10-29T10:42:51.0791165+01:00",
+        "Likes": []
+      }
+    ]
   },
   {
     "Username": "Oskar",
@@ -13,6 +26,19 @@
     "Name": "Oskar \u00C5kerman",
     "Followers": [],
     "Following": [],
-    "OwnTweets": []
+    "OwnTweets": [
+      {
+        "Content": "Hejhopp",
+        "Author": "Oskar",
+        "Date": "2024-10-29T10:42:09.1782224+01:00",
+        "Likes": []
+      },
+      {
+        "Content": "Grattis Gais ",
+        "Author": "Oskar",
+        "Date": "2024-10-29T10:42:16.8439007+01:00",
+        "Likes": []
+      }
+    ]
   }
 ]

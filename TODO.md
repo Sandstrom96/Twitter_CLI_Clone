@@ -9,10 +9,11 @@
 - [x] Visa någons Profil.
 - [x] Följa
 - [x] sluta följa.
+- [x] Gilla
 - [ ] Dynamiska "Knappar"
 - [ ] Retweet. 
 - [ ] Söka Tweet.
-- [ ] Gilla och kommentera tweets
+- [ ] kommentera tweets
 - [ ] Skicka privata meddelanden. 
 - [ ] läst/olästa meddelanden 
 - [ ] Snygg interface. 

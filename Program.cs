@@ -14,7 +14,7 @@ class Program
     public static void Main(string[] args)
     {   
         UserHandler.users = JsonSerializer.Deserialize<List<User>>(File.ReadAllText("Users.json"));
-        //TweetHandler.tweets = JsonSerializer.Deserialize<List<Tweet>>(File.ReadAllText("Tweets.json"));
+        TweetHandler.tweets = JsonSerializer.Deserialize<List<Tweet>>(File.ReadAllText("Tweets.json"));
         var options = new JsonSerializerOptions{WriteIndented = true}; 
         
         bool validUser = false;
@@ -70,7 +70,14 @@ class Program
 
                 case 4: 
                 TweetHandler.ShowTweets(TweetHandler.tweets, choice); 
-                break; 
+                choice = int.Parse(Console.ReadLine());
+                TweetHandler.LikeUnlikeTweet(TweetHandler.tweets, choice); 
+                break;
+
+                case 5: 
+                    File.WriteAllText("Users.json", JsonSerializer.Serialize(UserHandler.users, options));
+                    File.WriteAllText("Tweets.json",JsonSerializer.Serialize(TweetHandler.tweets, options));
+                return;
             }
             
         }
@@ -79,7 +86,7 @@ class Program
     }
 }
 
-class User
+public class User
 {
     public string Username {get; set;}
     public string Password {get; set;}
@@ -186,6 +193,7 @@ static class UserHandler
                 break;
 
                 case 4:
+                TweetHandler.ShowLikedTweets(username);
                 break;
                 
                 case 5:
@@ -204,12 +212,13 @@ static class UserHandler
         }
         else
         {
-            Console.WriteLine("1. Följ 2. Skicka meddelande 3. Följer  4. Följare 5. Gillade 6. Gå tillbaka"); // metod för dynamisk följ/avfölj
+            DynamicButtonhandler.FollowButton(username);
+            Console.WriteLine($" 2. Skicka meddelande 3. Följer  4. Följare 5. Gillade 6. Gå tillbaka"); // metod för dynamisk följ/avfölj
             int choice = int.Parse(Console.ReadLine());
             switch (choice)
             {
                 case 1:
-                    Follow(username);
+                    FollowUnfollow(username);
                 break; 
 
                 case 2: 
@@ -222,6 +231,7 @@ static class UserHandler
                 break;
 
                 case 5:
+                TweetHandler.ShowLikedTweets(username);
                 break;
 
                 case 6:
@@ -242,7 +252,7 @@ static class UserHandler
         return userName.Username;
     }
 
-    public static void Follow(string username)
+    public static void FollowUnfollow(string username)
     {
         User chosenUser = users.FirstOrDefault(u => u.Username == username);
         if (!chosenUser.Followers.Any(u => u.Username == loggedInUser.Username))
@@ -256,19 +266,14 @@ static class UserHandler
             loggedInUser.Following.Remove(chosenUser);
         }
         
-        var options = new JsonSerializerOptions
-        { 
-            WriteIndented = true, 
-            ReferenceHandler = ReferenceHandler.IgnoreCycles
-        };
-        File.WriteAllText("Users.json", JsonSerializer.Serialize(UserHandler.users, options));
     }
 }
-class Tweet 
+public class Tweet 
 {
     public string Content {get; set;}
     public string Author {get; set;}
     public DateTime Date {get; set;}
+    public List<string> Likes {get; set;} = new List<string>();
 
     public Tweet (string content, string author, DateTime date)
     {
@@ -294,10 +299,7 @@ static class TweetHandler
         
         User loggedInUser = UserHandler.users.FirstOrDefault(u => u.Username == UserHandler.loggedInUser.Username);
         loggedInUser.OwnTweets.Add(tweet);
-        
-        var options = new JsonSerializerOptions{WriteIndented = true}; 
-        File.WriteAllText("Users.json", JsonSerializer.Serialize(UserHandler.users, options));
-        File.WriteAllText("Tweets.json",JsonSerializer.Serialize(tweets, options)); 
+         
     }
     public static void SortTweets()
     {
@@ -325,7 +327,8 @@ static class TweetHandler
                 Console.WriteLine(t.Author);
                 Console.WriteLine(t.Content);
                 Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
-                //Console.WriteLine($"💬({kommentarer.count} 🤍({gillar.count}))"); metod för gilla? röd om du gillar/vit om inte
+                DynamicButtonhandler.LikeButton(tweet, i);
+                Console.WriteLine($" ({t.Likes.Count})"); //metod för gilla? röd om du gillar/vit om inte
             }
 
 
@@ -334,10 +337,12 @@ static class TweetHandler
         {
             foreach(Tweet t in tweet)
             {
+                var i = tweet.IndexOf(t);
                 Console.WriteLine(t.Author);
                 Console.WriteLine(t.Content);
                 Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
-                //Console.WriteLine($"💬({kommentarer.count} 🤍({gillar.count}))"); metod för gilla? röd om du gillar/vit om inte
+                DynamicButtonhandler.LikeButton(tweet, i);
+                Console.WriteLine($" ({t.Likes.Count})"); //metod för gilla? röd om du gillar/vit om inte
             }
         }
     }
@@ -368,9 +373,62 @@ static class TweetHandler
             loggedInUser.OwnTweets.Add(temp);
             tweets.Add(temp);
         }
+         
+    }
+
+    public static void LikeUnlikeTweet(List<Tweet> tweet, int i)
+    {
+        if (!tweet[i - 1].Likes.Any(u => u == UserHandler.loggedInUser.Username))
+        {
+            tweet[i - 1].Likes.Add(UserHandler.loggedInUser.Username);
+        }
+        else
+        {
+            tweet[i - 1].Likes.Remove(UserHandler.loggedInUser.Username);
+        }
+    }
+
+    public static void ShowLikedTweets(string username)
+    {
+        foreach(Tweet t in tweets)
+        {
+            if(t.Likes.Any(u => u == username))
+            {
+                var i = tweets.IndexOf(t);
+                Console.WriteLine(t.Author);
+                Console.WriteLine(t.Content);
+                Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
+                DynamicButtonhandler.LikeButton(tweets, i);
+                Console.WriteLine($" ({t.Likes.Count})");
+            }
+        }
+    }
+}
+
+public static class DynamicButtonhandler
+{
+    public static void FollowButton(string username)
+    {
+        User chosenUser = UserHandler.users.FirstOrDefault(u => u.Username == username);
+        if (!chosenUser.Followers.Any(u => u.Username == UserHandler.loggedInUser.Username))
+        {
+            Console.Write("1. Följ");
+        }
+        else
+        {
+            Console.Write("1. Avfölj");
+        }
         
-        var options = new JsonSerializerOptions{WriteIndented = true}; 
-        File.WriteAllText("Users.json", JsonSerializer.Serialize(UserHandler.users, options));
-        File.WriteAllText("Tweets.json",JsonSerializer.Serialize(tweets, options)); 
+    }
+        public static void LikeButton(List<Tweet> tweet, int i)
+    {
+        if (!tweet[i].Likes.Any(u => u == UserHandler.loggedInUser.Username))
+        {
+            Console.Write("🤍");
+        }
+        else
+        {
+            Console.Write("❤️");
+        }
     }
 }
