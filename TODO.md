@@ -10,7 +10,7 @@
 - [x] Följa
 - [x] sluta följa.
 - [x] Gilla
-- [ ] Dynamiska "Knappar"
+- [ ] Fixa menyerna så man kan gå tillbaka
 - [ ] Retweet. 
 - [ ] Söka Tweet.
 - [ ] kommentera tweets
@@ -18,3 +18,4 @@
 - [ ] läst/olästa meddelanden 
 - [ ] Snygg interface. 
 - [ ] Lägga in max antal tecken i en tweet
+- Dynamiska "Knappar" // Lös när funktionen "behöver" det

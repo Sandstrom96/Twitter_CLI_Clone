@@ -38,7 +38,21 @@
         "Author": "Oskar",
         "Date": "2024-10-29T10:42:16.8439007+01:00",
         "Likes": []
+      },
+      {
+        "Content": "\u00C5ke",
+        "Author": "Oskar",
+        "Date": "2024-10-30T15:29:56.6254366+01:00",
+        "Likes": []
       }
     ]
+  },
+  {
+    "Username": "Krister",
+    "Password": "123",
+    "Name": "Krister Trangius",
+    "Followers": [],
+    "Following": [],
+    "OwnTweets": []
   }
 ]

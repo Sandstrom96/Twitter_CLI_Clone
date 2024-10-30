@@ -25,16 +25,16 @@ class Program
             Console.WriteLine("Välkommen till Shitter");
             Console.WriteLine("1. Registrera");
             Console.WriteLine("2. Logga in");
-            int choice = int.Parse(Console.ReadLine());
+            var choice = Console.ReadKey(true).Key;
             
             switch (choice)
             {
-                case 1:
+                case ConsoleKey.D1:
                     UserHandler.Register();
                     File.WriteAllText("Users.json", JsonSerializer.Serialize(UserHandler.users, options));
                     break;
                 
-                case 2:
+                case ConsoleKey.D2:
                     validUser = UserHandler.Login();
                     break;
             }
@@ -43,6 +43,7 @@ class Program
         //Kollar om den användaren loggat in och sedan visar huvudmenyn
         while (validUser)
         {
+            Console.Clear();
             TweetHandler.SortTweets();
             Console.WriteLine("----Shitter----");
             
@@ -50,34 +51,37 @@ class Program
             
             Console.WriteLine("1. Tweet 2. Profil 3. Sök 4. Välj tweet 5. Avsluta");
             
-            int choice = int.Parse(Console.ReadLine());
+            var choice = Console.ReadKey(true).Key;
+            
             switch (choice)
             {
-                case 1:
-                TweetHandler.MakeTweet();
-                break; 
+                case ConsoleKey.D1:
+                    TweetHandler.MakeTweet();
+                    break; 
 
-                case 2:
-                UserHandler.ShowUserProfile(UserHandler.loggedInUser.Username); 
-                break; 
+                case ConsoleKey.D2:
+                    UserHandler.ShowUserProfile(UserHandler.loggedInUser.Username); 
+                    break; 
 
-                case 3:
-                Console.Write("Sök: ");
-                string search = Console.ReadLine();
-                User searchedUser = UserHandler.users.FirstOrDefault(u => u.Username == search);
-                UserHandler.ShowUserProfile(UserHandler.SearchProfile(search));
-                break;
+                case ConsoleKey.D3:
+                    string username = UserHandler.SearchProfile();
+                    if (username == null)
+                    {
+                        break;
+                    }
+                    UserHandler.ShowUserProfile(username);
+                    break;
 
-                case 4: 
-                TweetHandler.ShowTweets(TweetHandler.tweets, choice); 
-                choice = int.Parse(Console.ReadLine());
-                TweetHandler.LikeUnlikeTweet(TweetHandler.tweets, choice); 
-                break;
+                case ConsoleKey.D4: //TODO: lägga till meny för gilla, kommentera, gå tillbaka
+                    TweetHandler.ShowTweets(TweetHandler.tweets, choice); 
+                    int index = int.Parse(Console.ReadLine());
+                    TweetHandler.LikeUnlikeTweet(TweetHandler.tweets, index);
+                    break;
 
-                case 5: 
+                case ConsoleKey.D5: 
                     File.WriteAllText("Users.json", JsonSerializer.Serialize(UserHandler.users, options));
                     File.WriteAllText("Tweets.json",JsonSerializer.Serialize(TweetHandler.tweets, options));
-                return;
+                    return;
             }
             
         }
@@ -167,6 +171,7 @@ static class UserHandler
     }
     
     //Visar profilen enligt indatan tex. den inloggade eller sökta profilen
+    //TODO: skapa metod för sidhuvud. 
     public static void ShowUserProfile(string username)
     {   
         Console.Clear();
@@ -177,75 +182,112 @@ static class UserHandler
         Console.WriteLine("----------------------");
         TweetHandler.ShowTweets(chosenUser.OwnTweets, 0);
 
-        if(chosenUser.Username == UserHandler.loggedInUser.Username)
+        while (true)
         {
-            Console.WriteLine("1. Följer  2. Följare  3. Meddelanden 4. Gillade 5. Radera tweet 6. Gå tillbaka");
-            int choice = int.Parse(Console.ReadLine());
-            switch (choice)
+            if(chosenUser.Username == UserHandler.loggedInUser.Username)
             {
-                case 1: 
-                break; 
+                Console.WriteLine("1. Följer  2. Följare  3. Meddelanden 4. Gillade 5. Radera tweet 6. Gå tillbaka");
+                var choice = Console.ReadKey(true).Key;
+                switch (choice)
+                {
+                    case ConsoleKey.D1: 
+                    break; 
 
-                case 2: 
-                break; 
-                
-                case 3: 
-                break;
+                    case ConsoleKey.D2: 
+                    break; 
+                    
+                    case ConsoleKey.D3: 
+                    break;
 
-                case 4:
-                TweetHandler.ShowLikedTweets(username);
-                break;
-                
-                case 5:
-                TweetHandler.ShowTweets(chosenUser.OwnTweets, 4);
-                Console.WriteLine("Välj vilken du vill radera");
-                choice = int.Parse(Console.ReadLine()) -1;
-                TweetHandler.RemoveTweet(choice); 
-                break;
+                    case ConsoleKey.D4:
+                        Console.WriteLine("Gillade tweets");
+                        TweetHandler.ShowLikedTweets(chosenUser.Username);
+                        break;
+                    
+                    case ConsoleKey.D5:
+                    TweetHandler.ShowTweets(chosenUser.OwnTweets, ConsoleKey.D4);
+                    Console.WriteLine("Välj vilken du vill radera");
+                    choice = Console.ReadKey(true).Key;
+                    TweetHandler.RemoveTweet((int)choice);
+                    break;
 
-                case 6:
-                return;
+                    case ConsoleKey.D6:
+                    return;
 
-                default:
-                break;
+                    default:
+                    break;
+                }
             }
+            else
+            {
+                DynamicButtonhandler.FollowButton(username);
+                Console.WriteLine($" 2. Skicka meddelande 3. Följer  4. Följare 5. Gillade 6. Gå tillbaka"); // metod för dynamisk följ/avfölj
+                var choice = Console.ReadKey(true).Key;
+                switch (choice)
+                {
+                    case ConsoleKey.D1:
+                        FollowUnfollow(username);
+                    break; 
+
+                    case ConsoleKey.D2: 
+                    break; 
+                    
+                    case ConsoleKey.D3: 
+                    break;
+                    
+                    case ConsoleKey.D4:
+                    break;
+
+                    case ConsoleKey.D5:
+                    TweetHandler.ShowLikedTweets(username);
+                    break;
+
+                    case ConsoleKey.D6:
+                    return;
+
+                    default:
+                    break;
+                }
         }
-        else
-        {
-            DynamicButtonhandler.FollowButton(username);
-            Console.WriteLine($" 2. Skicka meddelande 3. Följer  4. Följare 5. Gillade 6. Gå tillbaka"); // metod för dynamisk följ/avfölj
-            int choice = int.Parse(Console.ReadLine());
-            switch (choice)
-            {
-                case 1:
-                    FollowUnfollow(username);
-                break; 
-
-                case 2: 
-                break; 
-                
-                case 3: 
-                break;
-                
-                case 4:
-                break;
-
-                case 5:
-                TweetHandler.ShowLikedTweets(username);
-                break;
-
-                case 6:
-                return;
-
-                default:
-                break;
-            }
         }
     }
-    public static string SearchProfile(string user)
+    public static string SearchProfile()
     {
-        var userName = users.FirstOrDefault(u => u.Username == user);
-        if (userName.Username != user)
+        StringBuilder sbSearch = new();
+        
+        Console.Write("Sök: ");
+        
+        while (true)
+        {   
+                var key = Console.ReadKey(intercept: true);
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    Console.WriteLine();
+                    return null;
+                }
+                else if (key.Key == ConsoleKey.Enter)
+                { 
+                    Console.WriteLine();
+                    break;
+                }
+                else if (key.Key == ConsoleKey.Backspace)
+                {
+                    if(sbSearch.Length > 0)
+                    {
+                        sbSearch.Remove(sbSearch.Length - 1, 1);
+                        Console.Write("\b \b");
+                    }
+                }
+                else
+                {
+                    sbSearch.Append(key.KeyChar);
+                    Console.Write(key.KeyChar);
+                }
+        }
+        string search = sbSearch.ToString();
+
+        var userName = users.FirstOrDefault(u => u.Username == search);
+        if (userName.Username != search)
         {
             Console.WriteLine("Kan inte hitta användaren.");
         }
@@ -290,16 +332,58 @@ static class TweetHandler
 
     public static void MakeTweet()
     {
+        Console.Clear();
+        Console.WriteLine("Tryck esc för att gå tillbaka");
         Console.Write("Skriv din tweet: ");
-        string tweetContent = Console.ReadLine();
+        StringBuilder sbTweetContent = new();
         
-        var tweet = new Tweet(tweetContent, UserHandler.loggedInUser.Username, DateTime.Now);
+        while (true)
+        {   
+                var key = Console.ReadKey(intercept: true);
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    Console.WriteLine();
+                    return;
+                }
+                else if (key.Key == ConsoleKey.Enter)
+                { 
+                    Console.WriteLine();
+                    break;
+                }
+                else if (key.Key == ConsoleKey.Backspace)
+                {
+                    if(sbTweetContent.Length > 0)
+                    {
+                        sbTweetContent.Remove(sbTweetContent.Length - 1, 1);
+                        Console.Write("\b \b");
+                    }
+                }
+                else
+                {
+                    sbTweetContent.Append(key.KeyChar);
+                    Console.Write(key.KeyChar);
+                }
+        }
         
-        tweets.Add(tweet);
+        string tweetContent = sbTweetContent.ToString();
+
+        Console.WriteLine("1. Tweeta 2. Ångra");
+        var choice = Console.ReadKey(intercept: true).Key;
         
-        User loggedInUser = UserHandler.users.FirstOrDefault(u => u.Username == UserHandler.loggedInUser.Username);
-        loggedInUser.OwnTweets.Add(tweet);
-         
+        switch (choice)
+        {
+            case ConsoleKey.D1:
+                var tweet = new Tweet(tweetContent, UserHandler.loggedInUser.Username, DateTime.Now);
+            
+                tweets.Add(tweet);
+            
+                User loggedInUser = UserHandler.users.FirstOrDefault(u => u.Username == UserHandler.loggedInUser.Username);
+                loggedInUser.OwnTweets.Add(tweet);
+                break; 
+
+            case ConsoleKey.D2:
+            return; 
+        }
     }
     public static void SortTweets()
     {
@@ -316,9 +400,9 @@ static class TweetHandler
             }
         }
     }
-    public static void ShowTweets(List<Tweet> tweet, int choice)
+    public static void ShowTweets(List<Tweet> tweet, ConsoleKey choice)
     {
-        if (choice == 4)
+        if (choice == ConsoleKey.D4)
         {
             foreach(Tweet t in tweet)
             {
@@ -330,8 +414,6 @@ static class TweetHandler
                 DynamicButtonhandler.LikeButton(tweet, i);
                 Console.WriteLine($" ({t.Likes.Count})"); //metod för gilla? röd om du gillar/vit om inte
             }
-
-
         }
         else 
         {
@@ -352,7 +434,7 @@ static class TweetHandler
         User loggedInUser = UserHandler.users.FirstOrDefault(u => u.Username == UserHandler.loggedInUser.Username);
         
         var temp = loggedInUser.OwnTweets[index];
-        var tempTweet = tweets.FirstOrDefault(t => t.Content == temp.Content && t.Author == temp.Author);
+        var tempTweet = tweets.FirstOrDefault(t => t.Content == temp.Content && t.Author == temp.Author && t.Date == temp.Date);
         var indexOfTweet = tweets.IndexOf(tempTweet);
         
         if (index > loggedInUser.OwnTweets.Count)
@@ -364,11 +446,12 @@ static class TweetHandler
             loggedInUser.OwnTweets.RemoveAt(index);
             tweets.RemoveAt(indexOfTweet);
             Console.WriteLine($"Tweeten togs bort");
-            
         }
+        
         Console.WriteLine("1. Ångra 2. Fortsätt");
-        int choice = int.Parse(Console.ReadLine()); 
-        if (choice == 1)
+        var choice = Console.ReadKey(true).Key; 
+        
+        if ((int)choice == 1)
         {
             loggedInUser.OwnTweets.Add(temp);
             tweets.Add(temp);
