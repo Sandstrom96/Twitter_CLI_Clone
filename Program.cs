@@ -1,14 +1,5 @@
-using System.ComponentModel.Design;
-using System.Dynamic;
-using System.Reflection.Metadata;
-using System.Runtime.Intrinsics.Arm;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
-using Microsoft.VisualBasic;
-using System.Text;
-using System.Security.Cryptography;
-using System.Text.Json.Serialization;
- 
+
 class Program
 {
     public static void Main(string[] args)
@@ -48,7 +39,7 @@ class Program
             TweetHandler.SortTweets();
             Console.WriteLine("----Shitter----");
             
-            TweetHandler.ShowTweets(TweetHandler.tweets, 0); //Visar alla tweets i flödet
+            TweetHandler.ShowTweets(TweetHandler.tweets, false); //Visar alla tweets i flödet
             
             Console.WriteLine("1. Tweet 2. Profil 3. Sök 4. Välj tweet 5. Avsluta");
             
@@ -74,7 +65,7 @@ class Program
                     break;
 
                 case ConsoleKey.D4: //TODO: lägga till meny för gilla, kommentera, gå tillbaka
-                    TweetHandler.ChooseTweet();
+                    TweetHandler.ChooseTweet(choice);
                     break;
 
                 case ConsoleKey.D5: 

@@ -1,13 +1,4 @@
-using System.ComponentModel.Design;
-using System.Dynamic;
-using System.Reflection.Metadata;
-using System.Runtime.Intrinsics.Arm;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.Json;
-using Microsoft.VisualBasic;
 using System.Text;
-using System.Security.Cryptography;
-using System.Text.Json.Serialization;
 
 public class Tweet 
 {
@@ -98,35 +89,30 @@ static class TweetHandler
             }
         }
     }
-    public static void ShowTweets(List<Tweet> tweet, ConsoleKey choice)
+    public static void ShowTweets(List<Tweet> tweet, bool index)
     {
-        if (choice == ConsoleKey.D4)
+        foreach(Tweet t in tweet)
         {
-            foreach(Tweet t in tweet)
+            var i = tweet.IndexOf(t);
+            string likeHeart = DynamicButtonhandler.LikeButton(tweet, i);
+            if (index)
             {
-                var i = tweet.IndexOf(t);
-                string likeHeart = DynamicButtonhandler.LikeButton(tweet, i);
                 Console.Write($"{i + 1}. ");
-                Console.WriteLine(t.Author);
-                Console.WriteLine(t.Content);
-                Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
-                Console.WriteLine($"{likeHeart} ({t.Likes.Count})"); //metod för gilla? röd om du gillar/vit om inte
             }
-        }
-        else 
-        {
-            foreach(Tweet t in tweet)
-            {
-                var i = tweet.IndexOf(t);
-                string likeHeart = DynamicButtonhandler.LikeButton(tweet, i);
-                Console.WriteLine(t.Author);
-                Console.WriteLine(t.Content);
-                Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
-                Console.WriteLine($"{likeHeart} ({t.Likes.Count})"); //metod för gilla? röd om du gillar/vit om inte
-            }
+            Console.WriteLine(t.Author);
+            Console.WriteLine(t.Content);
+            Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
+            Console.WriteLine($"{likeHeart} ({t.Likes.Count})"); //metod för gilla? röd om du gillar/vit om inte
         }
     }
-
+    public static void ShowTweets(List<Tweet> tweet, int index)
+    {
+        string likeHeart = DynamicButtonhandler.LikeButton(tweet, index);
+        Console.WriteLine(tweet[index].Author);
+        Console.WriteLine(tweet[index].Content);
+        Console.WriteLine(tweet[index].Date.ToString("MM-dd HH:mm"));
+        Console.WriteLine($"{likeHeart} ({tweet[index].Likes.Count})");
+    }
     public static void RemoveTweet()
     {
         User loggedInUser = UserHandler.users.FirstOrDefault(u => u.Username == UserHandler.loggedInUser.Username);
@@ -141,7 +127,7 @@ static class TweetHandler
                 Console.ReadKey(true);
                 return; 
             }
-            TweetHandler.ShowTweets(loggedInUser.OwnTweets, ConsoleKey.D4);
+            ShowTweets(loggedInUser.OwnTweets, true);
             Console.WriteLine("Tryck esc för att gå tillbaka");
             Console.WriteLine($"Välj vilken du vill radera (1-{loggedInUser.OwnTweets.Count})");
             
@@ -228,13 +214,13 @@ static class TweetHandler
 
     public static void LikeUnlikeTweet(List<Tweet> tweet, int i)
     {
-        if (!tweet[i - 1].Likes.Any(u => u == UserHandler.loggedInUser.Username))
+        if (!tweet[i].Likes.Any(u => u == UserHandler.loggedInUser.Username))
         {
-            tweet[i - 1].Likes.Add(UserHandler.loggedInUser.Username);
+            tweet[i].Likes.Add(UserHandler.loggedInUser.Username);
         }
         else
         {
-            tweet[i - 1].Likes.Remove(UserHandler.loggedInUser.Username);
+            tweet[i].Likes.Remove(UserHandler.loggedInUser.Username);
         }
     }
 
@@ -253,10 +239,37 @@ static class TweetHandler
             }
         }
     }
-    public static void ChooseTweet()
+    public static void ChooseTweet(ConsoleKey choice)
     {
-        TweetHandler.ShowTweets(TweetHandler.tweets, ConsoleKey.D4); 
-        int index = int.Parse(Console.ReadLine());
-        TweetHandler.LikeUnlikeTweet(TweetHandler.tweets, index);
+        Console.Clear();
+        
+        ShowTweets(tweets, true);
+        
+        Console.WriteLine($"Välj tweet 1-{tweets.Count}");
+        int index = int.Parse(Console.ReadLine()) - 1;
+        
+        Console.Clear();
+        while(true)
+        {
+            ShowTweets(tweets, index);
+            
+            Console.WriteLine($"1. Gilla 2. Kommentera 3. Retweet 4. Hem");
+            var choice1 = Console.ReadKey(true).Key;
+            switch (choice1)
+            {
+                case ConsoleKey.D1:
+                    TweetHandler.LikeUnlikeTweet(tweets, index);
+                    break;
+                
+                case ConsoleKey.D2:
+                    break;
+                
+                case ConsoleKey.D3:
+                    break;
+                    
+                case ConsoleKey.D4:
+                    return;
+            }
+        }
     }
 }

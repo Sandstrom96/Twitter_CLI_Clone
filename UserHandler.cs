@@ -1,13 +1,4 @@
-using System.ComponentModel.Design;
-using System.Dynamic;
-using System.Reflection.Metadata;
-using System.Runtime.Intrinsics.Arm;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.Json;
-using Microsoft.VisualBasic;
 using System.Text;
-using System.Security.Cryptography;
-using System.Text.Json.Serialization;
 
 public class User
 {
@@ -96,7 +87,6 @@ static class UserHandler
         RemoveTweet,
     }
     //Visar profilen enligt indatan tex. den inloggade eller sökta profilen
-    //TODO: skapa metod för sidhuvud. 
     public static void ShowUserProfile(string username)
     {           
         User chosenUser = users.FirstOrDefault(u => u.Username == username);
@@ -138,7 +128,7 @@ static class UserHandler
             }
 
             // Visar sin egna profil
-            if(chosenUser.Username == UserHandler.loggedInUser.Username)
+            if(chosenUser.Username == loggedInUser.Username)
             {
                 var choice = Console.ReadKey(true).Key;
                 switch (choice)

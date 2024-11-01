@@ -10,7 +10,7 @@
 - [x] Följa
 - [x] sluta följa.
 - [x] Gilla
-- [ ] Fixa menyerna så man kan gå tillbaka
+- [x] Fixa menyerna så man kan gå tillbaka
 - [ ] Retweet. 
 - [ ] Söka Tweet.
 - [ ] kommentera tweets
