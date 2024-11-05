@@ -80,43 +80,59 @@ static class UserHandler
         return false;
     }
     
-    enum ViewMode
+    public enum ViewMode
     {
         Normal,
         LikedTweets,
         RemoveTweet,
+        Followers,
+        Following,
     }
     //Visar profilen enligt indatan tex. den inloggade eller sökta profilen
     public static void ShowUserProfile(string username)
     {           
         User chosenUser = users.FirstOrDefault(u => u.Username == username);
-        
-        bool likedTweets = false;
-        bool removeTweet = false;
-        bool followers;
-        bool following;
 
         var currentMode = ViewMode.Normal;
         
         while (true)
         {
+            string followUnfollow = DynamicButtonhandler.FollowButton(username);
+            
             Console.Clear();
             Console.WriteLine(chosenUser.Name);
             Console.WriteLine($"@{chosenUser.Username}");
             Console.WriteLine($"Följare {chosenUser.Followers.Count}\tFöljer {chosenUser.Following.Count}");
             Console.WriteLine("----------------------");
+            
             switch(currentMode)
             {
                 case ViewMode.Normal:
-                    TweetHandler.ShowTweets(chosenUser.OwnTweets, 0);
-                    Console.WriteLine("1. Följer  2. Följare  3. Meddelanden 4. Gillade 5. Radera tweet 6. Gå tillbaka");
+                    TweetHandler.ShowTweets(chosenUser.OwnTweets, false);
+                    
+                    if (chosenUser.Username == loggedInUser.Username)
+                    {
+                        Console.WriteLine("1. Följer  2. Följare  3. Meddelanden 4. Gillade 5. Radera tweet 6. Hem");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"1. {followUnfollow} 2. Skicka meddelande 3. Följer  4. Följare 5. Gillade 6. Hem");
+                    }
                     break;
                 
                 case ViewMode.LikedTweets:
                     Console.WriteLine("Gillade");
                     Console.WriteLine("----------------------");
                     TweetHandler.ShowLikedTweets(chosenUser.Username);
-                    Console.WriteLine("1. Följer  2. Följare  3. Meddelanden 4. Profil 5. Radera tweet 6. Gå tillbaka");
+                    if (chosenUser.Username == loggedInUser.Username)
+                    {
+                        Console.WriteLine("1. Följer  2. Följare  3. Meddelanden 4. Profil 5. Radera tweet 6. Hem");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"1. {followUnfollow} 2. Skicka meddelande 3. Följer  4. Följare 5. Profil 6. Hem");
+                    }
+                    
                     break;
 
                 case ViewMode.RemoveTweet:
@@ -125,25 +141,53 @@ static class UserHandler
                     currentMode = ViewMode.Normal;
                     continue;
 
+                case ViewMode.Followers:
+                    Console.WriteLine("Följare");
+                    Console.WriteLine("----------------------");
+                    ShowFollow(username, currentMode);
+                    if (chosenUser.Username == loggedInUser.Username)
+                    {
+                        Console.WriteLine("1. Följer  2. Profil  3. Meddelanden 4. Gillade 5. Radera tweet 6. Hem");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"1. {followUnfollow} 2. Skicka meddelande 3. Följer  4. Profil 5. Gillade 6. Hem");
+                    }
+                    break;
+                
+                case ViewMode.Following:
+                    Console.WriteLine("Följer");
+                    Console.WriteLine("----------------------");
+                    ShowFollow(username, currentMode);
+                    if (chosenUser.Username == loggedInUser.Username)
+                    {
+                        Console.WriteLine("1. Profil  2. Följare  3. Meddelanden 4. Gillade 5. Radera tweet 6. Hem");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"1. {followUnfollow} 2. Skicka meddelande 3. Profil  4. Följare 5. Gillade 6. Hem");
+                    }
+                    break;
             }
 
-            // Visar sin egna profil
             if(chosenUser.Username == loggedInUser.Username)
             {
                 var choice = Console.ReadKey(true).Key;
                 switch (choice)
                 {
-                    case ConsoleKey.D1: 
-                    break; 
+                    case ConsoleKey.D1:
+                        currentMode = currentMode == ViewMode.Following ? ViewMode.Normal : ViewMode.Following;
+                        break;
 
-                    case ConsoleKey.D2: 
-                    break; 
+                    case ConsoleKey.D2:
+                        currentMode = currentMode == ViewMode.Followers ? ViewMode.Normal : ViewMode.Followers;
+                        break;
                     
-                    case ConsoleKey.D3: 
-                    break;
+                    case ConsoleKey.D3:
+                        break;
 
                     case ConsoleKey.D4:
-                        currentMode =  currentMode == ViewMode.LikedTweets ? ViewMode.Normal : ViewMode.LikedTweets;
+                        currentMode = currentMode == ViewMode.LikedTweets ? ViewMode.Normal : ViewMode.LikedTweets;
                         break;
                     
                     case ConsoleKey.D5:
@@ -152,41 +196,35 @@ static class UserHandler
 
                     case ConsoleKey.D6:
                     return;
-
-                    default:
-                    break;
                 }
             }
             // Visar den sökta profilen
             else
             {
-                string followUnfollow = DynamicButtonhandler.FollowButton(username);
-                Console.WriteLine($"1. {followUnfollow} 2. Skicka meddelande 3. Följer  4. Följare 5. Gillade 6. Gå tillbaka"); // metod för dynamisk följ/avfölj
                 var choice = Console.ReadKey(true).Key;
                 switch (choice)
                 {
                     case ConsoleKey.D1:
                         FollowUnfollow(username);
-                    break; 
+                        break;
 
-                    case ConsoleKey.D2: 
-                    break; 
-                    
-                    case ConsoleKey.D3: 
-                    break;
-                    
+                    case ConsoleKey.D2:
+                        break;
+
+                    case ConsoleKey.D3:
+                        currentMode = currentMode == ViewMode.Following ? ViewMode.Normal : ViewMode.Following;
+                        break;
+
                     case ConsoleKey.D4:
-                    break;
+                        currentMode = currentMode == ViewMode.Followers ? ViewMode.Normal : ViewMode.Followers;
+                        break;
 
                     case ConsoleKey.D5:
-                    TweetHandler.ShowLikedTweets(username);
-                    break;
+                        currentMode = currentMode == ViewMode.LikedTweets ? ViewMode.Normal : ViewMode.LikedTweets;
+                        break;
 
                     case ConsoleKey.D6:
-                    return;
-
-                    default:
-                    break;
+                        return;
                 }
         }
         }
@@ -248,5 +286,29 @@ static class UserHandler
             loggedInUser.Following.Remove(chosenUser);
         }
         
+    }
+
+    // Tar in användare och nuvarande visar läge i profilen
+    // och visar antingen användarens följare eller vilka de följer
+    public static void ShowFollow(string username, ViewMode currentMode)
+    {
+        User userFound = users.FirstOrDefault(u => u.Username == username);
+
+        switch (currentMode)
+        {
+            case ViewMode.Followers:
+                for (int i = 0; i < userFound.Followers.Count; i++)
+                {
+                    Console.WriteLine($"{userFound.Followers[i].Name} | @{userFound.Followers[i].Username}");
+                }
+                break;
+        
+            case ViewMode.Following:
+                for (int i = 0; i < userFound.Following.Count; i++)
+                {
+                    Console.WriteLine($"{userFound.Following[i].Name} | @{userFound.Following[i].Username}");
+                }
+                break;
+        }
     }
 }

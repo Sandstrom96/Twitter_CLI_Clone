@@ -89,13 +89,15 @@ static class TweetHandler
             }
         }
     }
-    public static void ShowTweets(List<Tweet> tweet, bool index)
+    // Visar alla tweets från listan man tar in och kan visa index av alla tweets
+    // om showIndex är sant
+    public static void ShowTweets(List<Tweet> tweet, bool showIndex)
     {
         foreach(Tweet t in tweet)
         {
             var i = tweet.IndexOf(t);
             string likeHeart = DynamicButtonhandler.LikeButton(tweet, i);
-            if (index)
+            if (showIndex)
             {
                 Console.Write($"{i + 1}. ");
             }
@@ -105,6 +107,8 @@ static class TweetHandler
             Console.WriteLine($"{likeHeart} ({t.Likes.Count})"); //metod för gilla? röd om du gillar/vit om inte
         }
     }
+    
+    // Visar vald tweet (index) från listan man tar in
     public static void ShowTweets(List<Tweet> tweet, int index)
     {
         string likeHeart = DynamicButtonhandler.LikeButton(tweet, index);
@@ -166,21 +170,24 @@ static class TweetHandler
                 // Kontrollera om siffran är inom listans längd
                 if (choiceValue >= 0 && choiceValue <= loggedInUser.OwnTweets.Count)
                 {
-                    // Giltig inmatning
                     break;
                 }
                 else
                 {
                     Console.Clear();
-                    Console.WriteLine("\nFel inmatning, försök igen!");
-                    sbChoice.Clear();  // Rensa ogiltig inmatning
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Fel inmatning, försök igen!");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    sbChoice.Clear();
                 }
             }
             else
             {
                 Console.Clear();
-                Console.WriteLine("\nFel inmatning, försök igen! Endast siffror är tillåtna.");
-                sbChoice.Clear();  // Rensa ogiltig inmatning
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Endast siffror är tillåtna, försök igen!");
+                Console.ForegroundColor = ConsoleColor.White;
+                sbChoice.Clear();
             }
         }
         
