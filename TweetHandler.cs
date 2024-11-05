@@ -12,13 +12,11 @@ public class Tweet
         Content = content; 
         Author = author; 
         Date = date; 
-    }
-    
+    }  
 }
 static class TweetHandler
 {
     static public List<Tweet> tweets = new List<Tweet> ();
-
     public static void MakeTweet()
     {
         Console.Clear();
@@ -219,15 +217,20 @@ static class TweetHandler
          
     }
 
-    public static void LikeUnlikeTweet(List<Tweet> tweet, int i)
+    public static void LikeUnlikeTweet(int i)
     {
-        if (!tweet[i].Likes.Any(u => u == UserHandler.loggedInUser.Username))
+        var tweet = tweets[i];
+        var author = UserHandler.users.FirstOrDefault(u => u.Username == tweet.Author);
+        var userTweet = author.OwnTweets.FirstOrDefault(t => t.Content == tweet.Content && t.Date == tweet.Date);
+        if (!tweets[i].Likes.Any(u => u == UserHandler.loggedInUser.Username))
         {
-            tweet[i].Likes.Add(UserHandler.loggedInUser.Username);
+            tweets[i].Likes.Add(UserHandler.loggedInUser.Username);
+            userTweet.Likes.Add(UserHandler.loggedInUser.Username);
         }
         else
         {
-            tweet[i].Likes.Remove(UserHandler.loggedInUser.Username);
+            tweets[i].Likes.Remove(UserHandler.loggedInUser.Username);
+            userTweet.Likes.Remove(UserHandler.loggedInUser.Username);
         }
     }
 
@@ -265,7 +268,7 @@ static class TweetHandler
             switch (choice1)
             {
                 case ConsoleKey.D1:
-                    TweetHandler.LikeUnlikeTweet(tweets, index);
+                    LikeUnlikeTweet(index);
                     break;
                 
                 case ConsoleKey.D2:

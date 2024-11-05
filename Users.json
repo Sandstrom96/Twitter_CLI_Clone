@@ -7,16 +7,18 @@
     "Following": [],
     "OwnTweets": [
       {
-        "Content": "Heja IFK",
+        "Content": "Hej",
         "Author": "Sandstrom",
-        "Date": "2024-10-29T10:42:43.8503439+01:00",
+        "Date": "2024-11-05T13:45:53.0971562+01:00",
         "Likes": []
       },
       {
-        "Content": "Grattis IFK",
+        "Content": "Hall\u00E5",
         "Author": "Sandstrom",
-        "Date": "2024-10-29T10:42:51.0791165+01:00",
-        "Likes": []
+        "Date": "2024-11-05T13:45:59.6230462+01:00",
+        "Likes": [
+          "Oskar"
+        ]
       }
     ]
   },
@@ -28,21 +30,9 @@
     "Following": [],
     "OwnTweets": [
       {
-        "Content": "Hejhopp",
+        "Content": "M\u00C5L!",
         "Author": "Oskar",
-        "Date": "2024-10-29T10:42:09.1782224+01:00",
-        "Likes": []
-      },
-      {
-        "Content": "Grattis Gais ",
-        "Author": "Oskar",
-        "Date": "2024-10-29T10:42:16.8439007+01:00",
-        "Likes": []
-      },
-      {
-        "Content": "\u00C5ke",
-        "Author": "Oskar",
-        "Date": "2024-10-30T15:29:56.6254366+01:00",
+        "Date": "2024-11-05T14:10:45.1015817+01:00",
         "Likes": []
       }
     ]
