@@ -7,7 +7,7 @@ public class User
     public string Name {get; set;}
     public List<User> Followers {get; set;} = new List<User>();
     public List<User> Following {get; set;} = new List<User>();
-    public List<Tweet> OwnTweets {get; set;} = new List<Tweet>();
+    public List<Guid> OwnTweets {get; set;} = new List<Guid>();
     public User(string username, string password, string name)
     {
         Username = username;
@@ -99,6 +99,8 @@ static class UserHandler
         {
             string followUnfollow = DynamicButtonhandler.FollowButton(username);
             
+            var userTweets = TweetHandler.tweets.Where(t => chosenUser.OwnTweets.Contains(t.Id)).ToList();
+            
             Console.Clear();
             Console.WriteLine(chosenUser.Name);
             Console.WriteLine($"@{chosenUser.Username}");
@@ -108,7 +110,7 @@ static class UserHandler
             switch(currentMode)
             {
                 case ViewMode.Normal:
-                    TweetHandler.ShowTweets(chosenUser.OwnTweets, false);
+                    TweetHandler.ShowTweets(userTweets, false);
                     
                     if (chosenUser.Username == loggedInUser.Username)
                     {

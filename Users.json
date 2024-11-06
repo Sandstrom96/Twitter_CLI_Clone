@@ -1,40 +1,24 @@
 [
   {
-    "Username": "Sandstrom",
-    "Password": "123",
-    "Name": "Andreas Sandstr\u00F6m",
-    "Followers": [],
-    "Following": [],
-    "OwnTweets": [
-      {
-        "Content": "Hej",
-        "Author": "Sandstrom",
-        "Date": "2024-11-05T13:45:53.0971562+01:00",
-        "Likes": []
-      },
-      {
-        "Content": "Hall\u00E5",
-        "Author": "Sandstrom",
-        "Date": "2024-11-05T13:45:59.6230462+01:00",
-        "Likes": [
-          "Oskar"
-        ]
-      }
-    ]
-  },
-  {
     "Username": "Oskar",
     "Password": "123",
     "Name": "Oskar \u00C5kerman",
     "Followers": [],
     "Following": [],
     "OwnTweets": [
-      {
-        "Content": "M\u00C5L!",
-        "Author": "Oskar",
-        "Date": "2024-11-05T14:10:45.1015817+01:00",
-        "Likes": []
-      }
+      "42d4a092-aa64-4f4f-a0ae-c193b19c78c3",
+      "9adb2c21-5459-433b-9712-dad01eef2fff"
+    ]
+  },
+  {
+    "Username": "Sandstrom",
+    "Password": "123",
+    "Name": "Andreas Sandstr\u00F6m",
+    "Followers": [],
+    "Following": [],
+    "OwnTweets": [
+      "06f4854c-0217-4e56-bc5e-71d5171b4713",
+      "859405d0-bbfd-4270-8f0e-018d48c2adcb"
     ]
   },
   {

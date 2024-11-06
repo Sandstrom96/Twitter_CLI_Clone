@@ -2,16 +2,20 @@ using System.Text;
 
 public class Tweet 
 {
+    public Guid Id {get; set;}
     public string Content {get; set;}
     public string Author {get; set;}
     public DateTime Date {get; set;}
     public List<string> Likes {get; set;} = new List<string>();
+    public List<string> Retweet {get; set;} = new List<string>();
+    public bool IsRetweet {get; set;} = false;
 
     public Tweet (string content, string author, DateTime date)
     {
-        Content = content; 
-        Author = author; 
-        Date = date; 
+        Id = Guid.NewGuid();
+        Content = content;
+        Author = author;
+        Date = date;
     }  
 }
 static class TweetHandler
@@ -64,8 +68,7 @@ static class TweetHandler
             
                 tweets.Add(tweet);
             
-                User loggedInUser = UserHandler.users.FirstOrDefault(u => u.Username == UserHandler.loggedInUser.Username);
-                loggedInUser.OwnTweets.Add(tweet);
+                UserHandler.loggedInUser.OwnTweets.Add(tweet.Id);
                 break; 
 
             case ConsoleKey.D2:
@@ -94,15 +97,29 @@ static class TweetHandler
         foreach(Tweet t in tweet)
         {
             var i = tweet.IndexOf(t);
+            
             string likeHeart = DynamicButtonhandler.LikeButton(tweet, i);
+            
             if (showIndex)
             {
                 Console.Write($"{i + 1}. ");
             }
-            Console.WriteLine(t.Author);
-            Console.WriteLine(t.Content);
-            Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
-            Console.WriteLine($"{likeHeart} ({t.Likes.Count})"); //metod för gilla? röd om du gillar/vit om inte
+
+            if (t.IsRetweet)
+            {
+                Console.WriteLine("Retweet");
+                Console.WriteLine($"{t.Author}");
+                Console.WriteLine($"{t.Content}");
+                Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
+                Console.WriteLine($"{likeHeart} ({t.Likes.Count})");
+            }
+            else
+            {
+                Console.WriteLine(t.Author);
+                Console.WriteLine(t.Content);
+                Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
+                Console.WriteLine($"{likeHeart} ({t.Likes.Count})"); //metod för gilla? röd om du gillar/vit om inte
+            }
         }
     }
     
@@ -117,21 +134,21 @@ static class TweetHandler
     }
     public static void RemoveTweet()
     {
-        User loggedInUser = UserHandler.users.FirstOrDefault(u => u.Username == UserHandler.loggedInUser.Username);
-        
         StringBuilder sbChoice = new StringBuilder();
+
+        var tweet = tweets.Where(t => UserHandler.loggedInUser.OwnTweets.Contains(t.Id)).ToList();
         
         while (true)
         {   
-            if(loggedInUser.OwnTweets.Count == 0)
+            if(UserHandler.loggedInUser.OwnTweets.Count == 0)
             {
                 Console.WriteLine("Du har inga tweets att radera. Tryck en tangent för att fortsätta.");
                 Console.ReadKey(true);
                 return; 
             }
-            ShowTweets(loggedInUser.OwnTweets, true);
+            ShowTweets(tweet, true);
             Console.WriteLine("Tryck esc för att gå tillbaka");
-            Console.WriteLine($"Välj vilken du vill radera (1-{loggedInUser.OwnTweets.Count})");
+            Console.WriteLine($"Välj vilken du vill radera (1-{UserHandler.loggedInUser.OwnTweets.Count})");
             
             while (true)
             {   
@@ -166,7 +183,7 @@ static class TweetHandler
                 int choiceValue = int.Parse(sbChoice.ToString());
 
                 // Kontrollera om siffran är inom listans längd
-                if (choiceValue >= 0 && choiceValue <= loggedInUser.OwnTweets.Count)
+                if (choiceValue >= 0 && choiceValue <= UserHandler.loggedInUser.OwnTweets.Count)
                 {
                     break;
                 }
@@ -191,8 +208,8 @@ static class TweetHandler
         
         string index = sbChoice.ToString();
 
-        var temp = loggedInUser.OwnTweets[int.Parse(index)-1];
-        var tempTweet = tweets.FirstOrDefault(t => t.Content == temp.Content && t.Author == temp.Author && t.Date == temp.Date);
+        var temp = tweet[int.Parse(index) - 1];
+        var tempTweet = tweets.FirstOrDefault(t => t.Id == temp.Id);
         var indexOfTweet = tweets.IndexOf(tempTweet);
         
         if (index == "")
@@ -201,7 +218,7 @@ static class TweetHandler
         }
         else
         {
-            loggedInUser.OwnTweets.RemoveAt(int.Parse(index)-1);
+            UserHandler.loggedInUser.OwnTweets.Remove(tempTweet.Id);
             tweets.RemoveAt(indexOfTweet);
             Console.WriteLine($"Tweeten togs bort");
         }
@@ -211,26 +228,24 @@ static class TweetHandler
         
         if (choice == ConsoleKey.D1)
         {
-            loggedInUser.OwnTweets.Add(temp);
-            tweets.Add(temp);
+            UserHandler.loggedInUser.OwnTweets.Add(tempTweet.Id);
+            tweets.Add(tempTweet);
         }
          
     }
 
-    public static void LikeUnlikeTweet(int i)
+    public static void LikeUnlikeTweet(Guid id)
     {
-        var tweet = tweets[i];
-        var author = UserHandler.users.FirstOrDefault(u => u.Username == tweet.Author);
-        var userTweet = author.OwnTweets.FirstOrDefault(t => t.Content == tweet.Content && t.Date == tweet.Date);
-        if (!tweets[i].Likes.Any(u => u == UserHandler.loggedInUser.Username))
+        var tweet = tweets.FirstOrDefault(t => t.Id == id);
+        if (!tweet.Likes.Any(u => u == UserHandler.loggedInUser.Username))
         {
-            tweets[i].Likes.Add(UserHandler.loggedInUser.Username);
-            userTweet.Likes.Add(UserHandler.loggedInUser.Username);
+            tweet.Likes.Add(UserHandler.loggedInUser.Username);
+            //userTweet.Likes.Add(UserHandler.loggedInUser.Username);
         }
         else
         {
-            tweets[i].Likes.Remove(UserHandler.loggedInUser.Username);
-            userTweet.Likes.Remove(UserHandler.loggedInUser.Username);
+            tweet.Likes.Remove(UserHandler.loggedInUser.Username);
+            //userTweet.Likes.Remove(UserHandler.loggedInUser.Username);
         }
     }
 
@@ -249,7 +264,7 @@ static class TweetHandler
             }
         }
     }
-    public static void ChooseTweet(ConsoleKey choice)
+    public static void ChooseTweet()
     {
         Console.Clear();
         
@@ -257,6 +272,7 @@ static class TweetHandler
         
         Console.WriteLine($"Välj tweet 1-{tweets.Count}");
         int index = int.Parse(Console.ReadLine()) - 1;
+        var tweetIndex = tweets[index].Id;
         
         Console.Clear();
         while(true)
@@ -268,7 +284,7 @@ static class TweetHandler
             switch (choice1)
             {
                 case ConsoleKey.D1:
-                    LikeUnlikeTweet(index);
+                    LikeUnlikeTweet(tweetIndex);
                     break;
                 
                 case ConsoleKey.D2:

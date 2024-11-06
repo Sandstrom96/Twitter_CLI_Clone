@@ -1,22 +1,38 @@
 [
   {
-    "Content": "M\u00C5L!",
+    "Id": "859405d0-bbfd-4270-8f0e-018d48c2adcb",
+    "Content": "Hejsan",
+    "Author": "Sandstrom",
+    "Date": "2024-11-06T16:57:19.3109534+01:00",
+    "Likes": [],
+    "Retweet": [],
+    "IsRetweet": false
+  },
+  {
+    "Id": "06f4854c-0217-4e56-bc5e-71d5171b4713",
+    "Content": "Tjenare",
+    "Author": "Sandstrom",
+    "Date": "2024-11-06T16:56:50.183763+01:00",
+    "Likes": [],
+    "Retweet": [],
+    "IsRetweet": false
+  },
+  {
+    "Id": "9adb2c21-5459-433b-9712-dad01eef2fff",
+    "Content": "HejHopp",
     "Author": "Oskar",
-    "Date": "2024-11-05T14:10:45.1015817+01:00",
-    "Likes": []
+    "Date": "2024-11-06T16:55:57.2620173+01:00",
+    "Likes": [],
+    "Retweet": [],
+    "IsRetweet": false
   },
   {
-    "Content": "Hall\u00E5",
-    "Author": "Sandstrom",
-    "Date": "2024-11-05T13:45:59.6230462+01:00",
-    "Likes": [
-      "Oskar"
-    ]
-  },
-  {
+    "Id": "42d4a092-aa64-4f4f-a0ae-c193b19c78c3",
     "Content": "Hej",
-    "Author": "Sandstrom",
-    "Date": "2024-11-05T13:45:53.0971562+01:00",
-    "Likes": []
+    "Author": "Oskar",
+    "Date": "2024-11-06T16:55:53.4601049+01:00",
+    "Likes": [],
+    "Retweet": [],
+    "IsRetweet": false
   }
 ]

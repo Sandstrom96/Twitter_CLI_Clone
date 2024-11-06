@@ -65,7 +65,7 @@ class Program
                     break;
 
                 case ConsoleKey.D4: //TODO: lägga till meny för gilla, kommentera, gå tillbaka
-                    TweetHandler.ChooseTweet(choice);
+                    TweetHandler.ChooseTweet();
                     break;
 
                 case ConsoleKey.D5: 
