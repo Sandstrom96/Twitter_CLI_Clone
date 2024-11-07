@@ -11,7 +11,8 @@
 - [x] sluta följa.
 - [x] Gilla
 - [x] Fixa menyerna så man kan gå tillbaka
-- [ ] Retweet. 
+- [x] Retweet.
+- [ ] Endast en av samma användarnamn 
 - [ ] Söka Tweet.
 - [ ] kommentera tweets
 - [ ] Skicka privata meddelanden. 
