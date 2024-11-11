@@ -14,7 +14,7 @@
 - [x] Retweet.
 - [x] Endast en av samma användarnamn 
 - [x] kommentera tweets
-- [ ] visa kommentarer
+- [X] visa kommentarer
 - [ ] Skicka privata meddelanden. 
 - [ ] läst/olästa meddelanden
 - [ ] Söka Tweet. 
