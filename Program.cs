@@ -95,9 +95,9 @@ public static class DynamicButtonhandler
         }
         
     }
-        public static string LikeButton(List<Tweet> tweet, int i)
+        public static string LikeButton(Tweet tweet)
     {
-        if (!tweet[i].Likes.Any(u => u == UserHandler.loggedInUser.Username))
+        if (!tweet.Likes.Any(u => u == UserHandler.loggedInUser.Username))
         {
             return "🤍";
         }
