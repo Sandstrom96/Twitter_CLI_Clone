@@ -12,11 +12,11 @@
 - [x] Gilla
 - [x] Fixa menyerna så man kan gå tillbaka
 - [x] Retweet.
-- [ ] Endast en av samma användarnamn 
-- [ ] Söka Tweet.
+- [x] Endast en av samma användarnamn 
 - [ ] kommentera tweets
 - [ ] Skicka privata meddelanden. 
-- [ ] läst/olästa meddelanden 
+- [ ] läst/olästa meddelanden
+- [ ] Söka Tweet. 
 - [ ] Snygg interface. 
 - [ ] Lägga in max antal tecken i en tweet
 - Dynamiska "Knappar" // Lös när funktionen "behöver" det

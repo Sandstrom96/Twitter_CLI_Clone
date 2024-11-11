@@ -25,9 +25,26 @@ static class UserHandler
     
     static public void Register()
     {
-        Console.Write("Ange användarnamn: ");
-        userName = Console.ReadLine();
+        Console.WriteLine("Registrering");
+        Console.WriteLine("---------------------");
+        bool validUser = false;
+        while (!validUser)
+        {
+            Console.Write("Ange användarnamn: ");
+            userName = Console.ReadLine();
+            
+            if(users.Any(x => x.Username == userName))
+            {
+                Console.WriteLine("Användarnamn upptaget");
+            }
+            else
+            {
+                validUser = true;
+            }
+        }    
+        
         Console.Write("Ange lössenord: ");
+        
         password = Console.ReadLine();
         Console.Write("Ange förnamn och efternamn: ");
         string name = Console.ReadLine();
