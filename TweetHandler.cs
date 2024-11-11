@@ -451,7 +451,7 @@ static class TweetHandler
         {
             Console.WriteLine("--------------------"); 
             Console.WriteLine($"{c.Content}"); 
-            Console.WriteLine($"{c.Author} {c.Timestamp:MM-DD HH-mm}"); 
+            Console.WriteLine($"{c.Author} {c.Timestamp:MM-dd HH:mm}");
         }
     }
 }

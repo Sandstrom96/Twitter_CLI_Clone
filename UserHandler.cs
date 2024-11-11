@@ -1,5 +1,18 @@
 using System.Text;
+public class Message 
+{
+    public string Text { get; set; }
+    public string Sender { get; set; }
+    public DateTime Date { get; set; }
 
+    public Message(string text, string sender)
+    {
+        Text = text; 
+        Sender = sender;
+        Date = DateTime.Now;
+        
+    }
+}
 public class User
 {
     public string Username {get; set;}
@@ -8,6 +21,7 @@ public class User
     public List<User> Followers {get; set;} = new List<User>();
     public List<User> Following {get; set;} = new List<User>();
     public List<Guid> OwnTweets {get; set;} = new List<Guid>();
+    public List<Message> Messages {get; set;} = new List<Message>();
     public User(string username, string password, string name)
     {
         Username = username;
@@ -104,6 +118,7 @@ static class UserHandler
         RemoveTweet,
         Followers,
         Following,
+        Messages,
     }
     //Visar profilen enligt indatan tex. den inloggade eller sökta profilen
     public static void ShowUserProfile(string username)
@@ -228,6 +243,7 @@ static class UserHandler
                         break;
 
                     case ConsoleKey.D2:
+                        SendMessage(chosenUser); 
                         break;
 
                     case ConsoleKey.D3:
@@ -328,6 +344,57 @@ static class UserHandler
                     Console.WriteLine($"{userFound.Following[i].Name} | @{userFound.Following[i].Username}");
                 }
                 break;
+        }
+    }
+    public static void SendMessage(User receiver)
+    {
+        Console.Clear();
+        ShowMessages(receiver);
+        Console.WriteLine("Tryck esc för att avbryta");
+        Console.WriteLine("Skriv ditt meddelande:");
+        StringBuilder sbMessage = new();
+        
+        while (true)
+        {   
+            var key = Console.ReadKey(intercept: true);
+            if (key.Key == ConsoleKey.Escape)
+            {
+                Console.WriteLine();
+                return;
+            }
+            else if (key.Key == ConsoleKey.Enter)
+            { 
+                Console.WriteLine();
+                break;
+            }
+            else if (key.Key == ConsoleKey.Backspace)
+            {
+                if(sbMessage.Length > 0)
+                {
+                    sbMessage.Remove(sbMessage.Length - 1, 1);
+                    Console.Write("\b \b");
+                }
+            }
+            else
+            {
+                sbMessage.Append(key.KeyChar);
+                Console.Write(key.KeyChar);
+            }
+        }
+        
+        string messageContent = sbMessage.ToString();
+
+        var message = new Message(messageContent, UserHandler.loggedInUser.Username);
+            
+        receiver.Messages.Add(message);
+    }
+    public static void ShowMessages(User receiver)
+    {
+        foreach(var m in receiver.Messages)
+        {
+            Console.WriteLine($"Från:{m.Sender}");
+            Console.WriteLine(m.Text);
+            Console.WriteLine($"{m.Date:MM-dd HH:mm}"); 
         }
     }
 }
