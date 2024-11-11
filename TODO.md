@@ -13,7 +13,8 @@
 - [x] Fixa menyerna så man kan gå tillbaka
 - [x] Retweet.
 - [x] Endast en av samma användarnamn 
-- [ ] kommentera tweets
+- [x] kommentera tweets
+- [ ] visa kommentarer
 - [ ] Skicka privata meddelanden. 
 - [ ] läst/olästa meddelanden
 - [ ] Söka Tweet. 

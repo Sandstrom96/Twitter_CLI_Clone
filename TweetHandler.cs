@@ -1,5 +1,18 @@
 using System.Text;
+using System.Transactions;
+public class Comment
+{
+    public string Content { get; set; }
+    public string Author { get; set; }
+    public DateTime Timestamp { get; set; }
 
+    public Comment(string content, string author)
+    {
+        Content = content;
+        Author = author;
+        Timestamp = DateTime.Now;
+    }
+}
 public class Tweet 
 {
     public Guid Id {get; set;}
@@ -8,6 +21,7 @@ public class Tweet
     public DateTime Date {get; set;}
     public List<string> Likes {get; set;} = new List<string>();
     public List<Guid> Retweet {get; set;} = new List<Guid>();
+    public List<Comment> Comments {get; set;} = new List<Comment>();
     public bool IsRetweet {get; set;} = false;
     public Guid OriginalTweetId {get; set;}
 
@@ -345,6 +359,7 @@ static class TweetHandler
                     break;
                 
                 case ConsoleKey.D2:
+                    CommentTweet(tweets[index]);
                     break;
                 
                 case ConsoleKey.D3:
@@ -380,5 +395,48 @@ static class TweetHandler
             tweets.Add(retweet);
             UserHandler.loggedInUser.OwnTweets.Add(retweet.Id);
         }
+    }
+
+    public static void CommentTweet(Tweet tweet)
+    {
+        Console.Clear();
+        ShowTweets(tweet);
+        Console.WriteLine("Tryck esc för att avbryta");
+        Console.WriteLine("Skriv din kommentar:");
+        StringBuilder sbComment = new();
+        
+        while (true)
+        {   
+            var key = Console.ReadKey(intercept: true);
+            if (key.Key == ConsoleKey.Escape)
+            {
+                Console.WriteLine();
+                return;
+            }
+            else if (key.Key == ConsoleKey.Enter)
+            { 
+                Console.WriteLine();
+                break;
+            }
+            else if (key.Key == ConsoleKey.Backspace)
+            {
+                if(sbComment.Length > 0)
+                {
+                    sbComment.Remove(sbComment.Length - 1, 1);
+                    Console.Write("\b \b");
+                }
+            }
+            else
+            {
+                sbComment.Append(key.KeyChar);
+                Console.Write(key.KeyChar);
+            }
+        }
+        
+        string commentContent = sbComment.ToString();
+
+        var comment = new Comment(commentContent, UserHandler.loggedInUser.Username);
+            
+        tweet.Comments.Add(comment);
     }
 }
