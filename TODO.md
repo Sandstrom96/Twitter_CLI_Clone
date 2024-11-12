@@ -16,7 +16,7 @@
 - [x] kommentera tweets
 - [X] visa kommentarer
 - [x] Skicka privata meddelanden
-- [ ] Ta bort meddelanden 
+- [x] Ta bort meddelanden 
 - [ ] läst/olästa meddelanden
 - [ ] Söka Tweet
 - [ ] Snygg interface

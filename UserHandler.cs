@@ -232,13 +232,17 @@ static class UserHandler
                 case ViewMode.Messages:
                     Console.Clear();
                     Console.WriteLine("-----Meddelanden-----");
-                    ShowMessages(user);
-                    Console.WriteLine("\n1. Skriv meddelande");
+                    ShowMessages(user, false);
+                    Console.WriteLine("\n1. Skriv meddelande 2. Ta bort meddelande");
                     Console.WriteLine("Tryck esc för att gå tillbaka");
                     switch (Console.ReadKey(true).Key)
                     {
                         case ConsoleKey.D1:
                             SendMessage(user);
+                            continue;
+                        
+                        case ConsoleKey.D2:
+                            RemoveMessage(user); 
                             continue;
                         
                         case ConsoleKey.Escape:
@@ -432,25 +436,118 @@ static class UserHandler
         loggedInUser.Messages.Add(message);
     }
 
-    public static void ShowMessages(User user)
+    public static void ShowMessages(User user, bool remove)
     {
-        List<Message> Messages;
         Console.WriteLine($"@{user.Username}");
         Console.WriteLine("---------------------");
-        if (user == loggedInUser)
-        {
-            Messages = loggedInUser.Messages.Where(m => m.Sender == user.Username || m.Receiver == user.Username).ToList();
-        }
-        else
-        {
-            Messages = user.Messages.Where(m => m.Sender == loggedInUser.Username || m.Receiver == loggedInUser.Username).ToList();
-        }
-        foreach(var m in Messages)
+        
+        var messages = loggedInUser.Messages.Where(m => (m.Sender == user.Username && m.Receiver == loggedInUser.Username) || (m.Receiver == user.Username && m.Sender == loggedInUser.Username)).OrderBy(m => m.Date).ToList();
+        var ownMessages = loggedInUser.Messages.Where(m => m.Receiver == user.Username && m.Sender == loggedInUser.Username).OrderBy(m => m.Date).ToList();
+        
+        foreach(var m in messages)
         {   
+
+            if(remove && m.Sender == loggedInUser.Username)
+            {
+                var i = ownMessages.IndexOf(m);
+                Console.Write($"{i + 1} ");
+            }
             Console.WriteLine($"Från: {m.Sender}");
             Console.WriteLine(m.Text);
             Console.WriteLine($"{m.Date:MM-dd HH:mm}");
             Console.WriteLine("---------------------");
+        }
+    }
+public static void RemoveMessage(User user)
+    {
+        StringBuilder sbChoice = new StringBuilder();
+
+        var messages = loggedInUser.Messages.Where(m => m.Receiver == user.Username && m.Sender == loggedInUser.Username).OrderBy(m => m.Date).ToList();
+        
+        while (true)
+        {   
+            ShowMessages(user,true); 
+            Console.WriteLine("Tryck esc för att gå tillbaka");
+            Console.WriteLine($"Välj vilken du vill radera (1-{messages.Count})");
+            
+            while (true)
+            {   
+                var key = Console.ReadKey(intercept: true);
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    Console.WriteLine();
+                    return;
+                }
+                else if (key.Key == ConsoleKey.Enter)
+                { 
+                    Console.WriteLine();
+                    break;
+                }
+                else if (key.Key == ConsoleKey.Backspace)
+                {
+                    if(sbChoice.Length > 0)
+                    {
+                        sbChoice.Remove(sbChoice.Length - 1, 1);
+                        Console.Write("\b \b");
+                    }
+                }
+                else
+                {
+                    sbChoice.Append(key.KeyChar);
+                    Console.Write(key.KeyChar);
+                }
+            }
+
+            if (sbChoice.ToString().All(char.IsDigit))
+            {
+                int choiceValue = int.Parse(sbChoice.ToString());
+
+                // Kontrollera om siffran är inom listans längd
+                if (choiceValue >= 0 && choiceValue <= loggedInUser.Messages.Count)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Fel inmatning, försök igen!");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    sbChoice.Clear();
+                }
+            }
+            else
+            {
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Endast siffror är tillåtna, försök igen!");
+                Console.ForegroundColor = ConsoleColor.White;
+                sbChoice.Clear();
+            }
+        }
+        
+        string index = sbChoice.ToString();
+
+        var chosenMessage = messages[int.Parse(index) - 1];
+        
+        Console.WriteLine("Du vill ta bort tweeten:");
+        Console.WriteLine(chosenMessage.Text);
+        Console.WriteLine("1. Radera 2. Avbryt");
+        var choice = Console.ReadKey(true).Key;
+
+        if (choice == ConsoleKey.D1)
+        {
+            if (index == "")
+            {
+                return;
+            }
+            else
+            {
+                loggedInUser.Messages.Remove(chosenMessage);
+                user.Messages.Remove(chosenMessage);
+ 
+                Console.WriteLine($"Meddelandet togs bort");
+            }
         }
     }
     
