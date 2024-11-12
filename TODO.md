@@ -1,23 +1,24 @@
 # TODO 
-- [x] Registrera sig som användare.
-- [x] Posta Tweet. 
-- [x] Visa Feed. 
+- [x] Registrera sig som användare
+- [x] Posta Tweet 
+- [x] Visa Feed
 - [x] sortera lista med tweets
-- [x] Visa egen Profil.
-- [x] Ta bort tweet. 
-- [x] Söka profil.
-- [x] Visa någons Profil.
+- [x] Visa egen Profil
+- [x] Ta bort tweet
+- [x] Söka profil
+- [x] Visa någons Profil
 - [x] Följa
-- [x] sluta följa.
+- [x] sluta följa
 - [x] Gilla
 - [x] Fixa menyerna så man kan gå tillbaka
-- [x] Retweet.
+- [x] Retweet
 - [x] Endast en av samma användarnamn 
 - [x] kommentera tweets
 - [X] visa kommentarer
-- [ ] Skicka privata meddelanden. 
+- [x] Skicka privata meddelanden
+- [ ] Ta bort meddelanden 
 - [ ] läst/olästa meddelanden
-- [ ] Söka Tweet. 
-- [ ] Snygg interface. 
+- [ ] Söka Tweet
+- [ ] Snygg interface
 - [ ] Lägga in max antal tecken i en tweet
 - Dynamiska "Knappar" // Lös när funktionen "behöver" det

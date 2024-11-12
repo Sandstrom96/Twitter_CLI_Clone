@@ -1,14 +1,18 @@
+using System.Runtime.CompilerServices;
 using System.Text;
+using Microsoft.VisualBasic;
 public class Message 
 {
     public string Text { get; set; }
     public string Sender { get; set; }
+    public string Receiver { get; set; }
     public DateTime Date { get; set; }
 
-    public Message(string text, string sender)
+    public Message(string text, string receiver, string sender)
     {
         Text = text; 
         Sender = sender;
+        Receiver = receiver;
         Date = DateTime.Now;
         
     }
@@ -41,7 +45,9 @@ static class UserHandler
     {
         Console.WriteLine("Registrering");
         Console.WriteLine("---------------------");
+        
         bool validUser = false;
+        
         while (!validUser)
         {
             Console.Write("Ange användarnamn: ");
@@ -119,11 +125,13 @@ static class UserHandler
         Followers,
         Following,
         Messages,
+        Conversations,
     }
     //Visar profilen enligt indatan tex. den inloggade eller sökta profilen
     public static void ShowUserProfile(string username)
     {           
-        User chosenUser = users.FirstOrDefault(u => u.Username == username);
+        User foundUser = users.FirstOrDefault(u => u.Username == username);
+        User user = foundUser;
 
         var currentMode = ViewMode.Normal;
         
@@ -131,20 +139,20 @@ static class UserHandler
         {
             string followUnfollow = DynamicButtonhandler.FollowButton(username);
             
-            var userTweets = TweetHandler.tweets.Where(t => chosenUser.OwnTweets.Contains(t.Id)).ToList();
+            var userTweets = TweetHandler.tweets.Where(t => foundUser.OwnTweets.Contains(t.Id)).ToList();
             
             Console.Clear();
-            Console.WriteLine(chosenUser.Name);
-            Console.WriteLine($"@{chosenUser.Username}");
-            Console.WriteLine($"Följare {chosenUser.Followers.Count}\tFöljer {chosenUser.Following.Count}");
-            Console.WriteLine("----------------------");
+            Console.WriteLine(foundUser.Name);
+            Console.WriteLine($"@{foundUser.Username}");
+            Console.WriteLine($"Följare {foundUser.Followers.Count}\tFöljer {foundUser.Following.Count}");
+            Console.WriteLine("---------------------");
             
             switch(currentMode)
             {
                 case ViewMode.Normal:
                     TweetHandler.ShowTweets(userTweets, false);
                     
-                    if (chosenUser.Username == loggedInUser.Username)
+                    if (foundUser.Username == loggedInUser.Username)
                     {
                         Console.WriteLine("1. Följer  2. Följare  3. Meddelanden 4. Gillade 5. Radera tweet 6. Hem");
                     }
@@ -156,9 +164,9 @@ static class UserHandler
                 
                 case ViewMode.LikedTweets:
                     Console.WriteLine("Gillade");
-                    Console.WriteLine("----------------------");
-                    TweetHandler.ShowLikedTweets(chosenUser.Username);
-                    if (chosenUser.Username == loggedInUser.Username)
+                    Console.WriteLine("---------------------");
+                    TweetHandler.ShowLikedTweets(foundUser.Username);
+                    if (foundUser.Username == loggedInUser.Username)
                     {
                         Console.WriteLine("1. Följer  2. Följare  3. Meddelanden 4. Profil 5. Radera tweet 6. Hem");
                     }
@@ -177,9 +185,9 @@ static class UserHandler
 
                 case ViewMode.Followers:
                     Console.WriteLine("Följare");
-                    Console.WriteLine("----------------------");
+                    Console.WriteLine("---------------------");
                     ShowFollow(username, currentMode);
-                    if (chosenUser.Username == loggedInUser.Username)
+                    if (foundUser.Username == loggedInUser.Username)
                     {
                         Console.WriteLine("1. Följer  2. Profil  3. Meddelanden 4. Gillade 5. Radera tweet 6. Hem");
                     }
@@ -191,9 +199,9 @@ static class UserHandler
                 
                 case ViewMode.Following:
                     Console.WriteLine("Följer");
-                    Console.WriteLine("----------------------");
+                    Console.WriteLine("---------------------");
                     ShowFollow(username, currentMode);
-                    if (chosenUser.Username == loggedInUser.Username)
+                    if (foundUser.Username == loggedInUser.Username)
                     {
                         Console.WriteLine("1. Profil  2. Följare  3. Meddelanden 4. Gillade 5. Radera tweet 6. Hem");
                     }
@@ -202,12 +210,47 @@ static class UserHandler
                         Console.WriteLine($"1. {followUnfollow} 2. Skicka meddelande 3. Profil  4. Följare 5. Gillade 6. Hem");
                     }
                     break;
+                
+                case ViewMode.Conversations:
+                    var conversations = ShowConversations();
+                    for (int i = 0; i < conversations.Count; i++)
+                    {
+                        Console.WriteLine($"{i + 1}. {conversations[i]}");
+                    }
+                    Console.WriteLine("\nVälj vilken konversation du vill öppna");
+                    Console.WriteLine("Tryck esc för att gå tillbaka");
+                    var index = int.Parse(Interface.Test()) - 1;
+                    if (index == -1)
+                    {
+                        currentMode = ViewMode.Normal;
+                        continue;
+                    }
+                    user = users.FirstOrDefault(u => u.Username == conversations[index]);
+                    currentMode = ViewMode.Messages;
+                    continue;
+                
+                case ViewMode.Messages:
+                    Console.Clear();
+                    Console.WriteLine("-----Meddelanden-----");
+                    ShowMessages(user);
+                    Console.WriteLine("\n1. Skriv meddelande");
+                    Console.WriteLine("Tryck esc för att gå tillbaka");
+                    switch (Console.ReadKey(true).Key)
+                    {
+                        case ConsoleKey.D1:
+                            SendMessage(user);
+                            continue;
+                        
+                        case ConsoleKey.Escape:
+                            currentMode = ViewMode.Normal;
+                            continue;
+                    }
+                    break;
             }
 
-            if(chosenUser.Username == loggedInUser.Username)
+            if(foundUser.Username == loggedInUser.Username)
             {
-                var choice = Console.ReadKey(true).Key;
-                switch (choice)
+                switch (Console.ReadKey(true).Key)
                 {
                     case ConsoleKey.D1:
                         currentMode = currentMode == ViewMode.Following ? ViewMode.Normal : ViewMode.Following;
@@ -218,6 +261,7 @@ static class UserHandler
                         break;
                     
                     case ConsoleKey.D3:
+                        currentMode = ViewMode.Conversations;
                         break;
 
                     case ConsoleKey.D4:
@@ -243,7 +287,7 @@ static class UserHandler
                         break;
 
                     case ConsoleKey.D2:
-                        SendMessage(chosenUser); 
+                        currentMode = ViewMode.Messages;
                         break;
 
                     case ConsoleKey.D3:
@@ -346,11 +390,9 @@ static class UserHandler
                 break;
         }
     }
+
     public static void SendMessage(User receiver)
     {
-        Console.Clear();
-        ShowMessages(receiver);
-        Console.WriteLine("Tryck esc för att avbryta");
         Console.WriteLine("Skriv ditt meddelande:");
         StringBuilder sbMessage = new();
         
@@ -384,17 +426,93 @@ static class UserHandler
         
         string messageContent = sbMessage.ToString();
 
-        var message = new Message(messageContent, UserHandler.loggedInUser.Username);
+        var message = new Message(messageContent, receiver.Username, loggedInUser.Username);
             
         receiver.Messages.Add(message);
+        loggedInUser.Messages.Add(message);
     }
-    public static void ShowMessages(User receiver)
+
+    public static void ShowMessages(User user)
     {
-        foreach(var m in receiver.Messages)
+        List<Message> Messages;
+        Console.WriteLine($"@{user.Username}");
+        Console.WriteLine("---------------------");
+        if (user == loggedInUser)
         {
-            Console.WriteLine($"Från:{m.Sender}");
-            Console.WriteLine(m.Text);
-            Console.WriteLine($"{m.Date:MM-dd HH:mm}"); 
+            Messages = loggedInUser.Messages.Where(m => m.Sender == user.Username || m.Receiver == user.Username).ToList();
         }
+        else
+        {
+            Messages = user.Messages.Where(m => m.Sender == loggedInUser.Username || m.Receiver == loggedInUser.Username).ToList();
+        }
+        foreach(var m in Messages)
+        {   
+            Console.WriteLine($"Från: {m.Sender}");
+            Console.WriteLine(m.Text);
+            Console.WriteLine($"{m.Date:MM-dd HH:mm}");
+            Console.WriteLine("---------------------");
+        }
+    }
+    
+    // Itererar igenom den inloggade användarens meddelanden
+    // och kollar vilka användaren har konversationer med 
+    // och skriver ut användarna
+    public static List<string> ShowConversations()
+    {
+        List<string> users = new List<string>();
+
+        if(loggedInUser.Messages.Count <= 0)
+        {
+            Console.WriteLine("Här var det tomt");
+        }
+        else
+        {
+            foreach (var user in loggedInUser.Messages)
+            {
+                string test = user.Sender == loggedInUser.Username ? user.Receiver : user.Sender;
+                if(!users.Contains(test))
+                    users.Add(test);
+            }
+        }
+        return users;
+    }
+}
+
+class Interface
+{
+    public static string Test()
+    {
+        StringBuilder sbMessage = new();
+        
+        while (true)
+        {   
+            var key = Console.ReadKey(intercept: true);
+            if (key.Key == ConsoleKey.Escape)
+            {
+                Console.WriteLine();
+                return "0";
+            }
+            else if (key.Key == ConsoleKey.Enter)
+            { 
+                Console.WriteLine();
+                break;
+            }
+            else if (key.Key == ConsoleKey.Backspace)
+            {
+                if(sbMessage.Length > 0)
+                {
+                    sbMessage.Remove(sbMessage.Length - 1, 1);
+                    Console.Write("\b \b");
+                }
+            }
+            else
+            {
+                sbMessage.Append(key.KeyChar);
+                Console.Write(key.KeyChar);
+            }
+        }
+        
+        string messageContent = sbMessage.ToString();
+        return messageContent;
     }
 }
