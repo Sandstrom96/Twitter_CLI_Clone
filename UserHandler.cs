@@ -7,6 +7,7 @@ public class Message
     public string Sender { get; set; }
     public string Receiver { get; set; }
     public DateTime Date { get; set; }
+    public bool Isread { get; set; } = false; 
 
     public Message(string text, string receiver, string sender)
     {
@@ -140,6 +141,7 @@ static class UserHandler
             string followUnfollow = DynamicButtonhandler.FollowButton(username);
             
             var userTweets = TweetHandler.tweets.Where(t => foundUser.OwnTweets.Contains(t.Id)).ToList();
+            var test = UnreadMessage();
             
             Console.Clear();
             Console.WriteLine(foundUser.Name);
@@ -154,7 +156,7 @@ static class UserHandler
                     
                     if (foundUser.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine("1. Följer  2. Följare  3. Meddelanden 4. Gillade 5. Radera tweet 6. Hem");
+                        Console.WriteLine($"1. Följer  2. Följare  3. Meddelanden ({test.Count}) 4. Gillade 5. Radera tweet 6. Hem");
                     }
                     else
                     {
@@ -168,7 +170,7 @@ static class UserHandler
                     TweetHandler.ShowLikedTweets(foundUser.Username);
                     if (foundUser.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine("1. Följer  2. Följare  3. Meddelanden 4. Profil 5. Radera tweet 6. Hem");
+                        Console.WriteLine($"1. Följer  2. Följare  3. Meddelanden ({test.Count}) 4. Profil 5. Radera tweet 6. Hem");
                     }
                     else
                     {
@@ -189,7 +191,7 @@ static class UserHandler
                     ShowFollow(username, currentMode);
                     if (foundUser.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine("1. Följer  2. Profil  3. Meddelanden 4. Gillade 5. Radera tweet 6. Hem");
+                        Console.WriteLine($"1. Följer  2. Profil  3. Meddelanden ({test.Count}) 4. Gillade 5. Radera tweet 6. Hem");
                     }
                     else
                     {
@@ -203,7 +205,7 @@ static class UserHandler
                     ShowFollow(username, currentMode);
                     if (foundUser.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine("1. Profil  2. Följare  3. Meddelanden 4. Gillade 5. Radera tweet 6. Hem");
+                        Console.WriteLine($"1. Profil  2. Följare  3. Meddelanden ({test.Count}) 4. Gillade 5. Radera tweet 6. Hem");
                     }
                     else
                     {
@@ -456,6 +458,10 @@ static class UserHandler
             Console.WriteLine(m.Text);
             Console.WriteLine($"{m.Date:MM-dd HH:mm}");
             Console.WriteLine("---------------------");
+            if (m.Receiver == loggedInUser.Username)
+            {
+                m.Isread = true;
+            }
         }
     }
 public static void RemoveMessage(User user)
@@ -573,7 +579,14 @@ public static void RemoveMessage(User user)
         }
         return users;
     }
+
+    public static List<Message> UnreadMessage()
+    {
+        return loggedInUser.Messages.Where(m => m.Isread == false && m.Receiver == loggedInUser.Username).ToList();
+    }
+    
 }
+
 
 class Interface
 {
