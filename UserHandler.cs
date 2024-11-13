@@ -458,11 +458,9 @@ static class UserHandler
             Console.WriteLine(m.Text);
             Console.WriteLine($"{m.Date:MM-dd HH:mm}");
             Console.WriteLine("---------------------");
-            if (m.Receiver == loggedInUser.Username)
-            {
-                m.Isread = true;
-            }
+            
         }
+        ReadMessage(user);
     }
 public static void RemoveMessage(User user)
     {
@@ -583,6 +581,19 @@ public static void RemoveMessage(User user)
     public static List<Message> UnreadMessage()
     {
         return loggedInUser.Messages.Where(m => m.Isread == false && m.Receiver == loggedInUser.Username).ToList();
+    }
+    
+    public static void ReadMessage(User user)
+    {
+        
+        var messages = loggedInUser.Messages.Where(m => m.Isread == false && m.Receiver == loggedInUser.Username).ToList();
+        messages.AddRange(user.Messages.Where(m => m.Isread == false && m.Receiver == loggedInUser.Username).ToList());
+
+        foreach(var m in messages)
+        {
+            m.Isread = true;
+        }
+        
     }
     
 }
