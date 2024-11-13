@@ -27,7 +27,8 @@ class Program
                     break;
                 
                 case ConsoleKey.D2:
-                    validUser = UserHandler.Login();
+                    Console.Clear();
+                    validUser = UserCLI.LogIn();
                     break;
             }
         }
