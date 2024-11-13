@@ -1,39 +1,4 @@
-using System.IO.Compression;
 using System.Text;
-using System.Transactions;
-public class Comment
-{
-    public string Content { get; set; }
-    public string Author { get; set; }
-    public DateTime Timestamp { get; set; }
-
-    public Comment(string content, string author)
-    {
-        Content = content;
-        Author = author;
-        Timestamp = DateTime.Now;
-    }
-}
-public class Tweet 
-{
-    public Guid Id {get; set;}
-    public string Content {get; set;}
-    public string Author {get; set;}
-    public DateTime Date {get; set;}
-    public List<string> Likes {get; set;} = new List<string>();
-    public List<Guid> Retweet {get; set;} = new List<Guid>();
-    public List<Comment> Comments {get; set;} = new List<Comment>();
-    public bool IsRetweet {get; set;} = false;
-    public Guid OriginalTweetId {get; set;}
-
-    public Tweet (string content, string author)
-    {
-        Id = Guid.NewGuid();
-        Content = content;
-        Author = author;
-        Date = DateTime.Now;
-    }
-}
 static class TweetHandler
 {
     static public List<Tweet> tweets = new List<Tweet> ();
@@ -42,37 +7,7 @@ static class TweetHandler
         Console.Clear();
         Console.WriteLine("Tryck esc för att gå tillbaka");
         Console.Write("Skriv din tweet: ");
-        StringBuilder sbTweetContent = new();
-        
-        while (true)
-        {   
-            var key = Console.ReadKey(intercept: true);
-            if (key.Key == ConsoleKey.Escape)
-            {
-                Console.WriteLine();
-                return;
-            }
-            else if (key.Key == ConsoleKey.Enter)
-            { 
-                Console.WriteLine();
-                break;
-            }
-            else if (key.Key == ConsoleKey.Backspace)
-            {
-                if(sbTweetContent.Length > 0)
-                {
-                    sbTweetContent.Remove(sbTweetContent.Length - 1, 1);
-                    Console.Write("\b \b");
-                }
-            }
-            else
-            {
-                sbTweetContent.Append(key.KeyChar);
-                Console.Write(key.KeyChar);
-            }
-        }
-        
-        string tweetContent = sbTweetContent.ToString();
+        var tweetContent = Helpers.StringBuilder();
 
         Console.WriteLine("1. Tweeta 2. Ångra");
         var choice = Console.ReadKey(intercept: true).Key;
@@ -124,7 +59,10 @@ static class TweetHandler
             if (t.IsRetweet)
             {   
                 var originalTweet = tweets.FirstOrDefault(x => x.Id == t.OriginalTweetId);
+
                 var originalTweetIndex = tweets.IndexOf(originalTweet);
+
+                
                 likeHeart = DynamicButtonhandler.LikeButton(originalTweet);
                 
                 Console.WriteLine($"Retweet från: {t.Author}");
@@ -154,7 +92,9 @@ static class TweetHandler
         if (tweet.IsRetweet)
         {   
             var originalTweet = tweets.FirstOrDefault(x => x.Id == tweet.OriginalTweetId);
+
             var originalTweetIndex = tweets.IndexOf(originalTweet);
+
             
             likeHeart = DynamicButtonhandler.LikeButton(originalTweet);
             
@@ -176,7 +116,7 @@ static class TweetHandler
     }
     public static void RemoveTweet()
     {
-        StringBuilder sbChoice = new StringBuilder();
+        string choice; 
 
         var tweet = tweets.Where(t => UserHandler.loggedInUser.OwnTweets.Contains(t.Id) && !t.IsRetweet).ToList();
         
@@ -188,41 +128,17 @@ static class TweetHandler
                 Console.ReadKey(true);
                 return; 
             }
+            
             ShowTweets(tweet, true);
             Console.WriteLine("Tryck esc för att gå tillbaka");
             Console.WriteLine($"Välj vilken du vill radera (1-{tweet.Count})");
             
-            while (true)
-            {   
-                var key = Console.ReadKey(intercept: true);
-                if (key.Key == ConsoleKey.Escape)
-                {
-                    Console.WriteLine();
-                    return;
-                }
-                else if (key.Key == ConsoleKey.Enter)
-                { 
-                    Console.WriteLine();
-                    break;
-                }
-                else if (key.Key == ConsoleKey.Backspace)
-                {
-                    if(sbChoice.Length > 0)
-                    {
-                        sbChoice.Remove(sbChoice.Length - 1, 1);
-                        Console.Write("\b \b");
-                    }
-                }
-                else
-                {
-                    sbChoice.Append(key.KeyChar);
-                    Console.Write(key.KeyChar);
-                }
-            }
+            choice = Helpers.StringBuilder(); 
+            
 
-            if (sbChoice.ToString().All(char.IsDigit))
+            if (choice.All(char.IsDigit))
             {
-                int choiceValue = int.Parse(sbChoice.ToString());
+                int choiceValue = int.Parse(choice.ToString());
 
                 // Kontrollera om siffran är inom listans längd
                 if (choiceValue >= 0 && choiceValue <= UserHandler.loggedInUser.OwnTweets.Count)
@@ -235,7 +151,7 @@ static class TweetHandler
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Fel inmatning, försök igen!");
                     Console.ForegroundColor = ConsoleColor.White;
-                    sbChoice.Clear();
+                    choice = null;
                 }
             }
             else
@@ -244,24 +160,25 @@ static class TweetHandler
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Endast siffror är tillåtna, försök igen!");
                 Console.ForegroundColor = ConsoleColor.White;
-                sbChoice.Clear();
+                choice = null;
             }
         }
         
-        string index = sbChoice.ToString();
+        string index = choice;
 
         var chosenTweet = tweet[int.Parse(index) - 1];
         var originalTweet = tweets.FirstOrDefault(t => t.Id == chosenTweet.OriginalTweetId);
         var retweets = tweets.Where(t => t.OriginalTweetId == chosenTweet.Id).ToList();
+        
         
         Console.WriteLine("Du vill ta bort tweeten:");
         Console.WriteLine(chosenTweet.Author);
         Console.WriteLine(chosenTweet.Content);
         Console.WriteLine(chosenTweet.Date);
         Console.WriteLine("1. Radera 2. Avbryt");
-        var choice = Console.ReadKey(true).Key;
+        var input = Console.ReadKey(true).Key;
 
-        if (choice == ConsoleKey.D1)
+        if (input == ConsoleKey.D1)
         {
             if (index == "")
             {
@@ -276,6 +193,7 @@ static class TweetHandler
                 }
                 
                 tweets.Remove(originalTweet);
+
                 foreach(Tweet t in retweets)
                 {
                     tweets.Remove(t);
@@ -388,7 +306,9 @@ static class TweetHandler
             originalTweet = tweets.FirstOrDefault(x => x.Id == originalTweet.OriginalTweetId);
         }
         
+
         var existingRetweet = tweets.FirstOrDefault(x => x.OriginalTweetId == originalTweet.Id && x.Author == UserHandler.loggedInUser.Username);
+
 
         if (existingRetweet != null)
         {
@@ -409,37 +329,9 @@ static class TweetHandler
         ShowTweets(tweet);
         Console.WriteLine("Tryck esc för att avbryta");
         Console.WriteLine("Skriv din kommentar:");
-        StringBuilder sbComment = new();
         
-        while (true)
-        {   
-            var key = Console.ReadKey(intercept: true);
-            if (key.Key == ConsoleKey.Escape)
-            {
-                Console.WriteLine();
-                return;
-            }
-            else if (key.Key == ConsoleKey.Enter)
-            { 
-                Console.WriteLine();
-                break;
-            }
-            else if (key.Key == ConsoleKey.Backspace)
-            {
-                if(sbComment.Length > 0)
-                {
-                    sbComment.Remove(sbComment.Length - 1, 1);
-                    Console.Write("\b \b");
-                }
-            }
-            else
-            {
-                sbComment.Append(key.KeyChar);
-                Console.Write(key.KeyChar);
-            }
-        }
         
-        string commentContent = sbComment.ToString();
+        string commentContent = Helpers.StringBuilder();
 
         var comment = new Comment(commentContent, UserHandler.loggedInUser.Username);
             

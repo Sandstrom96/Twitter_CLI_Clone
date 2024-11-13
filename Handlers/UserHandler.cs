@@ -1,40 +1,4 @@
-using System.Runtime.CompilerServices;
 using System.Text;
-using Microsoft.VisualBasic;
-public class Message 
-{
-    public string Text { get; set; }
-    public string Sender { get; set; }
-    public string Receiver { get; set; }
-    public DateTime Date { get; set; }
-    public bool Isread { get; set; } = false; 
-
-    public Message(string text, string receiver, string sender)
-    {
-        Text = text; 
-        Sender = sender;
-        Receiver = receiver;
-        Date = DateTime.Now;
-        
-    }
-}
-public class User
-{
-    public string Username {get; set;}
-    public string Password {get; set;}
-    public string Name {get; set;}
-    public List<User> Followers {get; set;} = new List<User>();
-    public List<User> Following {get; set;} = new List<User>();
-    public List<Guid> OwnTweets {get; set;} = new List<Guid>();
-    public List<Message> Messages {get; set;} = new List<Message>();
-    public User(string username, string password, string name)
-    {
-        Username = username;
-        Password = password;
-        Name = name;
-    }
-}
-
 static class UserHandler
 {
     static string userName;
@@ -52,7 +16,7 @@ static class UserHandler
         while (!validUser)
         {
             Console.Write("Ange användarnamn: ");
-            userName = Console.ReadLine();
+            userName = Helpers.ReadString();
             
             if(users.Any(x => x.Username == userName))
             {
@@ -65,56 +29,47 @@ static class UserHandler
         }    
         
         Console.Write("Ange lössenord: ");
-        
         password = Console.ReadLine();
+        
         Console.Write("Ange förnamn och efternamn: ");
         string name = Console.ReadLine();
+        
         users.Add(new User(userName, password, name));
     }
 
-    static public bool Login()
+    static public bool validLogIn(string userName, string password)
     {
-        bool validUser = false;
         bool userFound = false;
-
-        while (!validUser)
-        {            
-            if(!userFound)
+        
+        for (int i = 0; i < users.Count; i++)
+        {
+            if (userName.Equals(users[i].Username)) 
             {
-                Console.Write("Ange användarnamn: ");
-                userName = Console.ReadLine();
-            }
-            else
-            {
-                Console.WriteLine($"Ange Användarnamn: {userName}");
-            }
-            Console.Write("Ange lössenord: ");
-            password = Console.ReadLine();
-
-            for (int i = 0; i < users.Count; i++)
-            {
-                if (userName.Equals(users[i].Username)) 
+                userFound = true;
+                if (password.Equals(users[i].Password))
                 {
-                    userFound = true;
-                    if (password.Equals(users[i].Password))
-                    {
-                        loggedInUser = users[i];
-                        return true;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Du har angett fel lössenord!");
-                        break;
-                    }
+                    loggedInUser = users[i];
+                    return true;
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Du har angett fel lössenord!");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
                 }
             }
-
-            if(!userFound)
-            {
-                Console.WriteLine("Kan inte hitta ett konto med det användarnamn");
-            }
-        
         }
+
+        if(!userFound)
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Kan inte hitta ett konto med det användarnamn");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+        
         return false;
     }
     
@@ -167,7 +122,9 @@ static class UserHandler
                 case ViewMode.LikedTweets:
                     Console.WriteLine("Gillade");
                     Console.WriteLine("---------------------");
+                    
                     TweetHandler.ShowLikedTweets(foundUser.Username);
+                    
                     if (foundUser.Username == loggedInUser.Username)
                     {
                         Console.WriteLine($"1. Följer  2. Följare  3. Meddelanden ({test.Count}) 4. Profil 5. Radera tweet 6. Hem");
@@ -176,7 +133,6 @@ static class UserHandler
                     {
                         Console.WriteLine($"1. {followUnfollow} 2. Skicka meddelande 3. Följer  4. Följare 5. Profil 6. Hem");
                     }
-                    
                     break;
 
                 case ViewMode.RemoveTweet:
@@ -188,7 +144,9 @@ static class UserHandler
                 case ViewMode.Followers:
                     Console.WriteLine("Följare");
                     Console.WriteLine("---------------------");
+                    
                     ShowFollow(username, currentMode);
+                    
                     if (foundUser.Username == loggedInUser.Username)
                     {
                         Console.WriteLine($"1. Följer  2. Profil  3. Meddelanden ({test.Count}) 4. Gillade 5. Radera tweet 6. Hem");
@@ -202,7 +160,9 @@ static class UserHandler
                 case ViewMode.Following:
                     Console.WriteLine("Följer");
                     Console.WriteLine("---------------------");
+                    
                     ShowFollow(username, currentMode);
+                    
                     if (foundUser.Username == loggedInUser.Username)
                     {
                         Console.WriteLine($"1. Profil  2. Följare  3. Meddelanden ({test.Count}) 4. Gillade 5. Radera tweet 6. Hem");
@@ -215,18 +175,23 @@ static class UserHandler
                 
                 case ViewMode.Conversations:
                     var conversations = Conversations();
+                    
                     for (int i = 0; i < conversations.Count; i++)
                     {
                         Console.WriteLine($"{i + 1}. {conversations[i]} ({UnreadConversations(conversations[i]).Count})");
                     }
+                    
                     Console.WriteLine("\nVälj vilken konversation du vill öppna");
                     Console.WriteLine("Tryck esc för att gå tillbaka");
-                    var index = int.Parse(Interface.Test()) - 1;
+                    
+                    var index = int.Parse(Helpers.StringBuilder()) - 1;
+                    
                     if (index == -1)
                     {
                         currentMode = ViewMode.Normal;
                         continue;
                     }
+                    
                     user = users.FirstOrDefault(u => u.Username == conversations[index]);
                     currentMode = ViewMode.Messages;
                     continue;
@@ -234,9 +199,12 @@ static class UserHandler
                 case ViewMode.Messages:
                     Console.Clear();
                     Console.WriteLine("-----Meddelanden-----");
+                    
                     ShowMessages(user, false);
+                    
                     Console.WriteLine("\n1. Skriv meddelande 2. Ta bort meddelande");
                     Console.WriteLine("Tryck esc för att gå tillbaka");
+                    
                     switch (Console.ReadKey(true).Key)
                     {
                         case ConsoleKey.D1:
@@ -311,43 +279,15 @@ static class UserHandler
                     case ConsoleKey.D6:
                         return;
                 }
-        }
+            }
         }
     }
     public static string SearchProfile()
     {
-        StringBuilder sbSearch = new();
         Console.WriteLine("Tryck esc för att gå tillbaka"); 
         Console.Write("Sök: ");
         
-        while (true)
-        {   
-                var key = Console.ReadKey(intercept: true);
-                if (key.Key == ConsoleKey.Escape)
-                {
-                    Console.WriteLine();
-                    return null;
-                }
-                else if (key.Key == ConsoleKey.Enter)
-                { 
-                    Console.WriteLine();
-                    break;
-                }
-                else if (key.Key == ConsoleKey.Backspace)
-                {
-                    if(sbSearch.Length > 0)
-                    {
-                        sbSearch.Remove(sbSearch.Length - 1, 1);
-                        Console.Write("\b \b");
-                    }
-                }
-                else
-                {
-                    sbSearch.Append(key.KeyChar);
-                    Console.Write(key.KeyChar);
-                }
-        }
-        string search = sbSearch.ToString();
+        var search = Helpers.StringBuilder();
 
         var userName = users.FirstOrDefault(u => u.Username == search);
         if (userName.Username != search)
@@ -360,6 +300,7 @@ static class UserHandler
     public static void FollowUnfollow(string username)
     {
         User chosenUser = users.FirstOrDefault(u => u.Username == username);
+        
         if (!chosenUser.Followers.Any(u => u.Username == loggedInUser.Username))
         {
             chosenUser.Followers.Add(loggedInUser);
@@ -400,37 +341,8 @@ static class UserHandler
     public static void SendMessage(User receiver)
     {
         Console.WriteLine("Skriv ditt meddelande:");
-        StringBuilder sbMessage = new();
         
-        while (true)
-        {   
-            var key = Console.ReadKey(intercept: true);
-            if (key.Key == ConsoleKey.Escape)
-            {
-                Console.WriteLine();
-                return;
-            }
-            else if (key.Key == ConsoleKey.Enter)
-            { 
-                Console.WriteLine();
-                break;
-            }
-            else if (key.Key == ConsoleKey.Backspace)
-            {
-                if(sbMessage.Length > 0)
-                {
-                    sbMessage.Remove(sbMessage.Length - 1, 1);
-                    Console.Write("\b \b");
-                }
-            }
-            else
-            {
-                sbMessage.Append(key.KeyChar);
-                Console.Write(key.KeyChar);
-            }
-        }
-        
-        string messageContent = sbMessage.ToString();
+        var messageContent = Helpers.StringBuilder();
 
         var message = new Message(messageContent, receiver.Username, loggedInUser.Username);
             
@@ -454,18 +366,18 @@ static class UserHandler
                 var i = ownMessages.IndexOf(m);
                 Console.Write($"{i + 1} ");
             }
+            
             Console.WriteLine($"Från: {m.Sender}");
             Console.WriteLine(m.Text);
             Console.WriteLine($"{m.Date:MM-dd HH:mm}");
             Console.WriteLine("---------------------");
             
         }
-        ReadMessage(user);
+        SetMessageToRead(user);
     }
 public static void RemoveMessage(User user)
     {
-        StringBuilder sbChoice = new StringBuilder();
-
+        string choice;
         var messages = loggedInUser.Messages.Where(m => m.Receiver == user.Username && m.Sender == loggedInUser.Username).OrderBy(m => m.Date).ToList();
         
         while (true)
@@ -474,37 +386,11 @@ public static void RemoveMessage(User user)
             Console.WriteLine("Tryck esc för att gå tillbaka");
             Console.WriteLine($"Välj vilken du vill radera (1-{messages.Count})");
             
-            while (true)
-            {   
-                var key = Console.ReadKey(intercept: true);
-                if (key.Key == ConsoleKey.Escape)
-                {
-                    Console.WriteLine();
-                    return;
-                }
-                else if (key.Key == ConsoleKey.Enter)
-                { 
-                    Console.WriteLine();
-                    break;
-                }
-                else if (key.Key == ConsoleKey.Backspace)
-                {
-                    if(sbChoice.Length > 0)
-                    {
-                        sbChoice.Remove(sbChoice.Length - 1, 1);
-                        Console.Write("\b \b");
-                    }
-                }
-                else
-                {
-                    sbChoice.Append(key.KeyChar);
-                    Console.Write(key.KeyChar);
-                }
-            }
+            choice = Helpers.StringBuilder();
 
-            if (sbChoice.ToString().All(char.IsDigit))
+            if (choice.All(char.IsDigit))
             {
-                int choiceValue = int.Parse(sbChoice.ToString());
+                int choiceValue = int.Parse(choice);
 
                 // Kontrollera om siffran är inom listans längd
                 if (choiceValue >= 0 && choiceValue <= loggedInUser.Messages.Count)
@@ -517,7 +403,7 @@ public static void RemoveMessage(User user)
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Fel inmatning, försök igen!");
                     Console.ForegroundColor = ConsoleColor.White;
-                    sbChoice.Clear();
+                    choice = null;
                 }
             }
             else
@@ -526,20 +412,23 @@ public static void RemoveMessage(User user)
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Endast siffror är tillåtna, försök igen!");
                 Console.ForegroundColor = ConsoleColor.White;
-                sbChoice.Clear();
+                choice = null;
             }
         }
         
-        string index = sbChoice.ToString();
+        string index = choice;
 
         var chosenMessage = messages[int.Parse(index) - 1];
         
-        Console.WriteLine("Du vill ta bort tweeten:");
+        Console.WriteLine("Du vill ta bort meddelandet:");
+        Console.WriteLine(chosenMessage.Sender);
         Console.WriteLine(chosenMessage.Text);
+        Console.WriteLine(chosenMessage.Date);
+        
         Console.WriteLine("1. Radera 2. Avbryt");
-        var choice = Console.ReadKey(true).Key;
+        var input = Console.ReadKey(true).Key;
 
-        if (choice == ConsoleKey.D1)
+        if (input == ConsoleKey.D1)
         {
             if (index == "")
             {
@@ -583,9 +472,8 @@ public static void RemoveMessage(User user)
         return loggedInUser.Messages.Where(m => m.Isread == false && m.Receiver == loggedInUser.Username).ToList();
     }
     
-    public static void ReadMessage(User user)
+    public static void SetMessageToRead(User user)
     {
-        
         var messages = loggedInUser.Messages.Where(m => m.Isread == false && m.Receiver == loggedInUser.Username && m.Sender == user.Username).ToList();
         messages.AddRange(user.Messages.Where(m => m.Isread == false && m.Receiver == loggedInUser.Username && m.Sender == user.Username).ToList());
 
@@ -600,44 +488,4 @@ public static void RemoveMessage(User user)
         return loggedInUser.Messages.Where(m => m.Isread == false && m.Receiver == loggedInUser.Username && m.Sender == user).ToList();
     }
     
-}
-
-
-class Interface
-{
-    public static string Test()
-    {
-        StringBuilder sbMessage = new();
-        
-        while (true)
-        {   
-            var key = Console.ReadKey(intercept: true);
-            if (key.Key == ConsoleKey.Escape)
-            {
-                Console.WriteLine();
-                return "0";
-            }
-            else if (key.Key == ConsoleKey.Enter)
-            { 
-                Console.WriteLine();
-                break;
-            }
-            else if (key.Key == ConsoleKey.Backspace)
-            {
-                if(sbMessage.Length > 0)
-                {
-                    sbMessage.Remove(sbMessage.Length - 1, 1);
-                    Console.Write("\b \b");
-                }
-            }
-            else
-            {
-                sbMessage.Append(key.KeyChar);
-                Console.Write(key.KeyChar);
-            }
-        }
-        
-        string messageContent = sbMessage.ToString();
-        return messageContent;
-    }
 }

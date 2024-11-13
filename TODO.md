@@ -18,6 +18,8 @@
 - [x] Skicka privata meddelanden
 - [x] Ta bort meddelanden 
 - [x] läst/olästa meddelanden
+- [ ] Organisera / gör kod modulär
+- [ ] Fixa flöde/kommentar fel
 - [ ] Söka Tweet
 - [ ] Snygg interface
 - [ ] Lägga in max antal tecken i en tweet
