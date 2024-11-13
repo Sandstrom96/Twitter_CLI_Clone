@@ -17,7 +17,7 @@
 - [X] visa kommentarer
 - [x] Skicka privata meddelanden
 - [x] Ta bort meddelanden 
-- [ ] läst/olästa meddelanden
+- [x] läst/olästa meddelanden
 - [ ] Söka Tweet
 - [ ] Snygg interface
 - [ ] Lägga in max antal tecken i en tweet

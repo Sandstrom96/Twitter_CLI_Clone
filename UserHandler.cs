@@ -214,10 +214,10 @@ static class UserHandler
                     break;
                 
                 case ViewMode.Conversations:
-                    var conversations = ShowConversations();
+                    var conversations = Conversations();
                     for (int i = 0; i < conversations.Count; i++)
                     {
-                        Console.WriteLine($"{i + 1}. {conversations[i]}");
+                        Console.WriteLine($"{i + 1}. {conversations[i]} ({UnreadConversations(conversations[i]).Count})");
                     }
                     Console.WriteLine("\nVälj vilken konversation du vill öppna");
                     Console.WriteLine("Tryck esc för att gå tillbaka");
@@ -558,7 +558,7 @@ public static void RemoveMessage(User user)
     // Itererar igenom den inloggade användarens meddelanden
     // och kollar vilka användaren har konversationer med 
     // och skriver ut användarna
-    public static List<string> ShowConversations()
+    public static List<string> Conversations()
     {
         List<string> users = new List<string>();
 
@@ -593,7 +593,11 @@ public static void RemoveMessage(User user)
         {
             m.Isread = true;
         }
-        
+    }
+
+    public static List<Message> UnreadConversations (string user)
+    {
+        return loggedInUser.Messages.Where(m => m.Isread == false && m.Receiver == loggedInUser.Username && m.Sender == user).ToList();
     }
     
 }
