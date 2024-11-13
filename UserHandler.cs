@@ -586,8 +586,8 @@ public static void RemoveMessage(User user)
     public static void ReadMessage(User user)
     {
         
-        var messages = loggedInUser.Messages.Where(m => m.Isread == false && m.Receiver == loggedInUser.Username).ToList();
-        messages.AddRange(user.Messages.Where(m => m.Isread == false && m.Receiver == loggedInUser.Username).ToList());
+        var messages = loggedInUser.Messages.Where(m => m.Isread == false && m.Receiver == loggedInUser.Username && m.Sender == user.Username).ToList();
+        messages.AddRange(user.Messages.Where(m => m.Isread == false && m.Receiver == loggedInUser.Username && m.Sender == user.Username).ToList());
 
         foreach(var m in messages)
         {
