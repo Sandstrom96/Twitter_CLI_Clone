@@ -6,6 +6,11 @@ static class UserHandler
     
     static public bool IsUsernameAvailable(string username)
     {
+        if (username.Contains(" "))
+        {
+            username.Replace(" ", "");
+        }
+        
         if(users.Any(x => x.Username.ToLower() == username.ToLower()))
         {
             return false;
