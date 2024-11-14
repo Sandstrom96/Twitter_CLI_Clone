@@ -1,7 +1,6 @@
 using System.Text;
 static class Helpers
 {
-    // Some nice helper methods for input:
     public static int ReadInt()
     {
         int input;
@@ -31,7 +30,8 @@ static class Helpers
         }
         return input;
     }
-    public static string StringBuilder()
+    
+    public static string ReadUserInput()
     {
         StringBuilder sbInput = new();
         
@@ -41,7 +41,7 @@ static class Helpers
             if (key.Key == ConsoleKey.Escape)
             {
                 Console.WriteLine();
-                return "0";
+                return null;
             }
             else if (key.Key == ConsoleKey.Enter)
             { 
@@ -62,8 +62,6 @@ static class Helpers
                 Console.Write(key.KeyChar);
             }
         }
-        
-        string input = sbInput.ToString();
-        return input;
+        return sbInput.ToString();
     }
 }

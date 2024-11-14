@@ -22,7 +22,8 @@ class Program
             switch (choice)
             {
                 case ConsoleKey.D1:
-                    UserHandler.Register();
+                    Console.Clear();
+                    UserCLI.Register();
                     File.WriteAllText("Users.json", JsonSerializer.Serialize(UserHandler.users, options));
                     break;
                 

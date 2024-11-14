@@ -7,7 +7,7 @@ static class TweetHandler
         Console.Clear();
         Console.WriteLine("Tryck esc för att gå tillbaka");
         Console.Write("Skriv din tweet: ");
-        var tweetContent = Helpers.StringBuilder();
+        var tweetContent = Helpers.ReadUserInput();
 
         Console.WriteLine("1. Tweeta 2. Ångra");
         var choice = Console.ReadKey(intercept: true).Key;
@@ -133,7 +133,7 @@ static class TweetHandler
             Console.WriteLine("Tryck esc för att gå tillbaka");
             Console.WriteLine($"Välj vilken du vill radera (1-{tweet.Count})");
             
-            choice = Helpers.StringBuilder(); 
+            choice = Helpers.ReadUserInput(); 
             
 
             if (choice.All(char.IsDigit))
@@ -331,7 +331,7 @@ static class TweetHandler
         Console.WriteLine("Skriv din kommentar:");
         
         
-        string commentContent = Helpers.StringBuilder();
+        string commentContent = Helpers.ReadUserInput();
 
         var comment = new Comment(commentContent, UserHandler.loggedInUser.Username);
             

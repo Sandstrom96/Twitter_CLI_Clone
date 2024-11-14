@@ -1,49 +1,30 @@
 using System.Text;
 static class UserHandler
 {
-    static string userName;
-    static string password;
     public static User loggedInUser;
     public static List<User> users = new List<User>();
     
-    static public void Register()
+    static public bool IsUsernameAvailable(string username)
     {
-        Console.WriteLine("Registrering");
-        Console.WriteLine("---------------------");
-        
-        bool validUser = false;
-        
-        while (!validUser)
+        if(users.Any(x => x.Username == username))
         {
-            Console.Write("Ange användarnamn: ");
-            userName = Helpers.ReadString();
-            
-            if(users.Any(x => x.Username == userName))
-            {
-                Console.WriteLine("Användarnamn upptaget");
-            }
-            else
-            {
-                validUser = true;
-            }
-        }    
-        
-        Console.Write("Ange lössenord: ");
-        password = Console.ReadLine();
-        
-        Console.Write("Ange förnamn och efternamn: ");
-        string name = Console.ReadLine();
-        
-        users.Add(new User(userName, password, name));
+            return false;
+        }
+        return true;
     }
 
-    static public bool validLogIn(string userName, string password)
+    static public void AddNewUser(string username, string password, string name)
+    {
+        users.Add(new User(username, password, name));
+    }
+
+    static public bool validLogIn(string username, string password)
     {
         bool userFound = false;
         
         for (int i = 0; i < users.Count; i++)
         {
-            if (userName.Equals(users[i].Username)) 
+            if (username.Equals(users[i].Username)) 
             {
                 userFound = true;
                 if (password.Equals(users[i].Password))
@@ -184,7 +165,7 @@ static class UserHandler
                     Console.WriteLine("\nVälj vilken konversation du vill öppna");
                     Console.WriteLine("Tryck esc för att gå tillbaka");
                     
-                    var index = int.Parse(Helpers.StringBuilder()) - 1;
+                    var index = int.Parse(Helpers.ReadUserInput()) - 1;
                     
                     if (index == -1)
                     {
@@ -287,7 +268,7 @@ static class UserHandler
         Console.WriteLine("Tryck esc för att gå tillbaka"); 
         Console.Write("Sök: ");
         
-        var search = Helpers.StringBuilder();
+        var search = Helpers.ReadUserInput();
 
         var userName = users.FirstOrDefault(u => u.Username == search);
         if (userName.Username != search)
@@ -342,7 +323,7 @@ static class UserHandler
     {
         Console.WriteLine("Skriv ditt meddelande:");
         
-        var messageContent = Helpers.StringBuilder();
+        var messageContent = Helpers.ReadUserInput();
 
         var message = new Message(messageContent, receiver.Username, loggedInUser.Username);
             
@@ -386,7 +367,7 @@ public static void RemoveMessage(User user)
             Console.WriteLine("Tryck esc för att gå tillbaka");
             Console.WriteLine($"Välj vilken du vill radera (1-{messages.Count})");
             
-            choice = Helpers.StringBuilder();
+            choice = Helpers.ReadUserInput();
 
             if (choice.All(char.IsDigit))
             {
