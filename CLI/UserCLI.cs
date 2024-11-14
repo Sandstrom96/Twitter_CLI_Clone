@@ -14,6 +14,12 @@ class UserCLI
             Console.Write("Ange användarnamn: ");
             username = Helpers.ReadUserInput();
             
+            if (username == null)
+            {
+                Console.Clear();
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(username))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -41,6 +47,12 @@ class UserCLI
             Console.Write("Ange lösenord: ");
             password = Helpers.ReadUserInput();
 
+            if (password == null)
+            {
+                Console.Clear();
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(password))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -51,6 +63,12 @@ class UserCLI
 
             Console.Write("Bekräfta lösenordet: ");
             string confirmPassword = Helpers.ReadUserInput();
+
+            if (confirmPassword == null)
+            {
+                Console.Clear();
+                return;
+            }
 
             if (password != confirmPassword)
             {
@@ -69,7 +87,13 @@ class UserCLI
         while (true)
         {
             Console.Write("Ange förnamn och efternamn: ");
-            name = Helpers.ReadString();
+            name = Helpers.ReadUserInput();
+
+            if (name == null)
+            {
+                Console.Clear();
+                return;
+            }
 
             if (string.IsNullOrWhiteSpace(name))
             {

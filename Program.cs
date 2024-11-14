@@ -4,6 +4,7 @@ class Program
 {
     public static void Main(string[] args)
     {   
+        Console.ForegroundColor = ConsoleColor.White;
         UserHandler.users = JsonSerializer.Deserialize<List<User>>(File.ReadAllText("Users.json"));
         TweetHandler.tweets = JsonSerializer.Deserialize<List<Tweet>>(File.ReadAllText("Tweets.json"));
         var options = new JsonSerializerOptions{WriteIndented = true}; 

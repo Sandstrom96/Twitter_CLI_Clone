@@ -6,7 +6,7 @@ static class UserHandler
     
     static public bool IsUsernameAvailable(string username)
     {
-        if(users.Any(x => x.Username == username))
+        if(users.Any(x => x.Username.ToLower() == username.ToLower()))
         {
             return false;
         }
@@ -24,7 +24,7 @@ static class UserHandler
         
         for (int i = 0; i < users.Count; i++)
         {
-            if (username.Equals(users[i].Username)) 
+            if (username.ToLower().Equals(users[i].Username.ToLower())) 
             {
                 userFound = true;
                 if (password.Equals(users[i].Password))
