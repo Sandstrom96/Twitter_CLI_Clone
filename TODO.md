@@ -18,9 +18,12 @@
 - [x] Skicka privata meddelanden
 - [x] Ta bort meddelanden 
 - [x] läst/olästa meddelanden
-- [ ] Organisera / gör kod modulär
+- [x] Organisera program i filer
+- [ ] Göra program modulärt
 - [ ] Fixa flöde/kommentar fel
+- [ ] Ta bort kommentar
 - [ ] Söka Tweet
+- [ ] Blockera användare
 - [ ] Snygg interface
 - [ ] Lägga in max antal tecken i en tweet
 - Dynamiska "Knappar" // Lös när funktionen "behöver" det

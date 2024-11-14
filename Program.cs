@@ -49,7 +49,7 @@ class Program
             TweetHandler.SortTweets();
             Console.WriteLine("----Shitter----");
             
-            TweetHandler.ShowTweets(TweetHandler.tweets, false); //Visar alla tweets i flödet
+            TweetCLI.ShowTweets(TweetHandler.tweets, false); //Visar alla tweets i flödet
             
             Console.WriteLine("1. Tweet 2. Profil 3. Sök 4. Välj tweet 5. Avsluta");
             
@@ -58,24 +58,24 @@ class Program
             switch (choice)
             {
                 case ConsoleKey.D1:
-                    TweetHandler.MakeTweet();
+                    TweetCLI.MakeTweet();
                     break; 
 
                 case ConsoleKey.D2:
-                    UserHandler.ShowUserProfile(UserHandler.loggedInUser.Username); 
+                    UserCLI.ShowUserProfile(UserCLI.loggedInUser); 
                     break; 
 
                 case ConsoleKey.D3:
-                    string username = UserHandler.SearchProfile();
-                    if (username == null)
+                    User user = UserCLI.SearchProfile();
+                    if (user == null)
                     {
                         break;
                     }
-                    UserHandler.ShowUserProfile(username);
+                    UserCLI.ShowUserProfile(user);
                     break;
 
                 case ConsoleKey.D4: //TODO: lägga till meny för gilla, kommentera, gå tillbaka
-                    TweetHandler.ChooseTweet();
+                    TweetCLI.ChooseTweet();
                     break;
 
                 case ConsoleKey.D5: 
@@ -92,10 +92,10 @@ class Program
 
 public static class DynamicButtonhandler
 {
-    public static string FollowButton(string username)
+    public static string FollowButton(User user)
     {
-        User chosenUser = UserHandler.users.FirstOrDefault(u => u.Username == username);
-        if (!chosenUser.Followers.Any(u => u.Username == UserHandler.loggedInUser.Username))
+        User chosenUser = UserHandler.users.FirstOrDefault(u => u == user);
+        if (!chosenUser.Followers.Any(u => u.Username == UserCLI.loggedInUser.Username))
         {
             return "Följ";
         }
@@ -107,7 +107,7 @@ public static class DynamicButtonhandler
     }
         public static string LikeButton(Tweet tweet)
     {
-        if (!tweet.Likes.Any(u => u == UserHandler.loggedInUser.Username))
+        if (!tweet.Likes.Any(u => u == UserCLI.loggedInUser.Username))
         {
             return "🤍";
         }
