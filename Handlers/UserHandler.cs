@@ -6,16 +6,20 @@ static class UserHandler
     
     static public bool IsUsernameAvailable(string username)
     {
-        if (username.Contains(" "))
-        {
-            username.Replace(" ", "");
-        }
-        
         if(users.Any(x => x.Username.ToLower() == username.ToLower()))
         {
             return false;
         }
         return true;
+    }
+    static public string CheckUsernameForWhitespaces(string username)
+    {
+        if (username.Contains(" "))
+        {
+            string fixedUsername = username.Replace(" ", "");
+            return fixedUsername;
+        }
+        return username;
     }
 
     static public void AddNewUser(string username, string password, string name)

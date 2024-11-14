@@ -27,17 +27,16 @@ class UserCLI
                 continue;
             }
 
-            if(UserHandler.IsUsernameAvailable(username))
-            {
-                break;
-            }
-            else
+            username = UserHandler.CheckUsernameForWhitespaces(username);
+
+            if(!UserHandler.IsUsernameAvailable(username))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Användarnamn upptaget.");
                 Console.ForegroundColor = ConsoleColor.White;
                 continue;
             }
+            break;
         }
 
         string password;  
@@ -76,10 +75,7 @@ class UserCLI
                 Console.ForegroundColor = ConsoleColor.White;
                 continue;
             }
-            else
-            {
-                break;
-            }
+            break;
         }
 
         string name;
@@ -101,10 +97,7 @@ class UserCLI
                 Console.ForegroundColor = ConsoleColor.White;
                 continue;
             }
-            else
-            {
-                break;
-            }
+            break;
         }
         UserHandler.AddNewUser(username, password, name);
     }
