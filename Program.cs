@@ -18,6 +18,7 @@ class Program
             Console.WriteLine("Välkommen till Shitter");
             Console.WriteLine("1. Registrera");
             Console.WriteLine("2. Logga in");
+            Console.WriteLine("Tryck esc för att stänga programmet");
             var choice = Console.ReadKey(true).Key;
             
             switch (choice)
@@ -31,7 +32,13 @@ class Program
                 case ConsoleKey.D2:
                     Console.Clear();
                     validUser = UserCLI.LogIn();
+                    if (!validUser)
+                    {
+                        continue;
+                    }
                     break;
+                case ConsoleKey.Escape:
+                    return;
             }
         }
 

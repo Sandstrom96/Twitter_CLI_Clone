@@ -4,8 +4,7 @@ class UserCLI
 {
     public static void Register()
     {
-        Console.WriteLine("Registrering");
-        Console.WriteLine("---------------------");
+        Console.WriteLine("--- Registrering ---");
         Console.WriteLine("Tryck esc för att avbryta");
 
         string username;
@@ -115,13 +114,49 @@ class UserCLI
         
         while (!validUser)
         {
-            Console.WriteLine("-----Logga in-----");
+            Console.WriteLine("----- Logga in -----");
+            Console.WriteLine("Tryck esc för att avbryta");
             
-            Console.Write("Ange användarnamn: ");
-            string username = Helpers.ReadString();
+            string username;
+            string password;
+            while (true)
+            {
+                Console.Write("Ange användarnamn: ");
+                username = Helpers.ReadUserInput();
+
+                if (username == null)
+                {
+                    Console.Clear();
+                    return validUser;
+                }
+
+                if (string.IsNullOrWhiteSpace(username))
+                {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Användarnamn får inte vara tomt.");
+                Console.ForegroundColor = ConsoleColor.White;
+                continue;
+                }
+
+                Console.Write("Ange Lössenord: ");
+                password = Helpers.ReadUserInput();
+
+                if (password == null)
+                {
+                    Console.Clear();
+                    return validUser;
+                }
+
+                if (string.IsNullOrWhiteSpace(password))
+                {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Lösenordet får inte vara tomt.");
+                Console.ForegroundColor = ConsoleColor.White;
+                continue;
+                }
             
-            Console.Write("Ange Lössenord: ");
-            string password = Helpers.ReadString();
+                break;
+            }
             
             validUser = UserHandler.validLogIn(username, password);
         }
