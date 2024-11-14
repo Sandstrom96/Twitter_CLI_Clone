@@ -125,10 +125,10 @@ class UserCLI
 
                 if (string.IsNullOrWhiteSpace(username))
                 {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Användarnamn får inte vara tomt.");
-                Console.ForegroundColor = ConsoleColor.White;
-                continue;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Användarnamn får inte vara tomt.");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    continue;
                 }
 
                 Console.Write("Ange Lössenord: ");
@@ -142,16 +142,31 @@ class UserCLI
 
                 if (string.IsNullOrWhiteSpace(password))
                 {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Lösenordet får inte vara tomt.");
-                Console.ForegroundColor = ConsoleColor.White;
-                continue;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Lösenordet får inte vara tomt.");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    continue;
+                }
+
+                if (!UserHandler.validUsername(username))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Kan inte hitta ett konto med det användarnamn");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    continue;
+                }
+
+                if (!UserHandler.validPassword(password))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Du har angett fel lösenord!");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    continue;
                 }
             
+                validUser = true;
                 break;
             }
-            
-            validUser = UserHandler.validLogIn(username, password);
         }
         
         return validUser;

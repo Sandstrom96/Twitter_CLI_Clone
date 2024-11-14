@@ -27,39 +27,27 @@ static class UserHandler
         users.Add(new User(username, password, name));
     }
 
-    static public bool validLogIn(string username, string password)
-    {
-        bool userFound = false;
-        
-        for (int i = 0; i < users.Count; i++)
+    static public bool validUsername(string username)
+    {       
+        foreach (var u in users)
         {
-            if (username.ToLower().Equals(users[i].Username.ToLower())) 
+            if(u.Username.ToLower() == username.ToLower())
             {
-                userFound = true;
-                if (password.Equals(users[i].Password))
-                {
-                    loggedInUser = users[i];
-                    return true;
-                }
-                else
-                {
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Du har angett fel lössenord!");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    break;
-                }
+                return true;
             }
         }
+        return false;
+    }
 
-        if(!userFound)
+    static public bool validPassword(string password)
+    {
+        foreach (var u in users)
         {
-            Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Kan inte hitta ett konto med det användarnamn");
-            Console.ForegroundColor = ConsoleColor.White;
+            if(u.Password == password)
+            {
+                return true;
+            }
         }
-        
         return false;
     }
     
