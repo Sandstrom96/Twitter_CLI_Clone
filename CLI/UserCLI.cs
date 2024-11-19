@@ -413,18 +413,59 @@ class UserCLI
         }
     }
 
-    public static User SearchProfile()
+    public static List<User> Search()
     {
         Console.WriteLine("Tryck esc för att gå tillbaka"); 
         Console.Write("Sök: ");
         
         var search = Helpers.ReadUserInput();
+        
+        if (search == null)
+        {
+            return null;
+        }
 
-        User user = UserHandler.users.FirstOrDefault(u => u.Username == search);
-        if (user.Username != search)
+        var userList = UserHandler.GetSearchUsers(search);
+        
+        if (userList == null)
         {
             Console.WriteLine("Kan inte hitta användaren.");
         }
-        return user;
+        return userList;
+    }
+    public static void ShowSearchedProfiles(List<User> userList)
+    {
+        Console.WriteLine("Profiler:");
+        foreach (var u in userList)
+        {
+            var i = userList.IndexOf(u);
+            Console.WriteLine($"{i + 1}. {u.Username}");
+        }
+    }
+    public static User ChooseSearch(List<User> userList)
+    {
+        Console.WriteLine($"Välj användare (1-{userList.Count})");
+        
+        var index = -1;
+        while (index > userList.Count || index < userList.Count)
+        {
+            var input = Helpers.ReadUserInput();
+
+            if (input == null)
+            {
+                return null;
+            }
+
+            if(!int.TryParse(input, out index) || index <= 0 || index > userList.Count)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Ogiltigt index. Försök igen!");
+                Console.ForegroundColor = ConsoleColor.White;
+                continue;
+            }
+        }
+
+        index -= 1;
+        return UserHandler.GetUser(userList[index]);
     }
 }

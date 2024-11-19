@@ -79,4 +79,9 @@ static class UserHandler
             UserCLI.loggedInUser.Following.Remove(chosenUser);
         }
     }
+
+    public static List<User> GetSearchUsers(string search)
+    {
+        return users.Where(u => u.Username.ToLower().Contains(search.ToLower())).ToList();
+    }
 }

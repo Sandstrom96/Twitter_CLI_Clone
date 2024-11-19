@@ -66,11 +66,19 @@ class Program
                     break; 
 
                 case ConsoleKey.D3:
-                    User user = UserCLI.SearchProfile();
+                    var userList = UserCLI.Search();
+                    if (userList == null)
+                    {
+                        break;
+                    }
+                    
+                    UserCLI.ShowSearchedProfiles(userList);
+                    var user = UserCLI.ChooseSearch(userList);
                     if (user == null)
                     {
                         break;
                     }
+                    
                     UserCLI.ShowUserProfile(user);
                     break;
 
