@@ -199,7 +199,7 @@ class UserCLI
         
         while (true)
         {
-            string followUnfollow = DynamicButtonhandler.FollowButton(username);
+            string followButton = DynamicButtonhandler.FollowButton(username);
             
             var userTweets = TweetHandler.GetUserTweets(username);
             var unreadMessages = MessageHandler.UnreadMessage();
@@ -217,11 +217,11 @@ class UserCLI
                     
                     if (foundUser.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine($"1. Följer  2. Följare  3. Meddelanden ({test.Count}) 4. Gillade 5. Radera tweet 6. Hem");
+                        Console.WriteLine($"1. Följer  2. Följare  3. Meddelanden ({unreadMessages.Count}) 4. Gillade 5. Radera tweet 6. Hem");
                     }
                     else
                     {
-                        Console.WriteLine($"1. {followUnfollow} 2. Skicka meddelande 3. Följer  4. Följare 5. Gillade 6. Hem");
+                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Följer  4. Följare 5. Gillade 6. Hem");
                     }
                     break;
                 
@@ -233,11 +233,11 @@ class UserCLI
                     
                     if (foundUser.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine($"1. Följer  2. Följare  3. Meddelanden ({test.Count}) 4. Profil 5. Radera tweet 6. Hem");
+                        Console.WriteLine($"1. Följer  2. Följare  3. Meddelanden ({unreadMessages.Count}) 4. Profil 5. Radera tweet 6. Hem");
                     }
                     else
                     {
-                        Console.WriteLine($"1. {followUnfollow} 2. Skicka meddelande 3. Följer  4. Följare 5. Profil 6. Hem");
+                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Följer  4. Följare 5. Profil 6. Hem");
                     }
                     break;
 
@@ -255,11 +255,11 @@ class UserCLI
                     
                     if (foundUser.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine($"1. Följer  2. Profil  3. Meddelanden ({test.Count}) 4. Gillade 5. Radera tweet 6. Hem");
+                        Console.WriteLine($"1. Följer  2. Profil  3. Meddelanden ({unreadMessages.Count}) 4. Gillade 5. Radera tweet 6. Hem");
                     }
                     else
                     {
-                        Console.WriteLine($"1. {followUnfollow} 2. Skicka meddelande 3. Följer  4. Profil 5. Gillade 6. Hem");
+                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Följer  4. Profil 5. Gillade 6. Hem");
                     }
                     break;
                 
@@ -271,11 +271,11 @@ class UserCLI
                     
                     if (foundUser.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine($"1. Profil  2. Följare  3. Meddelanden ({test.Count}) 4. Gillade 5. Radera tweet 6. Hem");
+                        Console.WriteLine($"1. Profil  2. Följare  3. Meddelanden ({unreadMessages.Count}) 4. Gillade 5. Radera tweet 6. Hem");
                     }
                     else
                     {
-                        Console.WriteLine($"1. {followUnfollow} 2. Skicka meddelande 3. Profil  4. Följare 5. Gillade 6. Hem");
+                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Profil  4. Följare 5. Gillade 6. Hem");
                     }
                     break;
                 
