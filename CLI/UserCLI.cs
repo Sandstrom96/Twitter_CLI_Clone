@@ -169,7 +169,8 @@ class UserCLI
                     Console.ForegroundColor = ConsoleColor.White;
                     continue;
                 }
-            
+                
+                loggedInUser = UserHandler.GetLoggedInUser(username);
                 validUser = true;
                 break;
             }

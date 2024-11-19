@@ -56,6 +56,11 @@ static class UserHandler
     {
         return UserHandler.users.FirstOrDefault(u => u == username);
     }
+
+    public static User GetLoggedInUser(string username)
+    {
+        return UserHandler.users.FirstOrDefault(u => u.Username == username);
+    }
     
     
 
