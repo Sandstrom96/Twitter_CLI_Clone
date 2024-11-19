@@ -47,7 +47,7 @@ class Program
         {
             Console.Clear();
             TweetHandler.SortTweets();
-            Console.WriteLine("----Shitter----");
+            Console.WriteLine("------ Shitter ------");
             
             TweetCLI.ShowTweets(TweetHandler.tweets, false); //Visar alla tweets i flödet
             
@@ -95,33 +95,5 @@ class Program
         }
 
         
-    }
-}
-
-public static class DynamicButtonhandler
-{
-    public static string FollowButton(User user)
-    {
-        User chosenUser = UserHandler.users.FirstOrDefault(u => u == user);
-        if (!chosenUser.Followers.Any(u => u.Username == UserCLI.loggedInUser.Username))
-        {
-            return "Följ";
-        }
-        else
-        {
-            return "Avfölj";
-        }
-        
-    }
-        public static string LikeButton(Tweet tweet)
-    {
-        if (!tweet.Likes.Any(u => u == UserCLI.loggedInUser.Username))
-        {
-            return "🤍";
-        }
-        else
-        {
-            return "❤️";
-        }
     }
 }
