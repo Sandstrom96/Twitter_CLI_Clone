@@ -25,7 +25,7 @@ class TweetCLI
         }
     }
 
-        // Visar alla tweets från listan man tar in och kan visa index av alla tweets
+    // Visar alla tweets från listan man tar in och kan visa index av alla tweets
     // om showIndex är sant
     public static void ShowTweets(List<Tweet> tweet, bool showIndex)
     {
@@ -33,7 +33,8 @@ class TweetCLI
         {
             var i = tweet.IndexOf(t);
             
-            string likeHeart = DynamicButtonhandler.LikeButton(t);
+            string likeHeart = Buttonhandler.LikeButton(t);
+            string retweetButton = Buttonhandler.RetweetButton(t);
             
             if (showIndex)
             {
@@ -47,23 +48,23 @@ class TweetCLI
                 var originalTweetIndex = TweetHandler.tweets.IndexOf(originalTweet);
 
                 
-                likeHeart = DynamicButtonhandler.LikeButton(originalTweet);
+                likeHeart = Buttonhandler.LikeButton(originalTweet);
+                retweetButton = Buttonhandler.RetweetButton(originalTweet);
                 
                 Console.WriteLine($"Retweet från: {t.Author}");
                 Console.WriteLine(originalTweet.Author);
                 Console.WriteLine($"{originalTweet.Content}");
                 Console.WriteLine(originalTweet.Date.ToString("MM-dd HH:mm"));
-                Console.WriteLine($"{likeHeart} ({originalTweet.Likes.Count}) 💬 ({originalTweet.Comments.Count})");
-                CommentCLI.ShowComment(originalTweet);
-                
+                Console.WriteLine($"{likeHeart} ({originalTweet.Likes.Count}) 💬 ({originalTweet.Comments.Count}) {retweetButton} ({originalTweet.Retweet.Count})");
+                Console.WriteLine("---------------------");
             }
             else
             {
                 Console.WriteLine(t.Author);
                 Console.WriteLine(t.Content);
                 Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
-                Console.WriteLine($"{likeHeart} ({t.Likes.Count}) 💬 ({t.Comments.Count})");
-                CommentCLI.ShowComment(t); 
+                Console.WriteLine($"{likeHeart} ({t.Likes.Count}) 💬 ({t.Comments.Count}) {retweetButton} ({t.Retweet.Count})");
+                Console.WriteLine("---------------------");
             }
         }
     }
@@ -71,7 +72,8 @@ class TweetCLI
     // Visar vald tweet (index) från listan man tar in
     public static void ShowTweets(Tweet tweet)
     {
-        string likeHeart = DynamicButtonhandler.LikeButton(tweet);
+        string likeHeart = Buttonhandler.LikeButton(tweet);
+        string retweetButton = Buttonhandler.RetweetButton(tweet);
         
         if (tweet.IsRetweet)
         {   
@@ -80,13 +82,14 @@ class TweetCLI
             var originalTweetIndex = TweetHandler.tweets.IndexOf(originalTweet);
 
             
-            likeHeart = DynamicButtonhandler.LikeButton(originalTweet);
+            likeHeart = Buttonhandler.LikeButton(originalTweet);
+            retweetButton = Buttonhandler.RetweetButton(originalTweet);
             
             Console.WriteLine($"Retweet från: {tweet.Author}");
             Console.WriteLine(originalTweet.Author);
             Console.WriteLine($"{originalTweet.Content}");
             Console.WriteLine(originalTweet.Date.ToString("MM-dd HH:mm"));
-            Console.WriteLine($"{likeHeart} ({originalTweet.Likes.Count}) 💬 ({originalTweet.Comments.Count})");
+            Console.WriteLine($"{likeHeart} ({originalTweet.Likes.Count}) 💬 ({originalTweet.Comments.Count}) {retweetButton} ({originalTweet.Retweet.Count})");
             CommentCLI.ShowComment(originalTweet);
         }
         else
@@ -94,7 +97,7 @@ class TweetCLI
             Console.WriteLine(tweet.Author);
             Console.WriteLine(tweet.Content);
             Console.WriteLine(tweet.Date.ToString("MM-dd HH:mm"));
-            Console.WriteLine($"{likeHeart} ({tweet.Likes.Count}) 💬 ({tweet.Comments.Count})");
+            Console.WriteLine($"{likeHeart} ({tweet.Likes.Count}) 💬 ({tweet.Comments.Count}) {retweetButton} ({tweet.Retweet.Count})");
             CommentCLI.ShowComment(tweet);
         }
     }
@@ -205,7 +208,7 @@ class TweetCLI
             if(t.Likes.Any(u => u == username))
             {
                 var i = TweetHandler.tweets.IndexOf(t);
-                string likeHeart = DynamicButtonhandler.LikeButton(t);
+                string likeHeart = Buttonhandler.LikeButton(t);
                 Console.WriteLine(t.Author);
                 Console.WriteLine(t.Content);
                 Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));

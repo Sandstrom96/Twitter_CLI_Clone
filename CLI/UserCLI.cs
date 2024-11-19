@@ -199,7 +199,7 @@ class UserCLI
         
         while (true)
         {
-            string followButton = DynamicButtonhandler.FollowButton(username);
+            string followButton = Buttonhandler.FollowButton(username);
             
             var userTweets = TweetHandler.GetUserTweets(username);
             var unreadMessages = MessageHandler.UnreadMessage();
