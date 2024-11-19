@@ -5,7 +5,7 @@ public class Tweet
     public string Author {get; set;}
     public DateTime Date {get; set;}
     public List<string> Likes {get; set;} = new List<string>();
-    public List<Guid> Retweet {get; set;} = new List<Guid>();
+    public List<string> Retweet {get; set;} = new List<string>();
     public List<Comment> Comments {get; set;} = new List<Comment>();
     public bool IsRetweet {get; set;} = false;
     public Guid OriginalTweetId {get; set;}

@@ -66,12 +66,14 @@ static class TweetHandler
         {
             tweets.Remove(existingRetweet);
             UserCLI.loggedInUser.OwnTweets.Remove(existingRetweet.Id);
+            originalTweet.Retweet.Remove(UserCLI.loggedInUser.Username);
         }
         else
         {
             var retweet = new Tweet(null, UserCLI.loggedInUser.Username) {OriginalTweetId = originalTweet.Id, IsRetweet = true};
             tweets.Add(retweet);
             UserCLI.loggedInUser.OwnTweets.Add(retweet.Id);
+            originalTweet.Retweet.Add(UserCLI.loggedInUser.Username);
         }
     }
 
