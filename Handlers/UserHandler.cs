@@ -54,19 +54,18 @@ static class UserHandler
 
     public static User GetUser(User username)
     {
-        return UserHandler.users.FirstOrDefault(u => u == username);
+        return users.FirstOrDefault(u => u == username);
     }
 
     public static User GetLoggedInUser(string username)
     {
-        return UserHandler.users.FirstOrDefault(u => u.Username == username);
+        return users.FirstOrDefault(u => u.Username == username);
     }
     
     
-
     public static void FollowUnfollow(User user)
     {
-        User chosenUser = users.FirstOrDefault(u => u == user);
+        User chosenUser = GetUser(user);
         
         if (!chosenUser.Followers.Any(u => u == UserCLI.loggedInUser))
         {
