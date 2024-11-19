@@ -290,13 +290,20 @@ class UserCLI
                     Console.WriteLine("\nVälj vilken konversation du vill öppna");
                     Console.WriteLine("Tryck esc för att gå tillbaka");
                     
-                    var index = int.Parse(Helpers.ReadUserInput()) - 1;
-                    
-                    if (index == -1)
+                    var input = Helpers.ReadUserInput();
+
+                    if (input == null)
                     {
                         currentMode = ViewMode.Normal;
                         continue;
                     }
+
+                    if(!int.TryParse(input, out var index) || index <= 0 || index > conversations.Count)
+                    {
+                        continue;
+                    }
+
+                    index -= 1;
                     
                     foundUser = MessageHandler.GetConversation(index, conversations);
                     currentMode = ViewMode.Messages;
