@@ -12,6 +12,7 @@ static class UserHandler
         }
         return true;
     }
+    
     public static string CheckUsernameForWhitespaces(string username)
     {
         if (username.Contains(" "))
@@ -50,6 +51,12 @@ static class UserHandler
         }
         return false;
     }
+
+    public static User GetUser(User username)
+    {
+        return UserHandler.users.FirstOrDefault(u => u == username);
+    }
+    
     
 
     public static void FollowUnfollow(User user)

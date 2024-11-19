@@ -192,8 +192,8 @@ class UserCLI
     //Visar profilen enligt indatan tex. den inloggade eller sökta profilen
     public static void ShowUserProfile(User username)
     {           
-        User foundUser = UserHandler.users.FirstOrDefault(u => u == username);
         User user = foundUser;
+        User foundUser = UserHandler.GetUser(username);
 
         var currentMode = ViewMode.Normal;
         
