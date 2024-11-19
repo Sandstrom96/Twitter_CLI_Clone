@@ -420,7 +420,7 @@ class UserCLI
         }
     }
 
-    public static List<User> Search()
+    public static List<User>? Search()
     {
         Console.WriteLine("Tryck esc för att gå tillbaka"); 
         Console.Write("Sök: ");
@@ -436,7 +436,7 @@ class UserCLI
         
         if (userList == null)
         {
-            Console.WriteLine("Kan inte hitta användaren.");
+            return null;
         }
         return userList;
     }
@@ -449,7 +449,7 @@ class UserCLI
             Console.WriteLine($"{i + 1}. {u.Username}");
         }
     }
-    public static User ChooseSearch(List<User> userList)
+    public static User? ChooseSearch(List<User> userList)
     {
         Console.WriteLine($"Välj användare (1-{userList.Count})");
         

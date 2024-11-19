@@ -6,6 +6,11 @@ class MessageCLI
         
         var messageContent = Helpers.ReadUserInput();
 
+        if (messageContent == null)
+        {
+            return;
+        }
+
         var message = new Message(messageContent, receiver.Username, UserCLI.loggedInUser.Username);
             
         receiver.Messages.Add(message);
@@ -50,6 +55,11 @@ class MessageCLI
             Console.WriteLine($"Välj vilken du vill radera (1-{messages.Count})");
             
             choice = Helpers.ReadUserInput();
+
+            if (choice == null)
+            {
+                return;
+            }
 
             if (choice.All(char.IsDigit))
             {

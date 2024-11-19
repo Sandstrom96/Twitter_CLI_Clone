@@ -10,6 +10,11 @@ class CommentCLI
         
         string commentContent = Helpers.ReadUserInput();
 
+        if (commentContent == null)
+        {
+            return;
+        }
+
         var comment = new Comment(commentContent, UserCLI.loggedInUser.Username);
             
         tweet.Comments.Add(comment);
