@@ -251,7 +251,7 @@ class UserCLI
                     Console.WriteLine("Följare");
                     Console.WriteLine("---------------------");
                     
-                    ShowFollow(username, currentMode);
+                    ShowFollowers(username, currentMode);
                     
                     if (foundUser.Username == loggedInUser.Username)
                     {
@@ -267,7 +267,7 @@ class UserCLI
                     Console.WriteLine("Följer");
                     Console.WriteLine("---------------------");
                     
-                    ShowFollow(username, currentMode);
+                    ShowFollowers(username, currentMode);
                     
                     if (foundUser.Username == loggedInUser.Username)
                     {
@@ -391,9 +391,9 @@ class UserCLI
 
     // Tar in användare och nuvarande visar läge i profilen
     // och visar antingen användarens följare eller vilka de följer
-    public static void ShowFollow(User username, ViewMode currentMode)
+    public static void ShowFollowers(User username, ViewMode currentMode)
     {
-        User userFound = UserHandler.users.FirstOrDefault(u => u == username);
+        User userFound = UserHandler.GetUser(username);
 
         switch (currentMode)
         {
