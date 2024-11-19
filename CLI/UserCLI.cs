@@ -201,8 +201,8 @@ class UserCLI
         {
             string followUnfollow = DynamicButtonhandler.FollowButton(username);
             
-            var userTweets = TweetHandler.tweets.Where(t => foundUser.OwnTweets.Contains(t.Id)).ToList();
-            var test = MessageHandler.UnreadMessage();
+            var userTweets = TweetHandler.GetUserTweets(username);
+            var unreadMessages = MessageHandler.UnreadMessage();
             
             Console.Clear();
             Console.WriteLine(foundUser.Name);

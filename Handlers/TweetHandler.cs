@@ -74,4 +74,9 @@ static class TweetHandler
             UserCLI.loggedInUser.OwnTweets.Add(retweet.Id);
         }
     }
+
+    public static List<Tweet> GetUserTweets(User user)
+    {
+        return tweets.Where(t => user.OwnTweets.Contains(t.Id)).ToList();
+    }
 }
