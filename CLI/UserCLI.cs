@@ -193,7 +193,6 @@ class UserCLI
     //Visar profilen enligt indatan tex. den inloggade eller sökta profilen
     public static void ShowUserProfile(User username)
     {           
-        User user = foundUser;
         User foundUser = UserHandler.GetUser(username);
 
         var currentMode = ViewMode.Normal;
@@ -299,15 +298,14 @@ class UserCLI
                         continue;
                     }
                     
-                    user = UserHandler.users.FirstOrDefault(u => u.Username == conversations[index]);
+                    foundUser = MessageHandler.GetConversation(index, conversations);
                     currentMode = ViewMode.Messages;
                     continue;
                 
                 case ViewMode.Messages:
                     Console.Clear();
                     Console.WriteLine("-----Meddelanden-----");
-                    
-                    MessageCLI.ShowMessages(user, false);
+                    MessageCLI.ShowMessages(foundUser, false);
                     
                     Console.WriteLine("\n1. Skriv meddelande 2. Ta bort meddelande");
                     Console.WriteLine("Tryck esc för att gå tillbaka");
@@ -315,14 +313,15 @@ class UserCLI
                     switch (Console.ReadKey(true).Key)
                     {
                         case ConsoleKey.D1:
-                            MessageCLI.SendMessage(user);
+                            MessageCLI.SendMessage(foundUser);
                             continue;
                         
                         case ConsoleKey.D2:
-                            MessageCLI.RemoveMessage(user); 
+                            MessageCLI.RemoveMessage(foundUser); 
                             continue;
                         
                         case ConsoleKey.Escape:
+                            foundUser = UserHandler.GetUser(username);
                             currentMode = ViewMode.Normal;
                             continue;
                     }

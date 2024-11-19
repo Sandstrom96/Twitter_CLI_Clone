@@ -43,4 +43,9 @@ class MessageHandler
     {
         return UserCLI.loggedInUser.Messages.Where(m => m.Isread == false && m.Receiver == UserCLI.loggedInUser.Username && m.Sender == user).ToList();
     }
+
+    public static User GetConversation(int index, List<string> conversations)
+    {
+        return UserHandler.users.FirstOrDefault(u => u.Username == conversations[index]);
+    }
 }
