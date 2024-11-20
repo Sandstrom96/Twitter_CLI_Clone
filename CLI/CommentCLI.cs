@@ -15,9 +15,7 @@ class CommentCLI
             return;
         }
 
-        var comment = new Comment(commentContent, UserCLI.loggedInUser.Username);
-            
-        tweet.Comments.Add(comment);
+        CommentHandler.AddComment(commentContent, tweet);
     }
     public static void ShowComment (Tweet tweet)
     {
