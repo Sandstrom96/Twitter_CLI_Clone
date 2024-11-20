@@ -10,11 +10,11 @@ public class Tweet
     public bool IsRetweet {get; set;} = false;
     public Guid OriginalTweetId {get; set;}
 
-    public Tweet (string content, string author)
+    public Tweet (string content)
     {
         Id = Guid.NewGuid();
         Content = content;
-        Author = author;
+        Author = UserCLI.loggedInUser.Username;
         Date = DateTime.Now;
     }
 }

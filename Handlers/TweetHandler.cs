@@ -70,7 +70,7 @@ static class TweetHandler
         }
         else
         {
-            var retweet = new Tweet(null, UserCLI.loggedInUser.Username) {OriginalTweetId = originalTweet.Id, IsRetweet = true};
+            var retweet = new Tweet(null) {OriginalTweetId = originalTweet.Id, IsRetweet = true};
             tweets.Add(retweet);
             UserCLI.loggedInUser.OwnTweets.Add(retweet.Id);
             originalTweet.Retweet.Add(UserCLI.loggedInUser.Username);
@@ -80,5 +80,14 @@ static class TweetHandler
     public static List<Tweet> GetUserTweets(User user)
     {
         return tweets.Where(t => user.OwnTweets.Contains(t.Id)).ToList();
+    }
+
+    public static void AddTweet(string tweetContent)
+    {
+        var tweet = new Tweet(tweetContent);
+            
+        tweets.Add(tweet);
+            
+        UserCLI.loggedInUser.OwnTweets.Add(tweet.Id);
     }
 }

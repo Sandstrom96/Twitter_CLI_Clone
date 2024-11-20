@@ -18,12 +18,8 @@ class TweetCLI
         switch (choice)
         {
             case ConsoleKey.D1:
-                var tweet = new Tweet(tweetContent, UserCLI.loggedInUser.Username);
-            
-                TweetHandler.tweets.Add(tweet);
-            
-                UserCLI.loggedInUser.OwnTweets.Add(tweet.Id);
-                break; 
+                TweetHandler.AddTweet(tweetContent);
+                break;
 
             case ConsoleKey.D2:
             return; 
