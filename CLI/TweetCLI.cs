@@ -7,6 +7,11 @@ class TweetCLI
         Console.Write("Skriv din tweet: ");
         var tweetContent = Helpers.ReadUserInput();
 
+        if (tweetContent == null)
+        {
+            return;
+        }
+
         Console.WriteLine("1. Tweeta 2. Ångra");
         var choice = Console.ReadKey(intercept: true).Key;
         
