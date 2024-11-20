@@ -19,8 +19,9 @@ class MessageCLI
         Console.WriteLine($"@{user.Username}");
         Console.WriteLine("---------------------");
         
-        var messages = UserCLI.loggedInUser.Messages.Where(m => (m.Sender == user.Username && m.Receiver == UserCLI.loggedInUser.Username) || (m.Receiver == user.Username && m.Sender == UserCLI.loggedInUser.Username)).OrderBy(m => m.Date).ToList();
-        var ownMessages = UserCLI.loggedInUser.Messages.Where(m => m.Receiver == user.Username && m.Sender == UserCLI.loggedInUser.Username).OrderBy(m => m.Date).ToList();
+        var messages = MessageHandler.GetMessagesBetweenUsers(user);
+        
+        var ownMessages = MessageHandler.GetSentMessages(user);
         
         foreach(var m in messages)
         {   

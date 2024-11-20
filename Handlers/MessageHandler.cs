@@ -49,4 +49,15 @@ class MessageHandler
         receiver.Messages.Add(message);
         UserCLI.loggedInUser.Messages.Add(message);
     }
+
+    public static List<Message> GetMessagesBetweenUsers(User user)
+    {
+        return UserCLI.loggedInUser.Messages.Where(m => (m.Sender == user.Username && m.Receiver == UserCLI.loggedInUser.Username) || 
+            (m.Receiver == user.Username && m.Sender == UserCLI.loggedInUser.Username)).OrderBy(m => m.Date).ToList();
+    }
+
+    public static List<Message> GetSentMessages(User user)
+    {
+        return UserCLI.loggedInUser.Messages.Where(m => m.Receiver == user.Username && m.Sender == UserCLI.loggedInUser.Username).OrderBy(m => m.Date).ToList();
+    }
 }
