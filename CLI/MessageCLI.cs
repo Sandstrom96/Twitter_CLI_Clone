@@ -102,7 +102,6 @@ class MessageCLI
             else
             {
                 MessageHandler.RemoveMessage(chosenMessage, user);
-                Console.WriteLine($"Meddelandet togs bort");
             }
         }
     }
