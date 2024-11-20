@@ -90,4 +90,9 @@ static class TweetHandler
             
         UserCLI.loggedInUser.OwnTweets.Add(tweet.Id);
     }
+
+    public static Tweet GetOriginalTweet(Tweet tweet)
+    {
+        return tweets.FirstOrDefault(x => x.Id == tweet.OriginalTweetId);
+    }
 }

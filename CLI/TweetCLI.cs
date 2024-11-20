@@ -44,11 +44,8 @@ class TweetCLI
 
             if (t.IsRetweet)
             {   
-                var originalTweet = TweetHandler.tweets.FirstOrDefault(x => x.Id == t.OriginalTweetId);
+                var originalTweet = TweetHandler.GetOriginalTweet(t);
 
-                var originalTweetIndex = TweetHandler.tweets.IndexOf(originalTweet);
-
-                
                 likeHeart = Buttonhandler.LikeButton(originalTweet);
                 retweetButton = Buttonhandler.RetweetButton(originalTweet);
                 
@@ -78,10 +75,7 @@ class TweetCLI
         
         if (tweet.IsRetweet)
         {   
-            var originalTweet = TweetHandler.tweets.FirstOrDefault(x => x.Id == tweet.OriginalTweetId);
-
-            var originalTweetIndex = TweetHandler.tweets.IndexOf(originalTweet);
-
+            var originalTweet = TweetHandler.GetOriginalTweet(tweet);
             
             likeHeart = Buttonhandler.LikeButton(originalTweet);
             retweetButton = Buttonhandler.RetweetButton(originalTweet);
@@ -155,7 +149,7 @@ class TweetCLI
         string index = choice;
 
         var chosenTweet = tweet[int.Parse(index) - 1];
-        var originalTweet = TweetHandler.tweets.FirstOrDefault(t => t.Id == chosenTweet.OriginalTweetId);
+        var originalTweet = TweetHandler.GetOriginalTweet(chosenTweet);
         var retweets = TweetHandler.tweets.Where(t => t.OriginalTweetId == chosenTweet.Id).ToList();
         
         
