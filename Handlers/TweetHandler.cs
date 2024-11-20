@@ -95,4 +95,31 @@ static class TweetHandler
     {
         return tweets.FirstOrDefault(x => x.Id == tweet.OriginalTweetId);
     }
+
+    public static void RemoveTweet(Tweet chosenTweet, List<Tweet> retweets, Tweet originalTweet)
+    {
+        UserCLI.loggedInUser.OwnTweets.Remove(chosenTweet.Id);
+        foreach (var r in retweets)
+        {
+            UserCLI.loggedInUser.OwnTweets.Remove(r.Id);
+        }
+        
+        tweets.Remove(originalTweet);
+
+        foreach(Tweet t in retweets)
+        {
+            tweets.Remove(t);
+        }
+        
+        foreach(var u in UserHandler.users)
+        {
+            foreach (var r in retweets)
+            {
+                if (u.OwnTweets.Contains(r.Id))
+                {
+                    u.OwnTweets.Remove(r.Id);
+                }
+            }
+        }
+    }
 }

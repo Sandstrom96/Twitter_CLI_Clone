@@ -115,8 +115,12 @@ class TweetCLI
             Console.WriteLine("Tryck esc för att gå tillbaka");
             Console.WriteLine($"Välj vilken du vill radera (1-{tweet.Count})");
             
-            choice = Helpers.ReadUserInput(); 
-            
+            choice = Helpers.ReadUserInput();
+
+            if (choice == null)
+            {
+                return;
+            } 
 
             if (choice.All(char.IsDigit))
             {
@@ -150,7 +154,7 @@ class TweetCLI
         Console.WriteLine("Du vill ta bort tweeten:");
         Console.WriteLine(chosenTweet.Author);
         Console.WriteLine(chosenTweet.Content);
-        Console.WriteLine(chosenTweet.Date);
+        Console.WriteLine(chosenTweet.Date.ToString("MM-dd HH:mm"));
         Console.WriteLine("1. Radera 2. Avbryt");
         var input = Console.ReadKey(true).Key;
 
@@ -162,29 +166,7 @@ class TweetCLI
             }
             else
             {
-                UserCLI.loggedInUser.OwnTweets.Remove(chosenTweet.Id);
-                foreach (var r in retweets)
-                {
-                    UserCLI.loggedInUser.OwnTweets.Remove(r.Id);
-                }
-                
-                TweetHandler.tweets.Remove(originalTweet);
-
-                foreach(Tweet t in retweets)
-                {
-                    TweetHandler.tweets.Remove(t);
-                }
-                
-                foreach(var u in UserHandler.users)
-                {
-                    foreach (var r in retweets)
-                    {
-                        if (u.OwnTweets.Contains(r.Id))
-                        {
-                            u.OwnTweets.Remove(r.Id);
-                        }
-                    }
-                }
+                TweetHandler.RemoveTweet(chosenTweet, retweets, originalTweet);
                 Console.WriteLine($"Tweeten togs bort");
             }
         }
