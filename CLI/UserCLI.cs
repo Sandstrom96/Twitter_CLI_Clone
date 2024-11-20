@@ -2,7 +2,8 @@ using System.Xml;
 
 class UserCLI
 {
-    public static User loggedInUser;
+    static User defaultUser = new User("", "", "");
+    public static User loggedInUser = defaultUser;
     public static void Register()
     {
         Console.WriteLine("--- Registrering ---");
