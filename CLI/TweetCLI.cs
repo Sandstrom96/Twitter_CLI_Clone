@@ -2,14 +2,24 @@ class TweetCLI
 {
     public static void MakeTweet()
     {
-        Console.Clear();
         Console.WriteLine("Tryck esc för att gå tillbaka");
         Console.Write("Skriv din tweet: ");
-        var tweetContent = Helpers.ReadUserInput();
-
-        if (tweetContent == null)
+        string tweetContent;
+        while(true)
         {
-            return;
+            tweetContent = Helpers.ReadUserInput();
+
+            if (tweetContent == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(tweetContent))
+            {
+                Helpers.ShowErrorMessage("Tweeten får inte vara tom.");
+                continue;
+            }
+            break;
         }
 
         Console.WriteLine("1. Tweeta 2. Ångra");
