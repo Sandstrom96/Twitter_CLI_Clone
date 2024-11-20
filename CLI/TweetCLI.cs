@@ -130,19 +130,13 @@ class TweetCLI
                 else
                 {
                     Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Fel inmatning, försök igen!");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    choice = null;
+                    Helpers.ShowErrorMessage("Fel inmatning, försök igen!");
                 }
             }
             else
             {
                 Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Endast siffror är tillåtna, försök igen!");
-                Console.ForegroundColor = ConsoleColor.White;
-                choice = null;
+                Helpers.ShowErrorMessage("Endast siffror är tillåtna, försök igen!");
             }
         }
         

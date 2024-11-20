@@ -75,9 +75,7 @@ class UserCLI
 
             if (password != confirmPassword)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Lösenorden matchar inte. Försök igen!");
-                Console.ForegroundColor = ConsoleColor.White;
+                Helpers.ShowErrorMessage("Lösenorden matchar inte. Försök igen!");
                 continue;
             }
             break;
@@ -97,9 +95,7 @@ class UserCLI
 
             if (string.IsNullOrWhiteSpace(name))
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Namn får inte vara tomt.");
-                Console.ForegroundColor = ConsoleColor.White;
+                Helpers.ShowErrorMessage("Namn får inte vara tomt.");
                 continue;
             }
             break;
@@ -131,9 +127,7 @@ class UserCLI
 
                 if (string.IsNullOrWhiteSpace(username))
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Användarnamn får inte vara tomt.");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Helpers.ShowErrorMessage("Användarnamn får inte vara tomt.");
                     continue;
                 }
 
@@ -148,25 +142,19 @@ class UserCLI
 
                 if (string.IsNullOrWhiteSpace(password))
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Lösenordet får inte vara tomt.");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Helpers.ShowErrorMessage("Lösenordet får inte vara tomt."); 
                     continue;
                 }
 
                 if (!UserHandler.validUsername(username))
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Kan inte hitta ett konto med det användarnamn");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Helpers.ShowErrorMessage("Kan inte hitta ett konto med det användarnamn"); 
                     continue;
                 }
 
                 if (!UserHandler.validPassword(password))
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Du har angett fel lösenord!");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Helpers.ShowErrorMessage("Du har angett fel lösenord!"); 
                     continue;
                 }
                 
@@ -465,9 +453,7 @@ class UserCLI
 
             if(!int.TryParse(input, out index) || index <= 0 || index > userList.Count)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Ogiltigt index. Försök igen!");
-                Console.ForegroundColor = ConsoleColor.White;
+                Helpers.ShowErrorMessage("Ogiltigt index. Försök igen!"); 
                 continue;
             }
         }

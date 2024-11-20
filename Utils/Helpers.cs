@@ -64,4 +64,11 @@ static class Helpers
         }
         return sbInput.ToString();
     }
+
+    public static void ShowErrorMessage(string message)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(message);
+        Console.ForegroundColor = ConsoleColor.White;
+    }
 }
