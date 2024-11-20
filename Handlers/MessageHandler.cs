@@ -41,4 +41,12 @@ class MessageHandler
     {
         return UserHandler.users.FirstOrDefault(u => u.Username == conversations[index]);
     }
+
+    public static void AddMessage(string messageContent, User receiver)
+    {
+        var message = new Message(messageContent, receiver.Username, UserCLI.loggedInUser.Username);
+            
+        receiver.Messages.Add(message);
+        UserCLI.loggedInUser.Messages.Add(message);
+    }
 }

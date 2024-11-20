@@ -11,10 +11,7 @@ class MessageCLI
             return;
         }
 
-        var message = new Message(messageContent, receiver.Username, UserCLI.loggedInUser.Username);
-            
-        receiver.Messages.Add(message);
-        UserCLI.loggedInUser.Messages.Add(message);
+        MessageHandler.AddMessage(messageContent, receiver);
     }
 
     public static void ShowMessages(User user, bool remove)
