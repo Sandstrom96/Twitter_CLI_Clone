@@ -20,7 +20,7 @@ static class TweetHandler
     
     public static void LikeUnlikeTweet(Guid id)
     {
-        var tweet = tweets.FirstOrDefault(t => t.Id == id);
+        var tweet = GetTweet(id);
         
         if (tweet.IsRetweet)
         {
@@ -50,7 +50,7 @@ static class TweetHandler
     
     public static void Retweet(Guid id)
     {
-        var originalTweet = tweets.FirstOrDefault(x => x.Id == id);
+        var originalTweet = GetTweet(id);
         
         // Kollar om det är en retweet, om true hämtar originalet
         if (originalTweet.IsRetweet)
@@ -94,6 +94,11 @@ static class TweetHandler
     public static Tweet GetOriginalTweet(Tweet tweet)
     {
         return tweets.FirstOrDefault(x => x.Id == tweet.OriginalTweetId);
+    }
+
+    public static Tweet GetTweet(Guid id)
+    {
+        return tweets.FirstOrDefault(t => t.Id == id);
     }
 
     public static void RemoveTweet(Tweet chosenTweet, List<Tweet> retweets, Tweet originalTweet)
