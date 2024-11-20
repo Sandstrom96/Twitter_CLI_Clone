@@ -60,4 +60,10 @@ class MessageHandler
     {
         return UserCLI.loggedInUser.Messages.Where(m => m.Receiver == user.Username && m.Sender == UserCLI.loggedInUser.Username).OrderBy(m => m.Date).ToList();
     }
+
+    public static void RemoveMessage(Message message, User user)
+    {
+        UserCLI.loggedInUser.Messages.Remove(message);
+        user.Messages.Remove(message); 
+    }
 }
