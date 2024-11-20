@@ -23,23 +23,17 @@ class UserCLI
 
             if (string.IsNullOrWhiteSpace(username))
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Användarnamn får inte vara tomt.");
-                Console.ForegroundColor = ConsoleColor.White;
+                Helpers.ShowErrorMessage("Användarnamn får inte vara tomt.");
                 continue;
             }
 
             username = UserHandler.CheckUsernameForWhitespaces(username);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Ditt användarnamn kan inte innehålla mellanslag.");
-            Console.ForegroundColor = ConsoleColor.White;
+            Helpers.ShowErrorMessage("Ditt användarnamn kan inte innehålla mellanslag.");
             Console.WriteLine($"Detta är nu ditt användarnamn: {username}");
 
             if(!UserHandler.IsUsernameAvailable(username))
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Användarnamn upptaget.");
-                Console.ForegroundColor = ConsoleColor.White;
+                Helpers.ShowErrorMessage("Användarnamn upptaget.");
                 continue;
             }
             break;
@@ -59,9 +53,7 @@ class UserCLI
 
             if (string.IsNullOrWhiteSpace(password))
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Lösenordet får inte vara tomt.");
-                Console.ForegroundColor = ConsoleColor.White;
+                Helpers.ShowErrorMessage("Lösenordet får inte vara tomt.");
                 continue;
             }
 
