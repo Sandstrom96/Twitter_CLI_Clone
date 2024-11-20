@@ -1,4 +1,4 @@
-using System.Text;
+
 static class TweetHandler
 {
     public static List<Tweet> tweets = new List<Tweet> ();
@@ -24,7 +24,7 @@ static class TweetHandler
         
         if (tweet.IsRetweet)
         {
-            var originalTweet = tweets.FirstOrDefault(t => t.Id == tweet.OriginalTweetId);
+            var originalTweet = GetOriginalTweet(tweet);
 
             if (!originalTweet.Likes.Any(u => u == UserCLI.loggedInUser.Username))
             {
