@@ -44,7 +44,7 @@ class MessageCLI
     public static void RemoveMessage(User user)
     {
         string choice;
-        var messages = UserCLI.loggedInUser.Messages.Where(m => m.Receiver == user.Username && m.Sender == UserCLI.loggedInUser.Username).OrderBy(m => m.Date).ToList();
+        var messages = MessageHandler.GetSentMessages(user);
         
         while (true)
         {   
