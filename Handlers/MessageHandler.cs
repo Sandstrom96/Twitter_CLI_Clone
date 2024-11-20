@@ -7,18 +7,11 @@ class MessageHandler
     {
         List<string> users = new List<string>();
 
-        if(UserCLI.loggedInUser.Messages.Count <= 0)
+        foreach (var user in UserCLI.loggedInUser.Messages)
         {
-            Console.WriteLine("Här var det tomt");
-        }
-        else
-        {
-            foreach (var user in UserCLI.loggedInUser.Messages)
-            {
-                string test = user.Sender == UserCLI.loggedInUser.Username ? user.Receiver : user.Sender;
-                if(!users.Contains(test))
-                    users.Add(test);
-            }
+            string test = user.Sender == UserCLI.loggedInUser.Username ? user.Receiver : user.Sender;
+            if(!users.Contains(test))
+                users.Add(test);
         }
         return users;
     }

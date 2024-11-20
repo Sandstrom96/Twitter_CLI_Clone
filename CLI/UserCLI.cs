@@ -270,13 +270,21 @@ class UserCLI
                 
                 case ViewMode.Conversations:
                     var conversations = MessageHandler.Conversations();
+
+                    if (conversations.Count <= 0)
+                    {
+                        Console.WriteLine("Här var det tomt.\n");
+                    }
                     
                     for (int i = 0; i < conversations.Count; i++)
                     {
                         Console.WriteLine($"{i + 1}. {conversations[i]} ({MessageHandler.UnreadConversations(conversations[i]).Count})");
                     }
                     
-                    Console.WriteLine("\nVälj vilken konversation du vill öppna");
+                    if (conversations.Count > 0)
+                    {
+                        Console.WriteLine("\nVälj vilken konversation du vill öppna");
+                    }
                     Console.WriteLine("Tryck esc för att gå tillbaka");
                     
                     var input = Helpers.ReadUserInput();
