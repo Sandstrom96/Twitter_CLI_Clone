@@ -17,10 +17,17 @@ class CommentCLI
 
         CommentHandler.AddComment(commentContent, tweet);
     }
-    public static void ShowComment (Tweet tweet)
+    public static void ShowComment (Tweet tweet, bool showIndex)
     {
         foreach(var c in tweet.Comments)
         {
+            var i = tweet.Comments.IndexOf(c);
+
+            if (showIndex)
+            {
+                Console.Write($"{i + 1}. ");
+            }
+
             Console.WriteLine("--------------------"); 
             Console.WriteLine($"{c.Content}"); 
             Console.WriteLine($"{c.Author} {c.Timestamp:MM-dd HH:mm}");

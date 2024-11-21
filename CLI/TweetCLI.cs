@@ -95,7 +95,7 @@ class TweetCLI
             Console.WriteLine($"{originalTweet.Content}");
             Console.WriteLine(originalTweet.Date.ToString("MM-dd HH:mm"));
             Console.WriteLine($"{likeHeart} ({originalTweet.Likes.Count}) 💬 ({originalTweet.Comments.Count}) {retweetButton} ({originalTweet.Retweet.Count})");
-            CommentCLI.ShowComment(originalTweet);
+            CommentCLI.ShowComment(originalTweet,false);
         }
         else
         {
@@ -103,7 +103,7 @@ class TweetCLI
             Console.WriteLine(tweet.Content);
             Console.WriteLine(tweet.Date.ToString("MM-dd HH:mm"));
             Console.WriteLine($"{likeHeart} ({tweet.Likes.Count}) 💬 ({tweet.Comments.Count}) {retweetButton} ({tweet.Retweet.Count})");
-            CommentCLI.ShowComment(tweet);
+            CommentCLI.ShowComment(tweet,false);
         }
     }
     public static void RemoveTweet()
