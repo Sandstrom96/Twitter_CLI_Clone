@@ -20,7 +20,6 @@ class MessageCLI
         Console.WriteLine("---------------------");
         
         var messages = MessageHandler.GetMessagesBetweenUsers(user);
-        
         var ownMessages = MessageHandler.GetSentMessages(user);
         
         foreach(var m in messages)
@@ -43,65 +42,51 @@ class MessageCLI
 
     public static void RemoveMessage(User user)
     {
-        string choice;
         var messages = MessageHandler.GetSentMessages(user);
+        ShowMessages(user,true);
+        Console.WriteLine("Tryck esc för att gå tillbaka");
+        Console.WriteLine($"Välj vilken du vill radera (1-{messages.Count})");
         
+        int? index; 
         while (true)
         {   
-            ShowMessages(user,true); 
-            Console.WriteLine("Tryck esc för att gå tillbaka");
-            Console.WriteLine($"Välj vilken du vill radera (1-{messages.Count})");
-            
-            choice = Helpers.ReadUserInput();
+            string choice = Helpers.ReadUserInput();
 
             if (choice == null)
             {
                 return;
             }
 
-            if (choice.All(char.IsDigit))
-            {
-                int choiceValue = int.Parse(choice);
+            index = Helpers.CheckUserInput(messages.Count,choice);
 
-                // Kontrollera om siffran är inom listans längd
-                if (choiceValue >= 0 && choiceValue <= UserCLI.loggedInUser.Messages.Count)
-                {
-                    break;
-                }
-                else
-                {
-                    Console.Clear();
-                    Helpers.ShowErrorMessage("Fel inmatning, försök igen!");
-                }
-            }
-            else
+            if(index > 0 && index <= messages.Count)
             {
-                Console.Clear();
-                Helpers.ShowErrorMessage("Endast siffror är tillåtna, försök igen!");
+                break; 
             }
         }
         
-        string index = choice;
-
-        var chosenMessage = messages[int.Parse(index) - 1];
+        var chosenMessage = messages[(int) index -1];
         
         Console.WriteLine("Du vill ta bort meddelandet:");
         Console.WriteLine(chosenMessage.Sender);
         Console.WriteLine(chosenMessage.Text);
         Console.WriteLine(chosenMessage.Date);
-        
-        Console.WriteLine("1. Radera 2. Avbryt");
-        var input = Console.ReadKey(true).Key;
 
-        if (input == ConsoleKey.D1)
+        Console.WriteLine("1. Radera");
+        Console.WriteLine("Tryck Esc för att avbryta"); 
+        while (true)
         {
-            if (index == "")
+            var input = Console.ReadKey(true).Key;
+
+            switch(input)
             {
+                case ConsoleKey.D1:
+                MessageHandler.RemoveMessage(chosenMessage,user);  
                 return;
-            }
-            else
-            {
-                MessageHandler.RemoveMessage(chosenMessage, user);
+
+                case ConsoleKey.Escape: 
+                return; 
+
             }
         }
     }

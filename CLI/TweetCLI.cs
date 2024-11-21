@@ -108,55 +108,38 @@ class TweetCLI
     }
     public static void RemoveTweet()
     {
-        string choice; 
-
         var tweet = TweetHandler.tweets.Where(t => UserCLI.loggedInUser.OwnTweets.Contains(t.Id) && !t.IsRetweet).ToList();
-        
+
+        if(tweet.Count == 0)
+        {
+            Console.WriteLine("Du har inga tweets att radera. Tryck en tangent för att fortsätta.");
+            Console.ReadKey(true);
+            return; 
+        }
+            
+        ShowTweets(tweet, true);
+        Console.WriteLine("Tryck esc för att gå tillbaka");
+        Console.WriteLine($"Välj vilken du vill radera (1-{tweet.Count})");
+
+        int? index; 
         while (true)
         {   
-            if(tweet.Count == 0)
-            {
-                Console.WriteLine("Du har inga tweets att radera. Tryck en tangent för att fortsätta.");
-                Console.ReadKey(true);
-                return; 
-            }
-            
-            ShowTweets(tweet, true);
-            Console.WriteLine("Tryck esc för att gå tillbaka");
-            Console.WriteLine($"Välj vilken du vill radera (1-{tweet.Count})");
-            
-            choice = Helpers.ReadUserInput();
+            string choice = Helpers.ReadUserInput();
 
             if (choice == null)
             {
                 return;
-            } 
-
-            if (choice.All(char.IsDigit))
-            {
-                int choiceValue = int.Parse(choice.ToString());
-
-                // Kontrollera om siffran är inom listans längd
-                if (choiceValue >= 0 && choiceValue <= UserCLI.loggedInUser.OwnTweets.Count)
-                {
-                    break;
-                }
-                else
-                {
-                    Console.Clear();
-                    Helpers.ShowErrorMessage("Fel inmatning, försök igen!");
-                }
             }
-            else
+
+            index = Helpers.CheckUserInput(tweet.Count,choice);
+
+            if(index > 0 && index <= tweet.Count)
             {
-                Console.Clear();
-                Helpers.ShowErrorMessage("Endast siffror är tillåtna, försök igen!");
+                break; 
             }
         }
         
-        string index = choice;
-
-        var chosenTweet = tweet[int.Parse(index) - 1];
+        var chosenTweet = tweet[(int)index -1];
         var originalTweet = TweetHandler.GetOriginalTweet(chosenTweet);
         var retweets = TweetHandler.tweets.Where(t => t.OriginalTweetId == chosenTweet.Id).ToList();
         
@@ -165,19 +148,22 @@ class TweetCLI
         Console.WriteLine(chosenTweet.Author);
         Console.WriteLine(chosenTweet.Content);
         Console.WriteLine(chosenTweet.Date.ToString("MM-dd HH:mm"));
-        Console.WriteLine("1. Radera 2. Avbryt");
-        var input = Console.ReadKey(true).Key;
 
-        if (input == ConsoleKey.D1)
+        Console.WriteLine("1. Radera");
+        Console.WriteLine("Tryck Esc för att avbryta"); 
+        while (true)
         {
-            if (index == "")
+            var input = Console.ReadKey(true).Key;
+
+            switch(input)
             {
+                case ConsoleKey.D1:
+                TweetHandler.RemoveTweet(chosenTweet, retweets, originalTweet);  
                 return;
-            }
-            else
-            {
-                TweetHandler.RemoveTweet(chosenTweet, retweets, originalTweet);
-                Console.WriteLine($"Tweeten togs bort");
+
+                case ConsoleKey.Escape: 
+                return; 
+
             }
         }
     }

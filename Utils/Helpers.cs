@@ -11,16 +11,6 @@ static class Helpers
         return input;
     }
 
-    public static DateTime ReadDate()
-    {
-        DateTime input;
-        while (!DateTime.TryParse(Console.ReadLine(), out input))
-        {
-            Console.WriteLine("Ogiltigt datumformat, försök igen (åååå-mm-dd):");
-        }
-        return input;
-    }
-
     public static string ReadString()
     {
         string input;
@@ -70,5 +60,26 @@ static class Helpers
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine(message);
         Console.ForegroundColor = ConsoleColor.White;
+    }
+
+    public static int? CheckUserInput(int maxValue, string input)
+    {
+        if (int.TryParse(input, out int choiceValue))
+        {
+            // Kontrollera om siffran är inom listans längd
+            if (choiceValue > 0 && choiceValue <= maxValue)
+            {
+                return choiceValue;  
+            }
+            else 
+            {
+                ShowErrorMessage("Felaktig inmatning, ange ett giltigt alternativ"); 
+            }
+        }
+        else
+        {
+             ShowErrorMessage("Endast siffror tillåtna, försök igen");
+        }
+        return null;  
     }
 }

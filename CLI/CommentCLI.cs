@@ -47,10 +47,10 @@ class CommentCLI
     public static void RemoveComment(Tweet tweet)
     {
         var ownComment = CommentHandler.GetOwnComments(tweet);
-        string choice;
         ShowComment(tweet,true);
         Console.WriteLine();
         Console.WriteLine("Tryck esc för att gå tillbaka");
+
         if(tweet.Author == UserCLI.loggedInUser.Username)
         {
             Console.WriteLine($"Välj vilken du vill radera (1-{tweet.Comments.Count})");
@@ -60,45 +60,36 @@ class CommentCLI
             Console.WriteLine($"Välj vilken du vill radera (1-{ownComment.Count})");
         }
         
+        int? index; 
         while (true)
         {   
-                         
-            choice = Helpers.ReadUserInput();
+            string choice = Helpers.ReadUserInput();
 
             if (choice == null)
             {
                 return;
             }
-            if (string.IsNullOrWhiteSpace(choice))
+            if(tweet.Author == UserCLI.loggedInUser.Username)
             {
-                Helpers.ShowErrorMessage("Inmatingen får inte vara tom");
-                continue;  
-            }
-            
-            if (choice.All(char.IsDigit))
-            {
-                int choiceValue = int.Parse(choice);
+                index = Helpers.CheckUserInput(tweet.Comments.Count,choice);
 
-                // Kontrollera om siffran är inom listans längd
-                if (choiceValue > 0 && (choiceValue < tweet.Comments.Count || choiceValue < ownComment.Count))
+                if(index > 0 && index <= tweet.Comments.Count)
                 {
-                    break;
-                }
-                else
-                {
-                    Helpers.ShowErrorMessage("Fel inmatning, försök igen!");
+                    break; 
                 }
             }
-            else
+            else 
             {
-                
-                Helpers.ShowErrorMessage("Endast siffror är tillåtna, försök igen!");
-            }            
+                index = Helpers.CheckUserInput(ownComment.Count,choice);
+
+                if(index > 0 && index <= ownComment.Count)
+                {
+                    break; 
+                }
+            }
         }
         
-        
-        int index = int.Parse(choice);
-        var chosenComment = CommentHandler.GetCommentFromIndex(index,tweet, ownComment);
+        var chosenComment = CommentHandler.GetCommentFromIndex((int)index,tweet, ownComment);
         
         Console.WriteLine("Du vill ta bort meddelandet:");
         Console.WriteLine("--------------------");
