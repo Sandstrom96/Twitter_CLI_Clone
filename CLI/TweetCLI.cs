@@ -213,7 +213,7 @@ class TweetCLI
         {
             ShowTweets(TweetHandler.tweets[index]);
             
-            Console.WriteLine($"1. Gilla 2. Kommentera 3. Retweet 4. Hem");
+            Console.WriteLine($"1. Gilla 2. Kommentera 3. Ta bort kommentar 4. Retweet 5.Hem");
             var choice1 = Console.ReadKey(true).Key;
             switch (choice1)
             {
@@ -226,11 +226,15 @@ class TweetCLI
                     break;
                 
                 case ConsoleKey.D3:
-                    TweetHandler.Retweet(tweetIndex);
+                    CommentCLI.RemoveComment(TweetHandler.tweets[index]); 
                     break;
                     
                 case ConsoleKey.D4:
+                    TweetHandler.Retweet(tweetIndex);
                     return;
+
+                case ConsoleKey.D5:
+                return; 
             }
         }
     }

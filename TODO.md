@@ -19,9 +19,9 @@
 - [x] Ta bort meddelanden 
 - [x] läst/olästa meddelanden
 - [x] Organisera program i filer
-- [ ] Göra program modulärt
-- [ ] Fixa flöde/kommentar fel
-- [ ] Ta bort kommentar
+- [x] Göra program modulärt
+- [x] Fixa flöde/kommentar fel
+- [x] Ta bort kommentar
 - [ ] Söka Tweet
 - [ ] Blockera användare
 - [ ] Snygg interface
