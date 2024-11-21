@@ -19,48 +19,44 @@ class CommentCLI
     }
     public static void ShowComment (Tweet tweet, bool showIndex)
     {
+        var ownComment = CommentHandler.GetOwnComments(tweet);
         foreach(var c in tweet.Comments)
         {
             var i = tweet.Comments.IndexOf(c);
-
-            if (showIndex)
+            if (tweet.Author == UserCLI.loggedInUser.Username)
             {
-                Console.Write($"{i + 1}. ");
+                if (showIndex)
+                {
+                    Console.Write($"{i + 1}. ");
+                }
             }
-
-            Console.WriteLine("--------------------"); 
+            else
+            {
+                if (showIndex && c.Author == UserCLI.loggedInUser.Username)
+                {
+                    i = ownComment.IndexOf(c);
+                    Console.Write($"{i + 1}. ");
+                }
+            }
+    
             Console.WriteLine($"{c.Content}"); 
             Console.WriteLine($"{c.Author} {c.Timestamp:MM-dd HH:mm}");
+            Console.WriteLine("--------------------"); 
         }
     }
     public static void RemoveComment(Tweet tweet)
     {
         var ownComment = CommentHandler.GetOwnComments(tweet);
         string choice;
+        ShowComment(tweet,true);
+        Console.WriteLine();
+        Console.WriteLine("Tryck esc för att gå tillbaka");
         if(tweet.Author == UserCLI.loggedInUser.Username)
         {
-            ShowComment(tweet,true);
-            Console.WriteLine("Tryck esc för att gå tillbaka");
             Console.WriteLine($"Välj vilken du vill radera (1-{tweet.Comments.Count})");
         }
         else 
         {
-            CommentHandler.GetOwnComments(tweet);
-            foreach(var c in tweet.Comments)
-        {
-            var i = ownComment.IndexOf(c);
-            
-            if (c.Author == UserCLI.loggedInUser.Username)
-            {
-                Console.Write($"{i + 1}. ");
-            }
-
-            Console.WriteLine("--------------------"); 
-            Console.WriteLine($"{c.Content}"); 
-            Console.WriteLine($"{c.Author} {c.Timestamp:MM-dd HH:mm}");
-
-        }
-            Console.WriteLine("Tryck esc för att gå tillbaka");
             Console.WriteLine($"Välj vilken du vill radera (1-{ownComment.Count})");
         }
         
@@ -109,7 +105,7 @@ class CommentCLI
         Console.WriteLine(chosenComment.Content);
         Console.WriteLine(chosenComment.Author);
         Console.WriteLine(chosenComment.Timestamp);
-        Console.WriteLine(""); 
+        Console.WriteLine(); 
         
         Console.WriteLine("1. Radera");
         Console.WriteLine("Tryck Esc för att avbryta"); 
