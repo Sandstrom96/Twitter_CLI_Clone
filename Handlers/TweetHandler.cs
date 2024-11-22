@@ -101,15 +101,15 @@ static class TweetHandler
         return tweets.FirstOrDefault(t => t.Id == id);
     }
 
-    public static void RemoveTweet(Tweet chosenTweet, List<Tweet> retweets, Tweet originalTweet)
+    public static void RemoveTweet(Tweet tweet, List<Tweet> retweets)
     {
-        UserCLI.loggedInUser.OwnTweets.Remove(chosenTweet.Id);
+        UserCLI.loggedInUser.OwnTweets.Remove(tweet.Id);
         foreach (var r in retweets)
         {
             UserCLI.loggedInUser.OwnTweets.Remove(r.Id);
         }
         
-        tweets.Remove(originalTweet);
+        tweets.Remove(tweet);
 
         foreach(Tweet t in retweets)
         {

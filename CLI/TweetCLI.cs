@@ -101,48 +101,15 @@ class TweetCLI
         Console.WriteLine($"{likeHeart} ({tweet.Likes.Count}) 💬 ({tweet.Comments.Count}) {retweetButton} ({tweet.Retweet.Count})");
         Console.WriteLine("---------------------");
     }
-    public static void RemoveTweet()
+
+    public static void RemoveTweet(Tweet tweet)
     {
-        var tweet = TweetHandler.tweets.Where(t => UserCLI.loggedInUser.OwnTweets.Contains(t.Id) && !t.IsRetweet).ToList();
-
-        if(tweet.Count == 0)
-        {
-            Console.WriteLine("Du har inga tweets att radera. Tryck en tangent för att fortsätta.");
-            Console.ReadKey(true);
-            return; 
-        }
-            
-        ShowTweets(tweet, true);
-        Console.WriteLine("Tryck esc för att gå tillbaka");
-        Console.WriteLine($"Välj vilken du vill radera (1-{tweet.Count})");
-
-        int? index; 
-        while (true)
-        {   
-            string choice = Helpers.ReadUserInput();
-
-            if (choice == null)
-            {
-                return;
-            }
-
-            index = Helpers.CheckUserInput(tweet.Count,choice);
-
-            if(index > 0 && index <= tweet.Count)
-            {
-                break; 
-            }
-        }
-        
-        var chosenTweet = tweet[(int)index -1];
-        var originalTweet = TweetHandler.GetOriginalTweet(chosenTweet);
-        var retweets = TweetHandler.tweets.Where(t => t.OriginalTweetId == chosenTweet.Id).ToList();
-        
+        var retweets = TweetHandler.tweets.Where(t => t.OriginalTweetId == tweet.Id).ToList();
         
         Console.WriteLine("Du vill ta bort tweeten:");
-        Console.WriteLine(chosenTweet.Author);
-        Console.WriteLine(chosenTweet.Content);
-        Console.WriteLine(chosenTweet.Date.ToString("MM-dd HH:mm"));
+        Console.WriteLine(tweet.Author);
+        Console.WriteLine(tweet.Content);
+        Console.WriteLine(tweet.Date.ToString("MM-dd HH:mm"));
 
         Console.WriteLine("1. Radera");
         Console.WriteLine("Tryck Esc för att avbryta"); 
@@ -153,7 +120,7 @@ class TweetCLI
             switch(input)
             {
                 case ConsoleKey.D1:
-                TweetHandler.RemoveTweet(chosenTweet, retweets, originalTweet);  
+                TweetHandler.RemoveTweet(tweet, retweets);  
                 return;
 
                 case ConsoleKey.Escape: 

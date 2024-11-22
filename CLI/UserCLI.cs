@@ -164,7 +164,6 @@ class UserCLI
     {
         Normal,
         LikedTweets,
-        RemoveTweet,
         Followers,
         Following,
         Messages,
@@ -227,11 +226,6 @@ class UserCLI
                     }
                     break;
 
-                case ViewMode.RemoveTweet:
-                    Console.WriteLine("Radera tweet");
-                    TweetCLI.RemoveTweet();
-                    currentMode = ViewMode.Normal;
-                    continue;
  
                 case ViewMode.Followers:
                     Console.WriteLine("Följare");
