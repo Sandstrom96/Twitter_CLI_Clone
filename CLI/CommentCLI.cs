@@ -3,10 +3,9 @@ class CommentCLI
     public static void CommentTweet(Tweet tweet)
     {
         Console.Clear();
-        TweetCLI.ShowTweets(tweet);
+        TweetCLI.ShowTweet(tweet);
         Console.WriteLine("Tryck esc för att avbryta");
         Console.WriteLine("Skriv din kommentar:");
-        
         
         string commentContent = Helpers.ReadUserInput();
 

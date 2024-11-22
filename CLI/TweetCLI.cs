@@ -59,26 +59,17 @@ class TweetCLI
                 likeHeart = Buttonhandler.LikeButton(originalTweet);
                 retweetButton = Buttonhandler.RetweetButton(originalTweet);
                 
-                Console.WriteLine($"Retweet från: {t.Author}");
-                Console.WriteLine(originalTweet.Author);
-                Console.WriteLine($"{originalTweet.Content}");
-                Console.WriteLine(originalTweet.Date.ToString("MM-dd HH:mm"));
-                Console.WriteLine($"{likeHeart} ({originalTweet.Likes.Count}) 💬 ({originalTweet.Comments.Count}) {retweetButton} ({originalTweet.Retweet.Count})");
-                Console.WriteLine("---------------------");
+                RenderTweet(originalTweet, likeHeart, retweetButton);
             }
             else
             {
-                Console.WriteLine(t.Author);
-                Console.WriteLine(t.Content);
-                Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
-                Console.WriteLine($"{likeHeart} ({t.Likes.Count}) 💬 ({t.Comments.Count}) {retweetButton} ({t.Retweet.Count})");
-                Console.WriteLine("---------------------");
+                RenderTweet(t, likeHeart, retweetButton);
             }
         }
     }
 
     // Visar vald tweet (index) från listan man tar in
-    public static void ShowTweets(Tweet tweet)
+    public static void ShowTweet(Tweet tweet)
     {
         string likeHeart = Buttonhandler.LikeButton(tweet);
         string retweetButton = Buttonhandler.RetweetButton(tweet);
@@ -91,20 +82,23 @@ class TweetCLI
             retweetButton = Buttonhandler.RetweetButton(originalTweet);
             
             Console.WriteLine($"Retweet från: {tweet.Author}");
-            Console.WriteLine(originalTweet.Author);
-            Console.WriteLine($"{originalTweet.Content}");
-            Console.WriteLine(originalTweet.Date.ToString("MM-dd HH:mm"));
-            Console.WriteLine($"{likeHeart} ({originalTweet.Likes.Count}) 💬 ({originalTweet.Comments.Count}) {retweetButton} ({originalTweet.Retweet.Count})");
+            RenderTweet(originalTweet, likeHeart, retweetButton);
             CommentCLI.ShowComment(originalTweet,false);
         }
         else
         {
-            Console.WriteLine(tweet.Author);
-            Console.WriteLine(tweet.Content);
-            Console.WriteLine(tweet.Date.ToString("MM-dd HH:mm"));
-            Console.WriteLine($"{likeHeart} ({tweet.Likes.Count}) 💬 ({tweet.Comments.Count}) {retweetButton} ({tweet.Retweet.Count})");
+            RenderTweet(tweet, likeHeart, retweetButton);
             CommentCLI.ShowComment(tweet,false);
         }
+    }
+
+    public static void RenderTweet(Tweet tweet, string likeHeart, string retweetButton)
+    {
+        Console.WriteLine(tweet.Author);
+        Console.WriteLine(tweet.Content);
+        Console.WriteLine(tweet.Date.ToString("MM-dd HH:mm"));
+        Console.WriteLine($"{likeHeart} ({tweet.Likes.Count}) 💬 ({tweet.Comments.Count}) {retweetButton} ({tweet.Retweet.Count})");
+        Console.WriteLine("---------------------");
     }
     public static void RemoveTweet()
     {
@@ -197,7 +191,7 @@ class TweetCLI
         Console.Clear();
         while(true)
         {
-            ShowTweets(TweetHandler.tweets[index]);
+            ShowTweet(TweetHandler.tweets[index]);
             
             Console.WriteLine($"1. Gilla 2. Kommentera 3. Ta bort kommentar 4. Retweet 5.Hem");
             var choice1 = Console.ReadKey(true).Key;
