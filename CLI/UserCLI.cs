@@ -170,11 +170,19 @@ class UserCLI
         Messages,
         Conversations,
     }
+
+    public static void RenderHeader(User user)
+    {
+        Console.WriteLine(user.Name);
+        Console.WriteLine($"@{user.Username}");
+        Console.WriteLine($"Följare {user.Followers.Count}\tFöljer {user.Following.Count}");
+        Console.WriteLine("---------------------");
+    }
     
     //Visar profilen enligt indatan tex. den inloggade eller sökta profilen
     public static void ShowUserProfile(User username)
     {           
-        User foundUser = UserHandler.GetUser(username);
+        User user = UserHandler.GetUser(username);
 
         var currentMode = ViewMode.Normal;
         
@@ -186,23 +194,20 @@ class UserCLI
             var unreadMessages = MessageHandler.UnreadMessage();
             
             Console.Clear();
-            Console.WriteLine(foundUser.Name);
-            Console.WriteLine($"@{foundUser.Username}");
-            Console.WriteLine($"Följare {foundUser.Followers.Count}\tFöljer {foundUser.Following.Count}");
-            Console.WriteLine("---------------------");
+            RenderHeader(user);
             
             switch(currentMode)
             {
                 case ViewMode.Normal:
                     TweetCLI.ShowTweets(userTweets, false);
                     
-                    if (foundUser.Username == loggedInUser.Username)
+                    if (user.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine($"1. Följer  2. Följare  3. Meddelanden ({unreadMessages.Count}) 4. Gillade 5. Radera tweet 6. Hem");
+                        Console.WriteLine($"1. Följer  2. Följare  3. Meddelanden ({unreadMessages.Count}) 4. Gillade 5. Välj tweet 6. Hem");
                     }
                     else
                     {
-                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Följer  4. Följare 5. Gillade 6. Hem");
+                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Följer  4. Följare 5. Gillade 6. Välj tweet 7. Hem");
                     }
                     break;
                 
@@ -210,15 +215,15 @@ class UserCLI
                     Console.WriteLine("Gillade");
                     Console.WriteLine("---------------------");
                     
-                    TweetCLI.ShowLikedTweets(foundUser.Username);
+                    TweetCLI.ShowLikedTweets(user.Username);
                     
-                    if (foundUser.Username == loggedInUser.Username)
+                    if (user.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine($"1. Följer  2. Följare  3. Meddelanden ({unreadMessages.Count}) 4. Profil 5. Radera tweet 6. Hem");
+                        Console.WriteLine($"1. Följer  2. Följare  3. Meddelanden ({unreadMessages.Count}) 4. Profil 5. Välj tweet 6. Hem");
                     }
                     else
                     {
-                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Följer  4. Följare 5. Profil 6. Hem");
+                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Följer  4. Följare 5. Profil 6. Välj tweet 7. Hem");
                     }
                     break;
 
@@ -227,20 +232,20 @@ class UserCLI
                     TweetCLI.RemoveTweet();
                     currentMode = ViewMode.Normal;
                     continue;
-
+ 
                 case ViewMode.Followers:
                     Console.WriteLine("Följare");
                     Console.WriteLine("---------------------");
                     
                     ShowFollowers(username, currentMode);
                     
-                    if (foundUser.Username == loggedInUser.Username)
+                    if (user.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine($"1. Följer  2. Profil  3. Meddelanden ({unreadMessages.Count}) 4. Gillade 5. Radera tweet 6. Hem");
+                        Console.WriteLine($"1. Följer  2. Profil  3. Meddelanden ({unreadMessages.Count}) 4. Gillade 5. Välj tweet 6. Hem");
                     }
                     else
                     {
-                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Följer  4. Profil 5. Gillade 6. Hem");
+                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Följer  4. Profil 5. Gillade 6. Välj tweet 7. Hem");
                     }
                     break;
                 
@@ -250,13 +255,13 @@ class UserCLI
                     
                     ShowFollowers(username, currentMode);
                     
-                    if (foundUser.Username == loggedInUser.Username)
+                    if (user.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine($"1. Profil  2. Följare  3. Meddelanden ({unreadMessages.Count}) 4. Gillade 5. Radera tweet 6. Hem");
+                        Console.WriteLine($"1. Profil  2. Följare  3. Meddelanden ({unreadMessages.Count}) 4. Gillade 5. Välj tweet 6. Hem");
                     }
                     else
                     {
-                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Profil  4. Följare 5. Gillade 6. Hem");
+                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Profil  4. Följare 5. Gillade 6. Välj tweet 7. Hem");
                     }
                     break;
                 
@@ -294,14 +299,14 @@ class UserCLI
 
                     index -= 1;
                     
-                    foundUser = MessageHandler.GetConversation(index, conversations);
+                    user = MessageHandler.GetConversation(index, conversations);
                     currentMode = ViewMode.Messages;
                     continue;
                 
                 case ViewMode.Messages:
                     Console.Clear();
                     Console.WriteLine("-----Meddelanden-----");
-                    MessageCLI.ShowMessages(foundUser, false);
+                    MessageCLI.ShowMessages(user, false);
                     
                     Console.WriteLine("\n1. Skriv meddelande 2. Ta bort meddelande");
                     Console.WriteLine("Tryck esc för att gå tillbaka");
@@ -309,22 +314,22 @@ class UserCLI
                     switch (Console.ReadKey(true).Key)
                     {
                         case ConsoleKey.D1:
-                            MessageCLI.SendMessage(foundUser);
+                            MessageCLI.SendMessage(user);
                             continue;
                         
                         case ConsoleKey.D2:
-                            MessageCLI.RemoveMessage(foundUser); 
+                            MessageCLI.RemoveMessage(user); 
                             continue;
                         
                         case ConsoleKey.Escape:
-                            foundUser = UserHandler.GetUser(username);
+                            user = UserHandler.GetUser(username);
                             currentMode = ViewMode.Normal;
                             continue;
                     }
                     break;
             }
 
-            if(foundUser.Username == loggedInUser.Username)
+            if(user.Username == loggedInUser.Username)
             {
                 switch (Console.ReadKey(true).Key)
                 {
@@ -345,7 +350,9 @@ class UserCLI
                         break;
                     
                     case ConsoleKey.D5:
-                        currentMode = ViewMode.RemoveTweet;
+                        Console.Clear();
+                        RenderHeader(user);
+                        TweetCLI.ChooseTweet(userTweets);
                         break;
 
                     case ConsoleKey.D6:
@@ -379,6 +386,12 @@ class UserCLI
                         break;
 
                     case ConsoleKey.D6:
+                        Console.Clear();
+                        RenderHeader(user);
+                        TweetCLI.ChooseTweet(userTweets);
+                        break;
+                        
+                    case ConsoleKey.D7:    
                         return;
                 }
             }

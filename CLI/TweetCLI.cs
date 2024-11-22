@@ -179,43 +179,68 @@ class TweetCLI
         }
     }
 
-    public static void ChooseTweet()
-    {
-        Console.Clear();
+    public static void ChooseTweet(List<Tweet> tweets)
+    {        
+        ShowTweets(tweets, true);
         
-        ShowTweets(TweetHandler.tweets, true);
-        
-        Console.WriteLine($"Välj tweet 1-{TweetHandler.tweets.Count}");
+        Console.WriteLine($"Välj tweet 1-{tweets.Count}");
         int index = int.Parse(Console.ReadLine()) - 1;
-        var tweetIndex = TweetHandler.tweets[index].Id;
+        var tweet = tweets[index];
+        var tweetIndex = tweets[index].Id;
+        if(tweets[index].IsRetweet)
+        {
+            tweet = TweetHandler.GetOriginalTweet(tweets[index]);
+        }
         
         Console.Clear();
         while(true)
         {
-            ShowTweet(TweetHandler.tweets[index]);
+            ShowTweet(tweets[index]);
             
-            Console.WriteLine($"1. Gilla 2. Kommentera 3. Ta bort kommentar 4. Retweet 5.Hem");
-            var choice1 = Console.ReadKey(true).Key;
-            switch (choice1)
+            if(tweet.Author == UserCLI.loggedInUser.Username)
+            {
+                Console.WriteLine($"1. Gilla 2. Kommentera 3. Ta bort kommentar 4. Retweet 5. Radera Tweet 6. Tillbaka");
+            }
+            else
+            {
+                Console.WriteLine($"1. Gilla 2. Kommentera 3. Ta bort kommentar 4. Retweet 5. Tillbaka");
+            }
+            
+            var choice = Console.ReadKey(true).Key;
+            switch (choice)
             {
                 case ConsoleKey.D1:
                     TweetHandler.LikeUnlikeTweet(tweetIndex);
                     break;
                 
                 case ConsoleKey.D2:
-                    CommentCLI.CommentTweet(TweetHandler.tweets[index]);
+                    CommentCLI.CommentTweet(tweets[index]);
                     break;
                 
                 case ConsoleKey.D3:
-                    CommentCLI.RemoveComment(TweetHandler.tweets[index]); 
+                    CommentCLI.RemoveComment(tweets[index]); 
                     break;
                     
                 case ConsoleKey.D4:
                     TweetHandler.Retweet(tweetIndex);
-                    return;
+                    break;
 
                 case ConsoleKey.D5:
-                return; 
+                    if(tweet.Author == UserCLI.loggedInUser.Username)
+                    {
+                        RemoveTweet(tweet);
+                        return;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                    
+                case ConsoleKey.D6:
+                    if(tweet.Author == UserCLI.loggedInUser.Username)
+                        return;
+                    else
+                        continue;
             }
         }
     }
