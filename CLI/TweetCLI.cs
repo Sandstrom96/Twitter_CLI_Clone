@@ -38,32 +38,33 @@ class TweetCLI
 
     // Visar alla tweets från listan man tar in och kan visa index av alla tweets
     // om showIndex är sant
-    public static void ShowTweets(List<Tweet> tweet, bool showIndex)
+    public static void ShowTweets(List<Tweet> tweets, bool showIndex)
     {
-        foreach(Tweet t in tweet)
+        foreach(Tweet tweet in tweets)
         {
-            var i = tweet.IndexOf(t);
+            var i = tweets.IndexOf(tweet);
             
-            string likeHeart = Buttonhandler.LikeButton(t);
-            string retweetButton = Buttonhandler.RetweetButton(t);
+            string likeHeart = Buttonhandler.LikeButton(tweet);
+            string retweetButton = Buttonhandler.RetweetButton(tweet);
             
             if (showIndex)
             {
                 Console.Write($"{i + 1}. ");
             }
 
-            if (t.IsRetweet)
+            if (tweet.IsRetweet)
             {   
-                var originalTweet = TweetHandler.GetOriginalTweet(t);
+                var originalTweet = TweetHandler.GetOriginalTweet(tweet);
 
                 likeHeart = Buttonhandler.LikeButton(originalTweet);
                 retweetButton = Buttonhandler.RetweetButton(originalTweet);
                 
+                Console.WriteLine($"Retweet från: {tweet.Author}");
                 RenderTweet(originalTweet, likeHeart, retweetButton);
             }
             else
             {
-                RenderTweet(t, likeHeart, retweetButton);
+                RenderTweet(tweet, likeHeart, retweetButton);
             }
         }
     }
