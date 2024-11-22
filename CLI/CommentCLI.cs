@@ -2,9 +2,7 @@ class CommentCLI
 {
     public static void CommentTweet(Tweet tweet)
     {
-        Console.Clear();
-        TweetCLI.ShowTweet(tweet);
-        Console.WriteLine("Tryck esc för att avbryta");
+        Console.WriteLine("\nTryck Esc för att avbryta");
         Console.WriteLine("Skriv din kommentar:");
         
         string commentContent = Helpers.ReadUserInput();
@@ -16,7 +14,7 @@ class CommentCLI
 
         CommentHandler.AddComment(commentContent, tweet);
     }
-    public static void ShowComment (Tweet tweet, bool showIndex)
+    public static void ShowComments (Tweet tweet, bool showIndex)
     {
         var ownComment = CommentHandler.GetOwnComments(tweet);
         foreach(var c in tweet.Comments)
@@ -37,18 +35,19 @@ class CommentCLI
                     Console.Write($"{i + 1}. ");
                 }
             }
-    
-            Console.WriteLine($"{c.Content}"); 
-            Console.WriteLine($"{c.Author} {c.Timestamp:MM-dd HH:mm}");
-            Console.WriteLine("--------------------"); 
+
+            Console.WriteLine(c.Author);
+            Console.WriteLine(c.Content); 
+            Console.WriteLine(c.Timestamp.ToString("MM-dd HH:mm"));
+            Console.WriteLine("----------------------"); 
         }
     }
     public static void RemoveComment(Tweet tweet)
     {
+        Console.Clear();
+        TweetCLI.ShowTweet(tweet, true);
         var ownComment = CommentHandler.GetOwnComments(tweet);
-        ShowComment(tweet,true);
-        Console.WriteLine();
-        Console.WriteLine("Tryck esc för att gå tillbaka");
+        Console.WriteLine("\nTryck Esc för att gå tillbaka");
 
         if(tweet.Author == UserCLI.loggedInUser.Username)
         {
@@ -90,22 +89,20 @@ class CommentCLI
         
         var chosenComment = CommentHandler.GetCommentFromIndex((int)index,tweet, ownComment);
         
-        Console.WriteLine("Du vill ta bort meddelandet:");
-        Console.WriteLine("--------------------");
-        Console.WriteLine(chosenComment.Content);
+        Console.WriteLine("Du vill ta bort kommentaren:");
+        Console.WriteLine("----------------------");
         Console.WriteLine(chosenComment.Author);
-        Console.WriteLine(chosenComment.Timestamp);
-        Console.WriteLine(); 
+        Console.WriteLine(chosenComment.Content);
+        Console.WriteLine(chosenComment.Timestamp.ToString("MM-dd HH:mm"));
         
-        Console.WriteLine("1. Radera");
-        Console.WriteLine("Tryck Esc för att avbryta"); 
+        Console.WriteLine("\nTryck Enter för att radera"); 
         while (true)
         {
             var input = Console.ReadKey(true).Key;
 
             switch(input)
             {
-                case ConsoleKey.D1:
+                case ConsoleKey.Enter:
                 tweet.Comments.Remove(chosenComment); 
                 return;
 

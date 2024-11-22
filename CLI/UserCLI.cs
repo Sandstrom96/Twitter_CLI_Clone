@@ -1,5 +1,4 @@
 using System.Xml;
-
 class UserCLI
 {
     static User defaultUser = new User("", "", "");
@@ -7,7 +6,7 @@ class UserCLI
     public static void Register()
     {
         Console.WriteLine("--- Registrering ---");
-        Console.WriteLine("Tryck esc för att avbryta");
+        Console.WriteLine("Tryck Esc för att avbryta");
 
         string username;
         while (true)
@@ -103,7 +102,7 @@ class UserCLI
         while (!validUser)
         {
             Console.WriteLine("----- Logga in -----");
-            Console.WriteLine("Tryck esc för att avbryta");
+            Console.WriteLine("Tryck Esc för att avbryta");
             
             string username;
             string password;
@@ -174,8 +173,8 @@ class UserCLI
     {
         Console.WriteLine(user.Name);
         Console.WriteLine($"@{user.Username}");
-        Console.WriteLine($"Följare {user.Followers.Count}\tFöljer {user.Following.Count}");
-        Console.WriteLine("---------------------");
+        Console.WriteLine($"Följare ({user.Followers.Count})  Följer ({user.Following.Count})");
+        Console.WriteLine("----------------------");
     }
     
     //Visar profilen enligt indatan tex. den inloggade eller sökta profilen
@@ -193,6 +192,7 @@ class UserCLI
             var unreadMessages = MessageHandler.UnreadMessage();
             
             Console.Clear();
+            Console.WriteLine("------- Profil -------");
             RenderHeader(user);
             
             switch(currentMode)
@@ -202,65 +202,67 @@ class UserCLI
                     
                     if (user.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine($"1. Följer  2. Följare  3. Meddelanden ({unreadMessages.Count}) 4. Gillade 5. Välj tweet 6. Hem");
+                        Console.WriteLine($"\n[1. Följer] [2. Följare] [3. Meddelanden ({unreadMessages.Count})] [4. Gillade] [5. Välj tweet] [6. Hem]");
                     }
                     else
                     {
-                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Följer  4. Följare 5. Gillade 6. Välj tweet 7. Hem");
+                        Console.WriteLine($"\n[1. {followButton}] [2. Skicka meddelande] [3. Följer] [4. Följare] [5. Gillade] [6. Välj tweet] [7. Hem]");
                     }
                     break;
                 
                 case ViewMode.LikedTweets:
-                    Console.WriteLine("Gillade");
-                    Console.WriteLine("---------------------");
+                    Console.WriteLine("       Gillade");
+                    Console.WriteLine("----------------------");
                     
                     TweetCLI.ShowLikedTweets(user.Username);
                     
                     if (user.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine($"1. Följer  2. Följare  3. Meddelanden ({unreadMessages.Count}) 4. Profil 5. Välj tweet 6. Hem");
+                        Console.WriteLine($"\n[1. Följer] [2. Följare] [3. Meddelanden ({unreadMessages.Count})] [4. Profil] [5. Välj tweet] [6. Hem]");
                     }
                     else
                     {
-                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Följer  4. Följare 5. Profil 6. Välj tweet 7. Hem");
+                        Console.WriteLine($"\n[1. {followButton}] [2. Skicka meddelande] [3. Följer] [4. Följare] [5. Profil] [6. Välj tweet] [7. Hem]");
                     }
                     break;
 
  
                 case ViewMode.Followers:
-                    Console.WriteLine("Följare");
-                    Console.WriteLine("---------------------");
+                    Console.WriteLine("        Följare");
+                    Console.WriteLine("----------------------");
                     
                     ShowFollowers(username, currentMode);
                     
                     if (user.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine($"1. Följer  2. Profil  3. Meddelanden ({unreadMessages.Count}) 4. Gillade 5. Välj tweet 6. Hem");
+                        Console.WriteLine($"\n[1. Följer] [2. Profil] [3. Meddelanden ({unreadMessages.Count})] [4. Gillade] [5. Välj tweet] [6. Hem]");
                     }
                     else
                     {
-                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Följer  4. Profil 5. Gillade 6. Välj tweet 7. Hem");
+                        Console.WriteLine($"\n[1. {followButton}] [2. Skicka meddelande] [3. Följer] [4. Profil] [5. Gillade] [6. Välj tweet] [7. Hem]");
                     }
                     break;
                 
                 case ViewMode.Following:
-                    Console.WriteLine("Följer");
-                    Console.WriteLine("---------------------");
+                    Console.WriteLine("        Följer");
+                    Console.WriteLine("----------------------");
                     
                     ShowFollowers(username, currentMode);
                     
                     if (user.Username == loggedInUser.Username)
                     {
-                        Console.WriteLine($"1. Profil  2. Följare  3. Meddelanden ({unreadMessages.Count}) 4. Gillade 5. Välj tweet 6. Hem");
+                        Console.WriteLine($"\n[1. Profil] [2. Följare] [3. Meddelanden ({unreadMessages.Count})] [4. Gillade] [5. Välj tweet] [6. Hem]");
                     }
                     else
                     {
-                        Console.WriteLine($"1. {followButton} 2. Skicka meddelande 3. Profil  4. Följare 5. Gillade 6. Välj tweet 7. Hem");
+                        Console.WriteLine($"\n[1. {followButton}] [2. Skicka meddelande] [3. Profil] [4. Följare] [5. Gillade] [6. Välj tweet] [7. Hem]");
                     }
                     break;
                 
                 case ViewMode.Conversations:
                     var conversations = MessageHandler.Conversations();
+                    Console.WriteLine("     Meddelanden");
+                    Console.WriteLine("----------------------\n");
 
                     if (conversations.Count <= 0)
                     {
@@ -276,7 +278,7 @@ class UserCLI
                     {
                         Console.WriteLine("\nVälj vilken konversation du vill öppna");
                     }
-                    Console.WriteLine("Tryck esc för att gå tillbaka");
+                    Console.WriteLine("Tryck Esc för att gå tillbaka");
                     
                     var input = Helpers.ReadUserInput();
 
@@ -298,12 +300,12 @@ class UserCLI
                     continue;
                 
                 case ViewMode.Messages:
-                    Console.Clear();
-                    Console.WriteLine("-----Meddelanden-----");
+                    Console.WriteLine("     Meddelanden");
+                    Console.WriteLine("----------------------");
                     MessageCLI.ShowMessages(user, false);
                     
                     Console.WriteLine("\n1. Skriv meddelande 2. Ta bort meddelande");
-                    Console.WriteLine("Tryck esc för att gå tillbaka");
+                    Console.WriteLine("Tryck Esc för att gå tillbaka");
                     
                     switch (Console.ReadKey(true).Key)
                     {
@@ -418,7 +420,9 @@ class UserCLI
 
     public static List<User>? Search()
     {
-        Console.WriteLine("Tryck esc för att gå tillbaka"); 
+        Console.Clear();
+        Console.WriteLine("------- Sök -------");
+        Console.WriteLine("Tryck Esc för att gå tillbaka"); 
         Console.Write("Sök: ");
         
         var search = Helpers.ReadUserInput();
@@ -438,17 +442,28 @@ class UserCLI
     }
     public static void ShowSearchedProfiles(List<User> userList)
     {
-        Console.WriteLine("Profiler:");
-        foreach (var u in userList)
+        Console.WriteLine("\nProfiler:");
+
+        if(userList.Count == 0)
         {
-            var i = userList.IndexOf(u);
-            Console.WriteLine($"{i + 1}. {u.Username}");
+            Console.WriteLine("Finns inga användare som liknar din sökning");
+        }
+        else
+        {
+            foreach (var u in userList)
+            {
+                var i = userList.IndexOf(u);
+                Console.WriteLine($"{i + 1}. {u.Username}");
+            }
         }
     }
     public static User? ChooseSearch(List<User> userList)
     {
-        Console.WriteLine($"Välj användare (1-{userList.Count})");
-        
+        if (userList.Count > 0)
+        {
+            Console.WriteLine($"Välj användare (1-{userList.Count})");
+        }
+
         var index = -1;
         while (index > userList.Count || index < userList.Count)
         {

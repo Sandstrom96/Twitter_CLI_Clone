@@ -16,8 +16,9 @@ class MessageCLI
 
     public static void ShowMessages(User user, bool remove)
     {
+        Console.WriteLine(user.Name);
         Console.WriteLine($"@{user.Username}");
-        Console.WriteLine("---------------------");
+        Console.WriteLine("----------------------");
         
         var messages = MessageHandler.GetMessagesBetweenUsers(user);
         var ownMessages = MessageHandler.GetSentMessages(user);
@@ -34,7 +35,7 @@ class MessageCLI
             Console.WriteLine($"Från: {m.Sender}");
             Console.WriteLine(m.Text);
             Console.WriteLine($"{m.Date:MM-dd HH:mm}");
-            Console.WriteLine("---------------------");
+            Console.WriteLine("----------------------");
             
         }
         MessageHandler.SetMessageToRead(user);
@@ -43,8 +44,13 @@ class MessageCLI
     public static void RemoveMessage(User user)
     {
         var messages = MessageHandler.GetSentMessages(user);
+
+        if (messages.Count == 0)
+        {   
+            return;
+        }
         ShowMessages(user,true);
-        Console.WriteLine("Tryck esc för att gå tillbaka");
+        Console.WriteLine("\nTryck Esc för att gå tillbaka");
         Console.WriteLine($"Välj vilken du vill radera (1-{messages.Count})");
         
         int? index; 
@@ -72,7 +78,7 @@ class MessageCLI
         Console.WriteLine(chosenMessage.Text);
         Console.WriteLine(chosenMessage.Date);
 
-        Console.WriteLine("1. Radera");
+        Console.WriteLine("\nTryck Enter för att radera");
         Console.WriteLine("Tryck Esc för att avbryta"); 
         while (true)
         {
@@ -80,7 +86,7 @@ class MessageCLI
 
             switch(input)
             {
-                case ConsoleKey.D1:
+                case ConsoleKey.Enter:
                 MessageHandler.RemoveMessage(chosenMessage,user);  
                 return;
 

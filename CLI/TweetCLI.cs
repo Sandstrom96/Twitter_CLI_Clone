@@ -2,7 +2,7 @@ class TweetCLI
 {
     public static void MakeTweet()
     {
-        Console.WriteLine("Tryck esc för att gå tillbaka");
+        Console.WriteLine("\nTryck Esc för att gå tillbaka");
         Console.Write("Skriv din tweet: ");
         string tweetContent;
         while(true)
@@ -22,16 +22,16 @@ class TweetCLI
             break;
         }
 
-        Console.WriteLine("1. Tweeta 2. Ångra");
+        Console.WriteLine("Tryck enter för att Tweeta");
         var choice = Console.ReadKey(intercept: true).Key;
         
         switch (choice)
         {
-            case ConsoleKey.D1:
+            case ConsoleKey.Enter:
                 TweetHandler.AddTweet(tweetContent);
                 break;
 
-            case ConsoleKey.D2:
+            case ConsoleKey.Escape:
             return; 
         }
     }
@@ -87,11 +87,11 @@ class TweetCLI
             Console.WriteLine("---- Kommentarer -----");
             if (showIndex)
             {
-                CommentCLI.ShowComment(originalTweet,true);
+                CommentCLI.ShowComments(originalTweet,true);
             }
             else
             {
-                CommentCLI.ShowComment(originalTweet,false);
+                CommentCLI.ShowComments(originalTweet,false);
             }
             //CommentCLI.ShowComment(originalTweet,false);
         }
@@ -101,11 +101,11 @@ class TweetCLI
             Console.WriteLine("---- Kommentarer -----");
             if (showIndex)
             {
-                CommentCLI.ShowComment(tweet,true);
+                CommentCLI.ShowComments(tweet,true);
             }
             else
             {
-                CommentCLI.ShowComment(tweet,false);
+                CommentCLI.ShowComments(tweet,false);
             }
             //CommentCLI.ShowComment(tweet,false);
         }
@@ -117,11 +117,12 @@ class TweetCLI
         Console.WriteLine(tweet.Content);
         Console.WriteLine(tweet.Date.ToString("MM-dd HH:mm"));
         Console.WriteLine($"{likeHeart} ({tweet.Likes.Count}) 💬 ({tweet.Comments.Count}) {retweetButton} ({tweet.Retweet.Count})");
-        Console.WriteLine("---------------------");
+        Console.WriteLine("----------------------");
     }
 
     public static void RemoveTweet(Tweet tweet)
     {
+        Console.Clear();
         var retweets = TweetHandler.tweets.Where(t => t.OriginalTweetId == tweet.Id).ToList();
         
         Console.WriteLine("Du vill ta bort tweeten:");
@@ -129,7 +130,7 @@ class TweetCLI
         Console.WriteLine(tweet.Content);
         Console.WriteLine(tweet.Date.ToString("MM-dd HH:mm"));
 
-        Console.WriteLine("1. Radera");
+        Console.WriteLine("\nTryck Enter för att radera");
         Console.WriteLine("Tryck Esc för att avbryta"); 
         while (true)
         {
@@ -137,13 +138,12 @@ class TweetCLI
 
             switch(input)
             {
-                case ConsoleKey.D1:
+                case ConsoleKey.Enter:
                 TweetHandler.RemoveTweet(tweet, retweets);  
                 return;
 
                 case ConsoleKey.Escape: 
                 return; 
-
             }
         }
     }
@@ -165,15 +165,39 @@ class TweetCLI
 
     public static void ChooseTweet(List<Tweet> tweets)
     {        
+        Console.WriteLine("----- Välj Tweet -----");
         ShowTweets(tweets, true);
         
-        Console.WriteLine($"Välj tweet 1-{tweets.Count}");
-        int index = int.Parse(Console.ReadLine()) - 1;
-        var tweet = tweets[index];
-        var tweetIndex = tweets[index].Id;
-        if(tweets[index].IsRetweet)
+        if (tweets.Count == 0)
         {
-            tweet = TweetHandler.GetOriginalTweet(tweets[index]);
+            Console.WriteLine("\nHär var det tomt");
+        }
+        
+        Console.WriteLine("\nTryck Esc för att gå tillbaka");
+        
+        if (tweets.Count > 0)
+        {
+            Console.WriteLine($"Välj tweet 1-{tweets.Count}");
+        }
+        
+        int? index; 
+        while (true)
+        {   
+            string input = Helpers.ReadUserInput();
+
+            if (input == null)
+            {
+                return;
+            }
+
+            index = Helpers.CheckUserInput(tweets.Count,input);
+
+            if(index > 0 && index <= tweets.Count)
+            {
+                break; 
+            }
+        }
+        
         var tweet = tweets[(int)index - 1];
         var tweetIndex = tweet.Id;
         
@@ -183,19 +207,18 @@ class TweetCLI
             originalTweet = TweetHandler.GetOriginalTweet(tweet);
         }
         
-        Console.Clear();
         while(true)
         {
-            ShowTweet(tweets[index]);
+            Console.Clear();
             ShowTweet(tweets[(int)index - 1], false);
             
             if(tweet.Author == UserCLI.loggedInUser.Username)
             {
-                Console.WriteLine($"1. Gilla 2. Kommentera 3. Ta bort kommentar 4. Retweet 5. Radera Tweet 6. Tillbaka");
+                Console.WriteLine($"\n[1. Gilla] [2. Kommentera] [3. Ta bort kommentar] [4. Retweet] [5. Radera Tweet] [6. Tillbaka]");
             }
             else
             {
-                Console.WriteLine($"1. Gilla 2. Kommentera 3. Ta bort kommentar 4. Retweet 5. Tillbaka");
+                Console.WriteLine($"\n[1. Gilla] [2. Kommentera] [3. Ta bort kommentar] [4. Retweet] [5. Tillbaka]");
             }
             
             var choice = Console.ReadKey(true).Key;

@@ -8,17 +8,16 @@ class Program
         UserHandler.users = JsonSerializer.Deserialize<List<User>>(File.ReadAllText("Users.json"));
         TweetHandler.tweets = JsonSerializer.Deserialize<List<Tweet>>(File.ReadAllText("Tweets.json"));
         var options = new JsonSerializerOptions{WriteIndented = true}; 
-        //var b = new User("Oskar", "123" , "Oskar");
-        //UserHandler.users.Add(b);
         bool validUser = false;
 
         //Meny där användaren får antingen registrera sig eller logga in 
         while (!validUser)
         {
+            Console.Clear();
             Console.WriteLine("Välkommen till Shitter");
             Console.WriteLine("1. Registrera");
             Console.WriteLine("2. Logga in");
-            Console.WriteLine("Tryck esc för att stänga programmet");
+            Console.WriteLine("Tryck Esc för att stänga programmet");
             var choice = Console.ReadKey(true).Key;
             
             switch (choice)
@@ -52,7 +51,7 @@ class Program
             
             TweetCLI.ShowTweets(TweetHandler.tweets, false); //Visar alla tweets i flödet
             
-            Console.WriteLine("1. Tweet 2. Profil 3. Sök 4. Välj tweet 5. Avsluta");
+            Console.WriteLine("\n[1. Tweet] [2. Profil] [3. Sök] [4. Välj tweet] [5. Avsluta]");
             
             var choice = Console.ReadKey(true).Key;
             
@@ -84,6 +83,7 @@ class Program
                     break;
 
                 case ConsoleKey.D4: //TODO: lägga till meny för gilla, kommentera, gå tillbaka
+                    Console.Clear();
                     TweetCLI.ChooseTweet(TweetHandler.tweets);
                     break;
 
