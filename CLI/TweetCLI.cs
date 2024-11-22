@@ -157,6 +157,13 @@ class TweetCLI
         if(tweets[index].IsRetweet)
         {
             tweet = TweetHandler.GetOriginalTweet(tweets[index]);
+        var tweet = tweets[(int)index - 1];
+        var tweetIndex = tweet.Id;
+        
+        var originalTweet = tweet;
+        if(tweet.IsRetweet)
+        {
+            originalTweet = TweetHandler.GetOriginalTweet(tweet);
         }
         
         Console.Clear();
@@ -189,13 +196,21 @@ class TweetCLI
                     break;
                     
                 case ConsoleKey.D4:
-                    TweetHandler.Retweet(tweetIndex);
-                    return;
+                    if(!tweet.IsRetweet || tweet.Author != UserCLI.loggedInUser.Username)
+                    {
+                        TweetHandler.Retweet(tweetIndex);
+                        continue;
+                    }
+                    else
+                    {
+                        TweetHandler.Retweet(tweetIndex);
+                        return;
+                    }
 
                 case ConsoleKey.D5:
                     if(tweet.Author == UserCLI.loggedInUser.Username)
                     {
-                        RemoveTweet(tweet);
+                        RemoveTweet(originalTweet);
                         return;
                     }
                     else
