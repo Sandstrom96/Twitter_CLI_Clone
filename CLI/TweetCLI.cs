@@ -190,7 +190,7 @@ class TweetCLI
                     
                 case ConsoleKey.D4:
                     TweetHandler.Retweet(tweetIndex);
-                    break;
+                    return;
 
                 case ConsoleKey.D5:
                     if(tweet.Author == UserCLI.loggedInUser.Username)
