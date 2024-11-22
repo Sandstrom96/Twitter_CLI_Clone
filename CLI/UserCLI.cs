@@ -13,7 +13,7 @@ class UserCLI
         {
             Console.Write("Ange användarnamn: ");
             username = Helpers.ReadUserInput();
-            
+
             if (username == null)
             {
                 Console.Clear();
@@ -30,7 +30,7 @@ class UserCLI
             Helpers.ShowErrorMessage("Ditt användarnamn kan inte innehålla mellanslag.");
             Console.WriteLine($"Detta är nu ditt användarnamn: {username}");
 
-            if(!UserHandler.IsUsernameAvailable(username))
+            if (!UserHandler.IsUsernameAvailable(username))
             {
                 Helpers.ShowErrorMessage("Användarnamn upptaget.");
                 continue;
@@ -38,8 +38,8 @@ class UserCLI
             break;
         }
 
-        string password;  
-        while (true)    
+        string password;
+        while (true)
         {
             Console.Write("Ange lösenord: ");
             password = Helpers.ReadUserInput();
@@ -98,12 +98,12 @@ class UserCLI
     public static bool LogIn()
     {
         bool validUser = false;
-        
+
         while (!validUser)
         {
             Console.WriteLine("----- Logga in -----");
             Console.WriteLine("Tryck Esc för att avbryta");
-            
+
             string username;
             string password;
             while (true)
@@ -134,28 +134,28 @@ class UserCLI
 
                 if (string.IsNullOrWhiteSpace(password))
                 {
-                    Helpers.ShowErrorMessage("Lösenordet får inte vara tomt."); 
+                    Helpers.ShowErrorMessage("Lösenordet får inte vara tomt.");
                     continue;
                 }
 
                 if (!UserHandler.validUsername(username))
                 {
-                    Helpers.ShowErrorMessage("Kan inte hitta ett konto med det användarnamn"); 
+                    Helpers.ShowErrorMessage("Kan inte hitta ett konto med det användarnamn");
                     continue;
                 }
 
                 if (!UserHandler.validPassword(password))
                 {
-                    Helpers.ShowErrorMessage("Du har angett fel lösenord!"); 
+                    Helpers.ShowErrorMessage("Du har angett fel lösenord!");
                     continue;
                 }
-                
+
                 loggedInUser = UserHandler.GetLoggedInUser(username);
                 validUser = true;
                 break;
             }
         }
-        
+
         return validUser;
     }
 
@@ -176,30 +176,30 @@ class UserCLI
         Console.WriteLine($"Följare ({user.Followers.Count})  Följer ({user.Following.Count})");
         Console.WriteLine("----------------------");
     }
-    
+
     //Visar profilen enligt indatan tex. den inloggade eller sökta profilen
     public static void ShowUserProfile(User username)
-    {           
+    {
         User user = UserHandler.GetUser(username);
 
         var currentMode = ViewMode.Normal;
-        
+
         while (true)
         {
             string followButton = Buttonhandler.FollowButton(username);
-            
+
             var userTweets = TweetHandler.GetUserTweets(username);
-            var unreadMessages = MessageHandler.UnreadMessage();
-            
+            var unreadMessages = MessageHandler.GetUnreadMessages();
+
             Console.Clear();
             Console.WriteLine("------- Profil -------");
             RenderHeader(user);
-            
-            switch(currentMode)
+
+            switch (currentMode)
             {
                 case ViewMode.Normal:
                     TweetCLI.ShowTweets(userTweets, false);
-                    
+
                     if (user.Username == loggedInUser.Username)
                     {
                         Console.WriteLine($"\n[1. Följer] [2. Följare] [3. Meddelanden ({unreadMessages.Count})] [4. Gillade] [5. Välj tweet] [6. Hem]");
@@ -209,13 +209,13 @@ class UserCLI
                         Console.WriteLine($"\n[1. {followButton}] [2. Skicka meddelande] [3. Följer] [4. Följare] [5. Gillade] [6. Välj tweet] [7. Hem]");
                     }
                     break;
-                
+
                 case ViewMode.LikedTweets:
                     Console.WriteLine("       Gillade");
                     Console.WriteLine("----------------------");
-                    
+
                     TweetCLI.ShowLikedTweets(user.Username);
-                    
+
                     if (user.Username == loggedInUser.Username)
                     {
                         Console.WriteLine($"\n[1. Följer] [2. Följare] [3. Meddelanden ({unreadMessages.Count})] [4. Profil] [5. Välj tweet] [6. Hem]");
@@ -226,13 +226,13 @@ class UserCLI
                     }
                     break;
 
- 
+
                 case ViewMode.Followers:
                     Console.WriteLine("        Följare");
                     Console.WriteLine("----------------------");
-                    
+
                     ShowFollowers(username, currentMode);
-                    
+
                     if (user.Username == loggedInUser.Username)
                     {
                         Console.WriteLine($"\n[1. Följer] [2. Profil] [3. Meddelanden ({unreadMessages.Count})] [4. Gillade] [5. Välj tweet] [6. Hem]");
@@ -242,13 +242,13 @@ class UserCLI
                         Console.WriteLine($"\n[1. {followButton}] [2. Skicka meddelande] [3. Följer] [4. Profil] [5. Gillade] [6. Välj tweet] [7. Hem]");
                     }
                     break;
-                
+
                 case ViewMode.Following:
                     Console.WriteLine("        Följer");
                     Console.WriteLine("----------------------");
-                    
+
                     ShowFollowers(username, currentMode);
-                    
+
                     if (user.Username == loggedInUser.Username)
                     {
                         Console.WriteLine($"\n[1. Profil] [2. Följare] [3. Meddelanden ({unreadMessages.Count})] [4. Gillade] [5. Välj tweet] [6. Hem]");
@@ -258,9 +258,9 @@ class UserCLI
                         Console.WriteLine($"\n[1. {followButton}] [2. Skicka meddelande] [3. Profil] [4. Följare] [5. Gillade] [6. Välj tweet] [7. Hem]");
                     }
                     break;
-                
+
                 case ViewMode.Conversations:
-                    var conversations = MessageHandler.Conversations();
+                    var conversations = MessageHandler.GetConversations();
                     Console.WriteLine("     Meddelanden");
                     Console.WriteLine("----------------------\n");
 
@@ -268,18 +268,18 @@ class UserCLI
                     {
                         Console.WriteLine("Här var det tomt.\n");
                     }
-                    
+
                     for (int i = 0; i < conversations.Count; i++)
                     {
                         Console.WriteLine($"{i + 1}. {conversations[i]} ({MessageHandler.UnreadConversations(conversations[i]).Count})");
                     }
-                    
+
                     if (conversations.Count > 0)
                     {
                         Console.WriteLine("\nVälj vilken konversation du vill öppna");
                     }
                     Console.WriteLine("Tryck Esc för att gå tillbaka");
-                    
+
                     var input = Helpers.ReadUserInput();
 
                     if (input == null)
@@ -288,35 +288,35 @@ class UserCLI
                         continue;
                     }
 
-                    if(!int.TryParse(input, out var index) || index <= 0 || index > conversations.Count)
+                    if (!int.TryParse(input, out var index) || index <= 0 || index > conversations.Count)
                     {
                         continue;
                     }
 
                     index -= 1;
-                    
+
                     user = MessageHandler.GetConversation(index, conversations);
                     currentMode = ViewMode.Messages;
                     continue;
-                
+
                 case ViewMode.Messages:
                     Console.WriteLine("     Meddelanden");
                     Console.WriteLine("----------------------");
                     MessageCLI.ShowMessages(user, false);
-                    
+
                     Console.WriteLine("\n1. Skriv meddelande 2. Ta bort meddelande");
                     Console.WriteLine("Tryck Esc för att gå tillbaka");
-                    
+
                     switch (Console.ReadKey(true).Key)
                     {
                         case ConsoleKey.D1:
                             MessageCLI.SendMessage(user);
                             continue;
-                        
+
                         case ConsoleKey.D2:
-                            MessageCLI.RemoveMessage(user); 
+                            MessageCLI.RemoveMessage(user);
                             continue;
-                        
+
                         case ConsoleKey.Escape:
                             user = UserHandler.GetUser(username);
                             currentMode = ViewMode.Normal;
@@ -325,7 +325,7 @@ class UserCLI
                     break;
             }
 
-            if(user.Username == loggedInUser.Username)
+            if (user.Username == loggedInUser.Username)
             {
                 switch (Console.ReadKey(true).Key)
                 {
@@ -336,7 +336,7 @@ class UserCLI
                     case ConsoleKey.D2:
                         currentMode = currentMode == ViewMode.Followers ? ViewMode.Normal : ViewMode.Followers;
                         break;
-                    
+
                     case ConsoleKey.D3:
                         currentMode = ViewMode.Conversations;
                         break;
@@ -344,7 +344,7 @@ class UserCLI
                     case ConsoleKey.D4:
                         currentMode = currentMode == ViewMode.LikedTweets ? ViewMode.Normal : ViewMode.LikedTweets;
                         break;
-                    
+
                     case ConsoleKey.D5:
                         Console.Clear();
                         RenderHeader(user);
@@ -352,7 +352,7 @@ class UserCLI
                         break;
 
                     case ConsoleKey.D6:
-                    return;
+                        return;
                 }
             }
             // Visar den sökta profilen
@@ -386,8 +386,8 @@ class UserCLI
                         RenderHeader(user);
                         TweetCLI.ChooseTweet(userTweets);
                         break;
-                        
-                    case ConsoleKey.D7:    
+
+                    case ConsoleKey.D7:
                         return;
                 }
             }
@@ -408,7 +408,7 @@ class UserCLI
                     Console.WriteLine($"{userFound.Followers[i].Name} | @{userFound.Followers[i].Username}");
                 }
                 break;
-        
+
             case ViewMode.Following:
                 for (int i = 0; i < userFound.Following.Count; i++)
                 {
@@ -422,18 +422,18 @@ class UserCLI
     {
         Console.Clear();
         Console.WriteLine("------- Sök -------");
-        Console.WriteLine("Tryck Esc för att gå tillbaka"); 
+        Console.WriteLine("Tryck Esc för att gå tillbaka");
         Console.Write("Sök: ");
-        
+
         var search = Helpers.ReadUserInput();
-        
+
         if (search == null)
         {
             return null;
         }
 
         var userList = UserHandler.GetSearchUsers(search);
-        
+
         if (userList == null)
         {
             return null;
@@ -444,7 +444,7 @@ class UserCLI
     {
         Console.WriteLine("\nProfiler:");
 
-        if(userList.Count == 0)
+        if (userList.Count == 0)
         {
             Console.WriteLine("Finns inga användare som liknar din sökning");
         }
@@ -457,6 +457,7 @@ class UserCLI
             }
         }
     }
+
     public static User? ChooseSearch(List<User> userList)
     {
         if (userList.Count > 0)
@@ -474,9 +475,9 @@ class UserCLI
                 return null;
             }
 
-            if(!int.TryParse(input, out index) || index <= 0 || index > userList.Count)
+            if (!int.TryParse(input, out index) || index <= 0 || index > userList.Count)
             {
-                Helpers.ShowErrorMessage("Ogiltigt index. Försök igen!"); 
+                Helpers.ShowErrorMessage("Ogiltigt index. Försök igen!");
                 continue;
             }
         }

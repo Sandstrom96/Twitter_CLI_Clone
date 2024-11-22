@@ -3,7 +3,7 @@ class CommentHandler
     public static void AddComment(string commentContent, Tweet tweet)
     {
         var comment = new Comment(commentContent, UserCLI.loggedInUser.Username);
-            
+
         tweet.Comments.Add(comment);
     }
 
@@ -14,20 +14,20 @@ class CommentHandler
 
     public static Comment GetCommentFromIndex(int index, Tweet tweet, List<Comment> ownComment)
     {
-        
-        if(tweet.Author == UserCLI.loggedInUser.Username)
+
+        if (tweet.Author == UserCLI.loggedInUser.Username)
         {
-            return tweet.Comments[index -1];
+            return tweet.Comments[index - 1];
         }
         else
         {
-            return ownComment[index -1];
+            return ownComment[index - 1];
         }
     }
 
     public static void SortComments(List<Tweet> tweets)
     {
-        foreach(var t in tweets)
+        foreach (var t in tweets)
         {
             t.Comments = t.Comments.OrderByDescending(c => c.Timestamp).ToList();
         }

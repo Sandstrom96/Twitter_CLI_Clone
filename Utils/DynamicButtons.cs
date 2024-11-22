@@ -11,9 +11,9 @@ public static class Buttonhandler
         {
             return "Avfölj";
         }
-        
+
     }
-        public static string LikeButton(Tweet tweet)
+    public static string LikeButton(Tweet tweet)
     {
         if (!tweet.Likes.Any(u => u == UserCLI.loggedInUser.Username))
         {

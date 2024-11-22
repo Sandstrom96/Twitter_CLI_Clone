@@ -3,16 +3,18 @@ using System.Text;
 static class UserHandler
 {
     public static List<User> users = new List<User>();
-    
+
     public static bool IsUsernameAvailable(string username)
     {
-        if(users.Any(x => x.Username.ToLower() == username.ToLower()))
+        if (users.Any(x => x.Username.ToLower() == username.ToLower()))
         {
             return false;
         }
         return true;
     }
-    
+
+    // Kollar om användaren råkat trycka mellanslag
+    // tar bort mellanslagen och retunerar användarnamnet
     public static string CheckUsernameForWhitespaces(string username)
     {
         if (username.Contains(" "))
@@ -29,10 +31,10 @@ static class UserHandler
     }
 
     public static bool validUsername(string username)
-    {       
+    {
         foreach (var u in users)
         {
-            if(u.Username.ToLower() == username.ToLower())
+            if (u.Username.ToLower() == username.ToLower())
             {
                 return true;
             }
@@ -44,7 +46,7 @@ static class UserHandler
     {
         foreach (var u in users)
         {
-            if(u.Password == password)
+            if (u.Password == password)
             {
                 return true;
             }
@@ -61,12 +63,12 @@ static class UserHandler
     {
         return users.FirstOrDefault(u => u.Username.ToLower() == username.ToLower());
     }
-    
-    
+
+
     public static void FollowUnfollow(User user)
     {
         User chosenUser = GetUser(user);
-        
+
         if (!chosenUser.Followers.Any(u => u == UserCLI.loggedInUser))
         {
             chosenUser.Followers.Add(UserCLI.loggedInUser);

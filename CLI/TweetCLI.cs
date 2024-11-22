@@ -4,8 +4,9 @@ class TweetCLI
     {
         Console.WriteLine("\nTryck Esc för att gå tillbaka");
         Console.Write("Skriv din tweet: ");
+
         string tweetContent;
-        while(true)
+        while (true)
         {
             tweetContent = Helpers.ReadUserInput();
 
@@ -24,7 +25,7 @@ class TweetCLI
 
         Console.WriteLine("Tryck enter för att Tweeta");
         var choice = Console.ReadKey(intercept: true).Key;
-        
+
         switch (choice)
         {
             case ConsoleKey.Enter:
@@ -32,7 +33,7 @@ class TweetCLI
                 break;
 
             case ConsoleKey.Escape:
-            return; 
+                return;
         }
     }
 
@@ -40,25 +41,25 @@ class TweetCLI
     // om showIndex är sant
     public static void ShowTweets(List<Tweet> tweets, bool showIndex)
     {
-        foreach(Tweet tweet in tweets)
+        foreach (Tweet tweet in tweets)
         {
             var i = tweets.IndexOf(tweet);
-            
+
             string likeHeart = Buttonhandler.LikeButton(tweet);
             string retweetButton = Buttonhandler.RetweetButton(tweet);
-            
+
             if (showIndex)
             {
                 Console.Write($"{i + 1}. ");
             }
 
             if (tweet.IsRetweet)
-            {   
+            {
                 var originalTweet = TweetHandler.GetOriginalTweet(tweet);
 
                 likeHeart = Buttonhandler.LikeButton(originalTweet);
                 retweetButton = Buttonhandler.RetweetButton(originalTweet);
-                
+
                 Console.WriteLine($"Retweet från: {tweet.Author}");
                 RenderTweet(originalTweet, likeHeart, retweetButton);
             }
@@ -74,26 +75,25 @@ class TweetCLI
     {
         string likeHeart = Buttonhandler.LikeButton(tweet);
         string retweetButton = Buttonhandler.RetweetButton(tweet);
-        
+
         if (tweet.IsRetweet)
-        {   
+        {
             var originalTweet = TweetHandler.GetOriginalTweet(tweet);
-            
+
             likeHeart = Buttonhandler.LikeButton(originalTweet);
             retweetButton = Buttonhandler.RetweetButton(originalTweet);
-            
+
             Console.WriteLine($"Retweet från: {tweet.Author}");
             RenderTweet(originalTweet, likeHeart, retweetButton);
             Console.WriteLine("---- Kommentarer -----");
             if (showIndex)
             {
-                CommentCLI.ShowComments(originalTweet,true);
+                CommentCLI.ShowComments(originalTweet, true);
             }
             else
             {
-                CommentCLI.ShowComments(originalTweet,false);
+                CommentCLI.ShowComments(originalTweet, false);
             }
-            //CommentCLI.ShowComment(originalTweet,false);
         }
         else
         {
@@ -101,13 +101,12 @@ class TweetCLI
             Console.WriteLine("---- Kommentarer -----");
             if (showIndex)
             {
-                CommentCLI.ShowComments(tweet,true);
+                CommentCLI.ShowComments(tweet, true);
             }
             else
             {
-                CommentCLI.ShowComments(tweet,false);
+                CommentCLI.ShowComments(tweet, false);
             }
-            //CommentCLI.ShowComment(tweet,false);
         }
     }
 
@@ -124,65 +123,65 @@ class TweetCLI
     {
         Console.Clear();
         var retweets = TweetHandler.tweets.Where(t => t.OriginalTweetId == tweet.Id).ToList();
-        
+
         Console.WriteLine("Du vill ta bort tweeten:");
         Console.WriteLine(tweet.Author);
         Console.WriteLine(tweet.Content);
         Console.WriteLine(tweet.Date.ToString("MM-dd HH:mm"));
 
         Console.WriteLine("\nTryck Enter för att radera");
-        Console.WriteLine("Tryck Esc för att avbryta"); 
+        Console.WriteLine("Tryck Esc för att avbryta");
         while (true)
         {
             var input = Console.ReadKey(true).Key;
 
-            switch(input)
+            switch (input)
             {
                 case ConsoleKey.Enter:
-                TweetHandler.RemoveTweet(tweet, retweets);  
-                return;
+                    TweetHandler.RemoveTweet(tweet, retweets);
+                    return;
 
-                case ConsoleKey.Escape: 
-                return; 
+                case ConsoleKey.Escape:
+                    return;
             }
         }
     }
 
     public static void ShowLikedTweets(string username)
     {
-        foreach(Tweet t in TweetHandler.tweets)
+        foreach (Tweet t in TweetHandler.tweets)
         {
-            if(t.Likes.Any(u => u == username))
+            if (t.Likes.Any(u => u == username))
             {
                 var i = TweetHandler.tweets.IndexOf(t);
                 string likeHeart = Buttonhandler.LikeButton(t);
                 string retweetButton = Buttonhandler.RetweetButton(t);
-                
+
                 RenderTweet(t, likeHeart, retweetButton);
             }
         }
     }
 
     public static void ChooseTweet(List<Tweet> tweets)
-    {        
+    {
         Console.WriteLine("----- Välj Tweet -----");
         ShowTweets(tweets, true);
-        
+
         if (tweets.Count == 0)
         {
             Console.WriteLine("\nHär var det tomt");
         }
-        
+
         Console.WriteLine("\nTryck Esc för att gå tillbaka");
-        
+
         if (tweets.Count > 0)
         {
             Console.WriteLine($"Välj tweet 1-{tweets.Count}");
         }
-        
-        int? index; 
+
+        int? index;
         while (true)
-        {   
+        {
             string input = Helpers.ReadUserInput();
 
             if (input == null)
@@ -190,29 +189,29 @@ class TweetCLI
                 return;
             }
 
-            index = Helpers.CheckUserInput(tweets.Count,input);
+            index = Helpers.CheckUserInput(tweets.Count, input);
 
-            if(index > 0 && index <= tweets.Count)
+            if (index > 0 && index <= tweets.Count)
             {
-                break; 
+                break;
             }
         }
-        
+
         var tweet = tweets[(int)index - 1];
         var tweetIndex = tweet.Id;
-        
+
         var originalTweet = tweet;
-        if(tweet.IsRetweet)
+        if (tweet.IsRetweet)
         {
             originalTweet = TweetHandler.GetOriginalTweet(tweet);
         }
-        
-        while(true)
+
+        while (true)
         {
             Console.Clear();
             ShowTweet(tweets[(int)index - 1], false);
-            
-            if(tweet.Author == UserCLI.loggedInUser.Username)
+
+            if (tweet.Author == UserCLI.loggedInUser.Username)
             {
                 Console.WriteLine($"\n[1. Gilla] [2. Kommentera] [3. Ta bort kommentar] [4. Retweet] [5. Radera Tweet] [6. Tillbaka]");
             }
@@ -220,24 +219,24 @@ class TweetCLI
             {
                 Console.WriteLine($"\n[1. Gilla] [2. Kommentera] [3. Ta bort kommentar] [4. Retweet] [5. Tillbaka]");
             }
-            
+
             var choice = Console.ReadKey(true).Key;
             switch (choice)
             {
                 case ConsoleKey.D1:
                     TweetHandler.LikeUnlikeTweet(tweetIndex);
                     break;
-                
+
                 case ConsoleKey.D2:
                     CommentCLI.CommentTweet(tweet);
                     break;
-                
+
                 case ConsoleKey.D3:
-                    CommentCLI.RemoveComment(tweet); 
+                    CommentCLI.RemoveComment(tweet);
                     break;
-                    
+
                 case ConsoleKey.D4:
-                    if(!tweet.IsRetweet || tweet.Author != UserCLI.loggedInUser.Username)
+                    if (!tweet.IsRetweet || tweet.Author != UserCLI.loggedInUser.Username)
                     {
                         TweetHandler.Retweet(tweetIndex);
                         continue;
@@ -249,7 +248,7 @@ class TweetCLI
                     }
 
                 case ConsoleKey.D5:
-                    if(tweet.Author == UserCLI.loggedInUser.Username)
+                    if (tweet.Author == UserCLI.loggedInUser.Username)
                     {
                         RemoveTweet(originalTweet);
                         return;
@@ -258,9 +257,9 @@ class TweetCLI
                     {
                         return;
                     }
-                    
+
                 case ConsoleKey.D6:
-                    if(tweet.Author == UserCLI.loggedInUser.Username)
+                    if (tweet.Author == UserCLI.loggedInUser.Username)
                         return;
                     else
                         continue;
