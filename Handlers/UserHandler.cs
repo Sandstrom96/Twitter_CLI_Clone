@@ -59,7 +59,7 @@ static class UserHandler
 
     public static User GetLoggedInUser(string username)
     {
-        return users.FirstOrDefault(u => u.Username == username);
+        return users.FirstOrDefault(u => u.Username.ToLower() == username.ToLower());
     }
     
     
