@@ -24,4 +24,12 @@ class CommentHandler
             return ownComment[index -1];
         }
     }
+
+    public static void SortComments(List<Tweet> tweets)
+    {
+        foreach(var t in tweets)
+        {
+            t.Comments = t.Comments.OrderByDescending(c => c.Timestamp).ToList();
+        }
+    }
 }

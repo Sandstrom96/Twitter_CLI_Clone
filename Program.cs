@@ -47,6 +47,7 @@ class Program
         {
             Console.Clear();
             TweetHandler.SortTweets();
+            CommentHandler.SortComments(TweetHandler.tweets);
             Console.WriteLine("------ Shitter ------");
             
             TweetCLI.ShowTweets(TweetHandler.tweets, false); //Visar alla tweets i flödet
