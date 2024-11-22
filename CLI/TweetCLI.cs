@@ -70,7 +70,7 @@ class TweetCLI
     }
 
     // Visar vald tweet (index) från listan man tar in
-    public static void ShowTweet(Tweet tweet)
+    public static void ShowTweet(Tweet tweet, bool showIndex)
     {
         string likeHeart = Buttonhandler.LikeButton(tweet);
         string retweetButton = Buttonhandler.RetweetButton(tweet);
@@ -84,12 +84,30 @@ class TweetCLI
             
             Console.WriteLine($"Retweet från: {tweet.Author}");
             RenderTweet(originalTweet, likeHeart, retweetButton);
-            CommentCLI.ShowComment(originalTweet,false);
+            Console.WriteLine("---- Kommentarer -----");
+            if (showIndex)
+            {
+                CommentCLI.ShowComment(originalTweet,true);
+            }
+            else
+            {
+                CommentCLI.ShowComment(originalTweet,false);
+            }
+            //CommentCLI.ShowComment(originalTweet,false);
         }
         else
         {
             RenderTweet(tweet, likeHeart, retweetButton);
-            CommentCLI.ShowComment(tweet,false);
+            Console.WriteLine("---- Kommentarer -----");
+            if (showIndex)
+            {
+                CommentCLI.ShowComment(tweet,true);
+            }
+            else
+            {
+                CommentCLI.ShowComment(tweet,false);
+            }
+            //CommentCLI.ShowComment(tweet,false);
         }
     }
 
@@ -138,10 +156,9 @@ class TweetCLI
             {
                 var i = TweetHandler.tweets.IndexOf(t);
                 string likeHeart = Buttonhandler.LikeButton(t);
-                Console.WriteLine(t.Author);
-                Console.WriteLine(t.Content);
-                Console.WriteLine(t.Date.ToString("MM-dd HH:mm"));
-                Console.WriteLine($"{likeHeart} ({t.Likes.Count})");
+                string retweetButton = Buttonhandler.RetweetButton(t);
+                
+                RenderTweet(t, likeHeart, retweetButton);
             }
         }
     }
@@ -170,6 +187,7 @@ class TweetCLI
         while(true)
         {
             ShowTweet(tweets[index]);
+            ShowTweet(tweets[(int)index - 1], false);
             
             if(tweet.Author == UserCLI.loggedInUser.Username)
             {
@@ -188,11 +206,11 @@ class TweetCLI
                     break;
                 
                 case ConsoleKey.D2:
-                    CommentCLI.CommentTweet(tweets[index]);
+                    CommentCLI.CommentTweet(tweet);
                     break;
                 
                 case ConsoleKey.D3:
-                    CommentCLI.RemoveComment(tweets[index]); 
+                    CommentCLI.RemoveComment(tweet); 
                     break;
                     
                 case ConsoleKey.D4:
