@@ -1,1 +1,12 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/V-_DqTse)
+# Twitter CLI Clone
+A console application for a Twitter clone, developed in collaboration with Oskarakerman as part of a school project.
+
+## How to Run
+1. **Clone the repository**:
+   Open the terminal and run the following command to clone the repository:
+   ```sh
+   git clone https://github.com/Sandstrom96/Twitter_CLI_Clone
+   cd Twitter_CLI_CLone
+2. **Run the application in the terminal**
+   ```sh
+   dotnet run
